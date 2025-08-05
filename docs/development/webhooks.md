@@ -709,9 +709,9 @@ class WebhookMonitoring:
 
 Con webhooks y eventos configurados:
 
-1. **[11-TESTING-Y-VALIDACION.md](11-TESTING-Y-VALIDACION.md)** - Probar flujos de eventos
-2. **[12-MONITOREO-Y-ANALYTICS.md](12-MONITOREO-Y-ANALYTICS.md)** - Analizar métricas de eventos
-3. **[14-TROUBLESHOOTING.md](14-TROUBLESHOOTING.md)** - Resolver problemas de webhooks
+1. **[Testing y Validación](../operations/testing.md)** - Probar flujos de eventos
+2. **[Monitoreo y Analytics](../operations/monitoring.md)** - Analizar métricas de eventos
+3. **[Troubleshooting](../operations/troubleshooting.md)** - Resolver problemas de webhooks
 
 ---
 

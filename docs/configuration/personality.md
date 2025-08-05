@@ -496,9 +496,9 @@ Personality Metrics:
 
 Ahora que dominas la personalidad y comportamiento:
 
-1. **[06-KNOWLEDGE-BASE.md](06-KNOWLEDGE-BASE.md)** - Estructurar el conocimiento
-2. **[08-FLUJO-CONVERSACIONAL.md](08-FLUJO-CONVERSACIONAL.md)** - Diseñar conversaciones
-3. **[11-TESTING-Y-VALIDACION.md](11-TESTING-Y-VALIDACION.md)** - Validar personalidad
+1. **[Base de Conocimiento](knowledge-base.md)** - Estructurar el conocimiento
+2. **[Flujos Conversacionales](../development/conversation-flows.md)** - Diseñar conversaciones
+3. **[Testing y Validación](../operations/testing.md)** - Validar personalidad
 
 ---
 

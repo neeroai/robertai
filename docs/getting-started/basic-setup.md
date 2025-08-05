@@ -387,9 +387,9 @@ Clientes → Conversaciones → Analytics → Insights → Mejoras → Clientes
 
 Ahora que tienes tu AI Agent básico funcionando:
 
-1. **[04-CONFIGURACION-AVANZADA.md](04-CONFIGURACION-AVANZADA.md)** - Para features avanzadas
-2. **[05-PERSONALIDAD-Y-COMPORTAMIENTO.md](05-PERSONALIDAD-Y-COMPORTAMIENTO.md)** - Para refinar la personalidad
-3. **[07-AI-ACTIONS.md](07-AI-ACTIONS.md)** - Para agregar acciones
+1. **[Configuración Avanzada](../configuration/advanced-config.md)** - Para features avanzadas
+2. **[Personalidad y Comportamiento](../configuration/personality.md)** - Para refinar la personalidad
+3. **[AI Actions](../development/ai-actions.md)** - Para agregar acciones
 
 ---
 

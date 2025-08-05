@@ -245,9 +245,9 @@ Información de la conversación que el agente mantiene para dar respuestas cohe
 
 Ahora que entiendes qué es Bird.com y sus AI Employees, continúa con:
 
-1. **[02-ARQUITECTURA.md](02-ARQUITECTURA.md)** - Para entender la arquitectura técnica
-2. **[03-CONFIGURACION-BASICA.md](03-CONFIGURACION-BASICA.md)** - Para comenzar la implementación
-3. **[05-PERSONALIDAD-Y-COMPORTAMIENTO.md](05-PERSONALIDAD-Y-COMPORTAMIENTO.md)** - Para definir la personalidad
+1. **[Arquitectura](architecture.md)** - Para entender la arquitectura técnica
+2. **[Configuración Básica](basic-setup.md)** - Para comenzar la implementación
+3. **[Personalidad y Comportamiento](../configuration/personality.md)** - Para definir la personalidad
 
 ---
 

@@ -734,9 +734,8 @@ class TestReportGenerator:
 
 Con el testing validado:
 
-1. **[12-MONITOREO-Y-ANALYTICS.md](12-MONITOREO-Y-ANALYTICS.md)** - Monitorear en producción
-2. **[14-TROUBLESHOOTING.md](14-TROUBLESHOOTING.md)** - Resolver issues encontrados
-3. **[15-CASOS-DE-USO.md](15-CASOS-DE-USO.md)** - Validar casos reales
+1. **[Monitoreo y Analytics](monitoring.md)** - Monitorear en producción
+2. **[Troubleshooting](troubleshooting.md)** - Resolver issues encontrados
 
 ---
 

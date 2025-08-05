@@ -858,8 +858,7 @@ class SecurityDashboard:
 
 Con la seguridad implementada:
 
-1. **[14-TROUBLESHOOTING.md](14-TROUBLESHOOTING.md)** - Resolver problemas de seguridad
-2. **[15-CASOS-DE-USO.md](15-CASOS-DE-USO.md)** - Casos de uso seguros
+1. **[Troubleshooting](troubleshooting.md)** - Resolver problemas de seguridad
 3. **[templates/](templates/)** - Templates de políticas de seguridad
 
 ---

@@ -412,9 +412,9 @@ Target Metrics:
 
 Con esta comprensión de la arquitectura, continúa con:
 
-1. **[03-CONFIGURACION-BASICA.md](03-CONFIGURACION-BASICA.md)** - Para empezar la implementación
-2. **[07-AI-ACTIONS.md](07-AI-ACTIONS.md)** - Para entender las integraciones API
-3. **[09-INTEGRACIONES-API.md](09-INTEGRACIONES-API.md)** - Para detalles de integración
+1. **[Configuración Básica](basic-setup.md)** - Para empezar la implementación
+2. **[AI Actions](../development/ai-actions.md)** - Para entender las integraciones API
+3. **[Integraciones API](../development/api-integrations.md)** - Para detalles de integración
 
 ---
 

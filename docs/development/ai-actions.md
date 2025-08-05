@@ -633,9 +633,9 @@ class ActionSecurityValidator:
 
 Con las AI Actions configuradas:
 
-1. **[08-FLUJO-CONVERSACIONAL.md](08-FLUJO-CONVERSACIONAL.md)** - Diseñar flujos que usen actions
-2. **[09-INTEGRACIONES-API.md](09-INTEGRACIONES-API.md)** - Profundizar en integraciones
-3. **[11-TESTING-Y-VALIDACION.md](11-TESTING-Y-VALIDACION.md)** - Probar las actions
+1. **[Flujos Conversacionales](conversation-flows.md)** - Diseñar flujos que usen actions
+2. **[Integraciones API](api-integrations.md)** - Profundizar en integraciones
+3. **[Testing y Validación](../operations/testing.md)** - Probar las actions
 
 ---
 

@@ -766,9 +766,9 @@ async def example_integration():
 
 Con las integraciones configuradas:
 
-1. **[10-WEBHOOKS-Y-EVENTOS.md](10-WEBHOOKS-Y-EVENTOS.md)** - Configurar eventos bidireccionales
-2. **[11-TESTING-Y-VALIDACION.md](11-TESTING-Y-VALIDACION.md)** - Probar integraciones
-3. **[12-MONITOREO-Y-ANALYTICS.md](12-MONITOREO-Y-ANALYTICS.md)** - Monitorear performance
+1. **[Webhooks y Eventos](webhooks.md)** - Configurar eventos bidireccionales
+2. **[Testing y Validación](../operations/testing.md)** - Probar integraciones
+3. **[Monitoreo y Analytics](../operations/monitoring.md)** - Monitorear performance
 
 ---
 

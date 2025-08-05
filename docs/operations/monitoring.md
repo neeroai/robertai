@@ -709,9 +709,8 @@ class OptimizationRecommendations:
 
 Con el monitoreo configurado:
 
-1. **[13-SEGURIDAD-Y-COMPLIANCE.md](13-SEGURIDAD-Y-COMPLIANCE.md)** - Asegurar el cumplimiento
-2. **[14-TROUBLESHOOTING.md](14-TROUBLESHOOTING.md)** - Usar métricas para resolver problemas
-3. **[15-CASOS-DE-USO.md](15-CASOS-DE-USO.md)** - Casos reales de uso de analytics
+1. **[Seguridad y Compliance](security.md)** - Asegurar el cumplimiento
+2. **[Troubleshooting](troubleshooting.md)** - Usar métricas para resolver problemas
 
 ---
 

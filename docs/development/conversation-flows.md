@@ -725,9 +725,9 @@ Flow Performance Metrics:
 
 Con el flujo conversacional diseñado:
 
-1. **[09-INTEGRACIONES-API.md](09-INTEGRACIONES-API.md)** - Conectar el flujo con APIs
-2. **[11-TESTING-Y-VALIDACION.md](11-TESTING-Y-VALIDACION.md)** - Probar los flujos
-3. **[12-MONITOREO-Y-ANALYTICS.md](12-MONITOREO-Y-ANALYTICS.md)** - Medir performance
+1. **[Integraciones API](api-integrations.md)** - Conectar el flujo con APIs
+2. **[Testing y Validación](../operations/testing.md)** - Probar los flujos
+3. **[Monitoreo y Analytics](../operations/monitoring.md)** - Medir performance
 
 ---
 

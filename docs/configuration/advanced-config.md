@@ -552,9 +552,9 @@ class AIAgentTester:
 
 Con estas configuraciones avanzadas dominadas:
 
-1. **[05-PERSONALIDAD-Y-COMPORTAMIENTO.md](05-PERSONALIDAD-Y-COMPORTAMIENTO.md)** - Profundizar en personalidad
-2. **[07-AI-ACTIONS.md](07-AI-ACTIONS.md)** - Implementar acciones complejas
-3. **[12-MONITOREO-Y-ANALYTICS.md](12-MONITOREO-Y-ANALYTICS.md)** - Analytics avanzado
+1. **[Personalidad y Comportamiento](personality.md)** - Profundizar en personalidad
+2. **[AI Actions](../development/ai-actions.md)** - Implementar acciones complejas
+3. **[Monitoreo y Analytics](../operations/monitoring.md)** - Analytics avanzado
 
 ---
 

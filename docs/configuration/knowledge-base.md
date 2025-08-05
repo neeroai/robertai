@@ -554,9 +554,9 @@ Export Formats:
 
 Con el Knowledge Base configurado:
 
-1. **[07-AI-ACTIONS.md](07-AI-ACTIONS.md)** - Configurar acciones del AI
-2. **[08-FLUJO-CONVERSACIONAL.md](08-FLUJO-CONVERSACIONAL.md)** - Diseñar flujos
-3. **[11-TESTING-Y-VALIDACION.md](11-TESTING-Y-VALIDACION.md)** - Validar contenido
+1. **[AI Actions](../development/ai-actions.md)** - Configurar acciones del AI
+2. **[Flujos Conversacionales](../development/conversation-flows.md)** - Diseñar flujos
+3. **[Testing y Validación](../operations/testing.md)** - Validar contenido
 
 ---
 

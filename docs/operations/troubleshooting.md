@@ -718,7 +718,6 @@ Problema: Seguridad
 
 Con las herramientas de troubleshooting:
 
-1. **[15-CASOS-DE-USO.md](15-CASOS-DE-USO.md)** - Ver casos reales resueltos
 2. **[templates/](templates/)** - Templates de debugging
 3. **[scripts/](scripts/)** - Scripts de diagnóstico automatizado
 
