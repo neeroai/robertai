@@ -20,7 +20,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **WhatsApp Business API** is the default and recommended channel for Bird.com AI Employee implementations. All primary features, workflows, and integrations are designed and optimized for WhatsApp Business API first, with additional channels available as secondary options.
 
 ### WhatsApp Business API Benefits
-- Native multimedia support (images, documents, audio, video)
+- **Native multimedia support**: 
+  - Images: JPG, PNG, WebP (up to 5MB)
+  - Videos: MP4, 3GPP (up to 16MB)
+  - Audio: AAC, M4A, AMRNB, MP3 (up to 16MB)
+  - Documents: PDF, DOCX, PPTX, XLSX (up to 100MB)
+  - Interactive messages: Buttons (up to 3), Lists (up to 10), Carousels, Templates
 - Rich interactive messaging capabilities
 - Widespread user adoption and familiarity
 - Robust webhook and API integration support
@@ -34,6 +39,35 @@ The system operates on a layered architecture:
 - **AI Processing Layer**: NLP Engine, Context Manager, Intent Resolver, AI Actions, Knowledge Base, Response Generation
 - **Integration Layer**: REST APIs, Webhooks, Event Streams
 - **External Systems**: Business APIs, CRM Systems, Database Integrations
+
+### Bird.com Platform Architecture
+```yaml
+Core Engine:
+  - AI Engine (NLP/NLU Processing with multimodal capabilities)
+  - Context Manager (multimedia context enrichment)
+  - Action Executor (6 categories of AI Actions)
+  - Response Generator (multimedia response generation)
+
+Integration Layer:
+  - Authentication (API Keys, HMAC-SHA256)
+  - Rate Limiting (1000 req/min API, 100 req/min user)
+  - Request Routing (content-type aware)
+  - Response Transformation (multimedia optimization)
+
+Channel Support:
+  - WhatsApp Business API (primary - full multimedia support)
+  - SMS, Email, Voice, Web Chat, Social Media (secondary)
+```
+
+### AI Actions Categories
+Bird.com supports 6 main categories of AI Actions for multimodal processing:
+
+1. **Bots Actions**: Machine learning chatbot with multimedia query processing
+2. **Channel Actions**: Multi-platform messaging with channel-specific multimedia handling
+3. **Collaboration Actions**: Inbox management with multimedia context and intelligent assignment
+4. **Conversation Actions**: Multimedia conversation tracking and content pattern analysis
+5. **Engagement Actions**: Customer data management with visual context and personalization
+6. **Number Management Actions**: Multimedia-optimized configuration and intelligent routing
 
 ### Conversational Flow Design
 Bird.com AI Employees support flexible conversational flows that can be customized for different business use cases:
@@ -69,19 +103,54 @@ Bird.com AI Employees support flexible conversational flows that can be customiz
 
 ## Multimodal Enhancement Strategy
 
-The repository contains comprehensive analysis for implementing multimodal capabilities in Bird.com AI Employees:
+The repository contains comprehensive analysis for implementing multimodal capabilities in Bird.com AI Employees with **estimated ROI of 150-200%** in conversational efficiency.
 
-### Enhancement Areas
-1. **AI Model Optimization**: Advanced language models with multimodal capabilities
-2. **Workflow Extensions**: Multimedia processing integration into conversational flows
-3. **API Enhancements**: Visual analysis, audio processing, and document handling capabilities
-4. **Channel Optimization**: Full utilization of WhatsApp Business API (primary channel) multimedia features, with secondary optimization for other communication channels
+### Three Implementation Strategies
+
+#### Strategy 1: AI Model Enhancement
+**Objective**: Upgrade AI capabilities for advanced multimodal processing
+- **Advanced Visual Analysis**: Object detection, scene understanding, text extraction
+- **Contextual Processing**: Better multimedia context comprehension
+- **Multimodal Reasoning**: Cross-media reasoning capabilities
+- **Rich Text Generation**: Detailed descriptions from visual analysis
+
+#### Strategy 2: Workflow Extensions
+**Objective**: Expand conversational flows for multimedia interactions
+- **Media Detection**: Automatic content classification and routing
+- **Visual Analysis**: Image content understanding and context extraction
+- **Audio Processing**: Voice transcription, sentiment analysis, intent detection
+- **Multimedia Response**: Contextual multimedia response generation
+
+#### Strategy 3: API Extensions & New Components
+**Objective**: Specialized API components for multimedia processing
+- **/ai/multimodal/analyze-image**: Advanced image analysis and content extraction
+- **/ai/multimodal/process-audio**: Audio transcription and analysis
+- **/ai/multimodal/process-document**: Document parsing and information extraction
+
+### Implementation Timeline & Budget
+```yaml
+Phase 1 - Foundation (Weeks 1-3):
+  - AI model integration and basic multimedia processing
+  - Success metrics: >90% accuracy, <3s processing time
+
+Phase 2 - Workflow Enhancement (Weeks 4-7):
+  - Extended conversational flows with multimedia
+  - Success metrics: >75% completion rate, <5s processing
+
+Phase 3 - Advanced Features (Weeks 8-12):
+  - Advanced AI actions and personalization
+  - Success metrics: >40% engagement increase, >60% multimodal usage
+
+Total Investment: $56,000 - $77,000
+Team: 4 specialists (AI Engineer, Backend Developer, Integration Specialist, QA)
+```
 
 ### Expected Benefits
-- Significant ROI improvement through enhanced user engagement
-- Higher conversation completion rates
-- Improved user satisfaction and experience
-- Enhanced operational efficiency and automation capabilities
+- **ROI**: 150-200% improvement in conversational efficiency
+- **Conversion Rates**: 25-35% improvement through enhanced engagement
+- **Automation**: 40% reduction in manual content processing
+- **User Experience**: More intuitive multimedia interactions
+- **Scalability**: Handle diverse content without additional human resources
 
 ## Development Workflows
 
@@ -117,6 +186,52 @@ Since all configuration is manual, development primarily involves:
 - Circuit breaker patterns for external service calls
 - Graceful degradation strategies
 - Dead letter queue for failed webhook deliveries
+
+### Multimedia Processing Integration
+```python
+# Enhanced webhook configuration for multimedia content
+multimedia_webhook_config = {
+    "endpoint": "https://your-api.com/bird/multimodal/webhook",
+    "events": [
+        "message.image.received",
+        "message.audio.received", 
+        "message.video.received",
+        "message.document.received"
+    ],
+    "processing_limits": {
+        "image_max_size": "5MB",
+        "audio_max_duration": "60s", 
+        "video_max_duration": "120s",
+        "document_max_size": "100MB"
+    }
+}
+```
+
+### Security & Privacy Policies
+```yaml
+Content Validation:
+  - Virus scanning and malware detection
+  - Content type verification
+  - File size limits enforcement
+
+Data Handling:
+  - Temporary storage only (7 days retention)
+  - AES-256 encryption at rest
+  - TLS 1.3 encryption in transit
+  - Access logging enabled
+
+Privacy Controls:
+  - Automatic PII detection
+  - Metadata removal
+  - User consent tracking
+  - Data deletion on request
+
+Compliance:
+  - GDPR compliant
+  - CCPA compliant
+  - Data residency controls
+  - Comprehensive audit logging
+```
 
 ## Development Guidelines
 
