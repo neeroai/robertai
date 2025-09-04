@@ -1,0 +1,211 @@
+{
+  "analyze_multimodal": {
+    "name": "analyze_multimodal",
+    "description": "Analyze multimedia content (images, videos, audio, documents) for Bird.com AI Employee workflows. This tool processes multimodal content to extract context, identify objects, transcribe audio, and generate descriptions that can be used in conversational AI responses. Supports image analysis with object detection and scene understanding, audio transcription and sentiment analysis, video content summarization, and document text extraction. Essential for enhancing Bird.com AI Employee multimodal capabilities and providing rich context for conversational flows.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "content_type": {
+          "type": "string",
+          "enum": ["image", "audio", "video", "document"],
+          "description": "The type of multimedia content to analyze"
+        },
+        "content_path": {
+          "type": "string",
+          "description": "Path to the multimedia content file"
+        },
+        "analysis_type": {
+          "type": "string",
+          "enum": ["full", "quick", "context", "description"],
+          "description": "Type of analysis to perform",
+          "default": "full"
+        },
+        "context": {
+          "type": "string",
+          "description": "Optional conversational context for enhanced analysis"
+        }
+      },
+      "required": ["content_type", "content_path"]
+    },
+    "command": "python3",
+    "args": [".claude/tools/analyze_multimodal.py", "{{content_type}}", "{{content_path}}", "{{analysis_type}}", "{{context}}"]
+  },
+
+  "bird_api_client": {
+    "name": "bird_api_client",
+    "description": "Interact with Bird.com APIs for AI Employee configuration and management. This tool provides comprehensive access to Bird.com platform capabilities including channel configuration, AI Actions setup, webhook management, and conversation flow testing. Supports authentication, rate limiting compliance, and error handling for production deployments. Use this for configuring WhatsApp Business API channels, setting up AI Employee workflows, managing knowledge bases, and testing conversational flows.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["configure", "test", "deploy", "monitor", "update"],
+          "description": "The Bird.com API action to perform"
+        },
+        "endpoint": {
+          "type": "string",
+          "description": "Specific Bird.com API endpoint"
+        },
+        "payload": {
+          "type": "object",
+          "description": "JSON payload for the API request"
+        },
+        "auth_method": {
+          "type": "string",
+          "enum": ["api_key", "hmac"],
+          "description": "Authentication method to use",
+          "default": "api_key"
+        }
+      },
+      "required": ["action", "endpoint"]
+    },
+    "command": "python3",
+    "args": [".claude/tools/bird_api_client.py", "{{action}}", "{{endpoint}}", "{{payload}}", "{{auth_method}}"]
+  },
+
+  "conversation_flow": {
+    "name": "conversation_flow",
+    "description": "Design and manage conversational flows for Bird.com AI Employees with multimodal support. This tool creates, tests, and optimizes conversation workflows that handle text, images, audio, and documents seamlessly. Includes intent recognition patterns, response generation strategies, escalation logic, and multimedia handling workflows. Essential for creating engaging conversational experiences that can process diverse content types and maintain context across multimedia interactions.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "flow_type": {
+          "type": "string",
+          "enum": ["create", "test", "optimize", "deploy"],
+          "description": "Type of conversation flow operation"
+        },
+        "flow_name": {
+          "type": "string",
+          "description": "Name of the conversational flow"
+        },
+        "multimodal_support": {
+          "type": "boolean",
+          "description": "Enable multimodal content handling",
+          "default": true
+        },
+        "channels": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "Target channels for deployment",
+          "default": ["whatsapp"]
+        },
+        "flow_config": {
+          "type": "object",
+          "description": "Flow configuration parameters"
+        }
+      },
+      "required": ["flow_type", "flow_name"]
+    },
+    "command": "python3",
+    "args": [".claude/tools/conversation_flow.py", "{{flow_type}}", "{{flow_name}}", "{{multimodal_support}}", "{{channels}}", "{{flow_config}}"]
+  },
+
+  "whatsapp_handler": {
+    "name": "whatsapp_handler",
+    "description": "Handle WhatsApp Business API integrations and multimedia message processing for Bird.com AI Employees. This tool manages WhatsApp-specific features including interactive messages, multimedia content handling, template management, and webhook processing. Supports rich media types (images, videos, audio, documents), interactive elements (buttons, lists, carousels), and advanced messaging features. Essential for optimizing Bird.com AI Employee performance on WhatsApp Business API.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "type": "string",
+          "enum": ["send", "receive", "template", "interactive", "media"],
+          "description": "WhatsApp operation to perform"
+        },
+        "message_type": {
+          "type": "string",
+          "enum": ["text", "image", "video", "audio", "document", "interactive", "template"],
+          "description": "Type of WhatsApp message"
+        },
+        "recipient": {
+          "type": "string",
+          "description": "WhatsApp recipient phone number"
+        },
+        "content": {
+          "type": "object",
+          "description": "Message content and metadata"
+        },
+        "multimedia_url": {
+          "type": "string",
+          "description": "URL for multimedia content (if applicable)"
+        }
+      },
+      "required": ["operation", "message_type"]
+    },
+    "command": "python3",
+    "args": [".claude/tools/whatsapp_handler.py", "{{operation}}", "{{message_type}}", "{{recipient}}", "{{content}}", "{{multimedia_url}}"]
+  },
+
+  "knowledge_base": {
+    "name": "knowledge_base",
+    "description": "Access and manage Bird.com AI Employee knowledge base with multimodal content support. This tool handles structured knowledge storage, retrieval, and updates for AI Employee responses. Supports text-based knowledge, multimedia content indexing, contextual search, and knowledge base optimization. Includes semantic search capabilities, content validation, and knowledge graph management. Essential for maintaining accurate and comprehensive AI Employee knowledge across multiple content types.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": ["search", "add", "update", "delete", "validate", "index"],
+          "description": "Knowledge base action to perform"
+        },
+        "query": {
+          "type": "string",
+          "description": "Search query or knowledge item identifier"
+        },
+        "content": {
+          "type": "object",
+          "description": "Knowledge content (for add/update operations)"
+        },
+        "content_type": {
+          "type": "string",
+          "enum": ["text", "multimodal", "structured"],
+          "description": "Type of knowledge content",
+          "default": "text"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Additional metadata for knowledge items"
+        }
+      },
+      "required": ["action"]
+    },
+    "command": "python3",
+    "args": [".claude/tools/knowledge_base.py", "{{action}}", "{{query}}", "{{content}}", "{{content_type}}", "{{metadata}}"]
+  },
+
+  "workflow_orchestrator": {
+    "name": "workflow_orchestrator",
+    "description": "Orchestrate complex Bird.com AI Employee workflows with multimodal processing pipelines. This tool manages end-to-end workflows that combine multiple AI Actions, handle multimedia content processing, coordinate channel-specific optimizations, and ensure seamless user experiences. Supports workflow chaining, error handling, fallback strategies, and performance monitoring. Essential for implementing sophisticated AI Employee behaviors that span multiple systems and content types.",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "workflow_id": {
+          "type": "string",
+          "description": "Unique identifier for the workflow"
+        },
+        "workflow_type": {
+          "type": "string",
+          "enum": ["customer_support", "lead_generation", "content_processing", "integration"],
+          "description": "Type of workflow to orchestrate"
+        },
+        "steps": {
+          "type": "array",
+          "items": {"type": "object"},
+          "description": "Workflow steps configuration"
+        },
+        "multimodal_pipeline": {
+          "type": "boolean",
+          "description": "Enable multimodal content processing",
+          "default": true
+        },
+        "error_handling": {
+          "type": "string",
+          "enum": ["strict", "graceful", "fallback"],
+          "description": "Error handling strategy",
+          "default": "graceful"
+        }
+      },
+      "required": ["workflow_id", "workflow_type"]
+    },
+    "command": "python3",
+    "args": [".claude/tools/workflow_orchestrator.py", "{{workflow_id}}", "{{workflow_type}}", "{{steps}}", "{{multimodal_pipeline}}", "{{error_handling}}"]
+  }
+}

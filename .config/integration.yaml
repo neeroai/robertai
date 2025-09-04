@@ -1,0 +1,151 @@
+# Configuration Integration Rules for .bmad-core and .claude
+# This file defines how both configuration systems interact and coexist
+
+version: "1.0"
+last_validated: "2025-01-27T00:00:00Z"
+validation_schema_version: "1.0"
+
+# Namespace Rules - Critical for preventing conflicts
+namespace_rules:
+  bmad_prefix: "BMad"
+  claude_tools_prefix: "bird_"
+  reserved_namespaces:
+    - "BMad"        # Reserved for BMad methodology agents
+    - "bird"        # Reserved for Bird.com AI tools
+    - "whatsapp"    # Reserved for WhatsApp Business functionality
+    - "multimodal"  # Reserved for multimedia processing
+  
+  # Agent naming patterns
+  bmad_agent_pattern: "^/BMad[A-Z][a-zA-Z]*$"    # /BMadPM, /BMadDev, etc.
+  claude_agent_pattern: "^/[a-z]+-[a-z]+$"       # /bird-master, /whatsapp-specialist
+
+# Priority Rules - Who takes precedence in conflicts
+priority_rules:
+  documentation_workflows: ".bmad-core"     # PMO, architecture, PRDs
+  ai_capabilities: ".claude"                # Multimodal, Bird.com APIs
+  shared_resources: "manual_resolution"     # Requires human intervention
+  
+  # Specific overrides
+  overrides:
+    - resource: "docs/ directory"
+      rule: "shared - both systems can create/modify"
+    - resource: "CLAUDE.md"
+      rule: "shared - contains instructions for both systems"
+    - resource: ".gitignore"
+      rule: "shared - consolidated configuration"
+
+# Validation Rules - Automated checks
+validation_rules:
+  # Tool naming conventions
+  tool_naming:
+    bmad_pattern: "^[a-z]+-[a-z]+\.md$"           # task files, templates
+    claude_pattern: "^[a-z_]+$"                   # snake_case for tools
+    prohibited_prefixes: ["bmad_", "BMad_"]       # Claude tools cannot use these
+    
+  # File path validation
+  path_conflicts:
+    check_enabled: true
+    bmad_protected_paths:
+      - "docs/prd/"
+      - "docs/architecture/"
+      - "docs/stories/"
+      - ".bmad-core/"
+    claude_protected_paths:
+      - ".claude/"
+      - ".claude/tools/"
+      - ".claude/agents/"
+    
+  # Agent validation
+  agent_validation:
+    check_duplicates: true
+    enforce_naming: true
+    require_descriptions: true
+
+# Integration Points - Where systems interact
+integration_points:
+  shared_documentation:
+    directory: "docs/"
+    access: "read_write_both"
+    conflict_resolution: "timestamp_based"
+    
+  shared_config:
+    file: "CLAUDE.md"
+    purpose: "Project instructions for both systems"
+    access: "read_both_write_manual"
+    
+  validation_scripts:
+    primary: "validate_configurations.py"
+    secondary: ".claude/validate_config.py"
+    run_schedule: "pre_commit"
+    
+  git_integration:
+    hooks: ["pre-commit", "pre-push"]
+    ignore_patterns: [".bmad-core/temp/", ".claude/cache/"]
+
+# Error Handling - How to handle conflicts
+error_handling:
+  namespace_conflicts:
+    action: "reject_change"
+    notification: "error"
+    resolution: "rename_conflicting_item"
+    
+  path_conflicts:
+    action: "validate_compatibility"
+    notification: "warning"
+    resolution: "manual_review_required"
+    
+  tool_conflicts:
+    action: "block_deployment"
+    notification: "critical"
+    resolution: "update_naming_convention"
+
+# Monitoring and Maintenance
+monitoring:
+  validation_frequency: "on_change"
+  health_checks: ["daily", "pre_deployment"]
+  metrics:
+    - namespace_compliance_rate
+    - conflict_resolution_time
+    - validation_success_rate
+    - integration_stability_score
+    
+  alerts:
+    namespace_violation: "immediate"
+    path_conflict: "daily_digest"
+    validation_failure: "immediate"
+
+# Migration and Updates
+migration:
+  version_compatibility: "backward_compatible"
+  upgrade_path: "automated_with_validation"
+  rollback_strategy: "config_backup_restore"
+  
+  # Backup strategy
+  backup:
+    frequency: "before_major_changes"
+    retention: "30_days"
+    location: ".config/backups/"
+    
+# Security and Access Control
+security:
+  config_encryption: false  # Plain text for transparency
+  access_control: "filesystem_permissions"
+  audit_logging: true
+  sensitive_data: "none_present"
+  
+  # Validation security
+  script_signing: false     # Scripts are in VCS
+  execution_policy: "local_only"
+  privilege_escalation: "not_required"
+
+# Performance Optimization
+performance:
+  validation_caching: true
+  parallel_checks: true
+  incremental_validation: true
+  cache_duration: "1_hour"
+  
+  # Resource limits
+  max_validation_time: "30_seconds"
+  max_memory_usage: "50MB"
+  concurrent_processes: 2

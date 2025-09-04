@@ -1,0 +1,130 @@
+version: 4.35.0
+installed_at: '2025-01-27T00:00:00.000Z'
+install_type: optimized_documentation
+agent: null
+ides_setup:
+  - cursor
+  - claude-code
+expansion_packs: []
+optimization_notes: |
+  Optimized for AgentBird dual-purpose repository:
+  - Removed development-specific resources (stories, architecture, brownfield workflows)
+  - Focused on documentation, research, and planning capabilities
+  - Maintained core BMad methodology for Claude Code agents
+files:
+  - path: .bmad-core/user-guide.md
+    hash: optimized
+    modified: false
+    purpose: BMad methodology guide
+  - path: .bmad-core/core-config.yaml
+    hash: optimized
+    modified: false
+    purpose: Core configuration
+  - path: .bmad-core/agent-teams/team-no-ui.yaml
+    hash: optimized
+    modified: true
+    purpose: Team configuration - no UI focus
+  - path: .bmad-core/agent-teams/team-ide-minimal.yaml
+    hash: optimized
+    modified: false
+    purpose: Minimal IDE team configuration
+  - path: .bmad-core/agent-teams/team-fullstack.yaml
+    hash: optimized
+    modified: true
+    purpose: Full capability team configuration
+  - path: .bmad-core/agent-teams/team-all.yaml
+    hash: optimized
+    modified: true
+    purpose: All agents team configuration
+  - path: .bmad-core/utils/workflow-management.md
+    hash: optimized
+    modified: false
+    purpose: Workflow management utilities
+  - path: .bmad-core/utils/bmad-doc-template.md
+    hash: optimized
+    modified: false
+    purpose: Document template utilities
+  - path: .bmad-core/templates/project-brief-tmpl.yaml
+    hash: optimized
+    modified: false
+    purpose: Project brief template
+  - path: .bmad-core/templates/prd-tmpl.yaml
+    hash: optimized
+    modified: false
+    purpose: Product requirements template
+  - path: .bmad-core/templates/market-research-tmpl.yaml
+    hash: optimized
+    modified: false
+    purpose: Market research template
+  - path: .bmad-core/templates/competitor-analysis-tmpl.yaml
+    hash: optimized
+    modified: false
+    purpose: Competitive analysis template
+  - path: .bmad-core/templates/brainstorming-output-tmpl.yaml
+    hash: optimized
+    modified: false
+    purpose: Brainstorming session template
+  - path: .bmad-core/tasks/shard-doc.md
+    hash: optimized
+    modified: false
+    purpose: Document sharding workflow
+  - path: .bmad-core/tasks/kb-mode-interaction.md
+    hash: optimized
+    modified: false
+    purpose: Knowledge base interaction
+  - path: .bmad-core/tasks/index-docs.md
+    hash: optimized
+    modified: false
+    purpose: Document indexing workflow
+  - path: .bmad-core/tasks/facilitate-brainstorming-session.md
+    hash: optimized
+    modified: false
+    purpose: Brainstorming facilitation
+  - path: .bmad-core/tasks/execute-checklist.md
+    hash: optimized
+    modified: false
+    purpose: Checklist execution workflow
+  - path: .bmad-core/tasks/document-project.md
+    hash: optimized
+    modified: false
+    purpose: Project documentation workflow
+  - path: .bmad-core/tasks/create-doc.md
+    hash: optimized
+    modified: false
+    purpose: Document creation workflow
+  - path: .bmad-core/tasks/create-deep-research-prompt.md
+    hash: optimized
+    modified: false
+    purpose: Deep research workflow
+  - path: .bmad-core/tasks/correct-course.md
+    hash: optimized
+    modified: false
+    purpose: Course correction workflow
+  - path: .bmad-core/tasks/advanced-elicitation.md
+    hash: optimized
+    modified: false
+    purpose: Advanced requirement elicitation
+  - path: .bmad-core/data/elicitation-methods.md
+    hash: optimized
+    modified: false
+    purpose: Requirement gathering techniques
+  - path: .bmad-core/data/brainstorming-techniques.md
+    hash: optimized
+    modified: false
+    purpose: Brainstorming facilitation methods
+  - path: .bmad-core/data/bmad-kb.md
+    hash: optimized
+    modified: false
+    purpose: Complete BMad methodology knowledge base
+  - path: .bmad-core/checklists/po-master-checklist.md
+    hash: optimized
+    modified: false
+    purpose: Comprehensive quality validation
+  - path: .bmad-core/checklists/pm-checklist.md
+    hash: optimized
+    modified: false
+    purpose: Product management validation
+  - path: .bmad-core/checklists/change-checklist.md
+    hash: optimized
+    modified: false
+    purpose: Change management validation

@@ -1,0 +1,312 @@
+# Load Testing Configuration for RobertAI Massive Deployment
+# Different test scenarios for validating system performance
+
+# Default configuration
+default:
+  base_url: "http://localhost:8000"
+  webhook_secret: "your-webhook-secret"
+  max_concurrent_connections: 1000
+  timeout_seconds: 30
+
+# Test scenarios for different load patterns
+scenarios:
+  
+  # Quick smoke test to verify basic functionality
+  smoke_test:
+    name: "Smoke Test - Basic Functionality"
+    users: 10
+    duration_seconds: 120
+    ramp_up_seconds: 30
+    message_frequency: 0.5
+    message_types: ["text"]
+    description: "Basic functionality test with minimal load"
+  
+  # Warm-up test before major load tests
+  warm_up:
+    name: "Warm Up Test"
+    users: 100
+    duration_seconds: 300
+    ramp_up_seconds: 60
+    message_frequency: 0.5
+    message_types: ["text", "interactive"]
+    description: "Warm up system caches and connections"
+  
+  # Normal load test simulating typical usage
+  load_test:
+    name: "Load Test - Normal Usage"
+    users: 1000
+    duration_seconds: 600
+    ramp_up_seconds: 120
+    message_frequency: 1.0
+    message_types: ["text", "interactive", "image"]
+    description: "Normal expected load with typical message distribution"
+  
+  # Stress test with high load
+  stress_test:
+    name: "Stress Test - High Load"
+    users: 3000
+    duration_seconds: 900
+    ramp_up_seconds: 180
+    message_frequency: 2.0
+    message_types: ["text", "image", "interactive", "audio"]
+    description: "High load test to find system limits"
+  
+  # Spike test with sudden load increase
+  spike_test:
+    name: "Spike Test - Sudden Load"
+    users: 5000
+    duration_seconds: 300
+    ramp_up_seconds: 30
+    message_frequency: 3.0
+    message_types: ["text"]
+    description: "Sudden spike in load to test auto-scaling"
+  
+  # Peak load test - maximum expected capacity
+  peak_load:
+    name: "Peak Load Test - Maximum Capacity"
+    users: 8000
+    duration_seconds: 600
+    ramp_up_seconds: 240
+    message_frequency: 1.5
+    message_types: ["text", "image", "interactive", "audio"]
+    description: "Peak expected load during viral events"
+  
+  # Endurance test for stability over time
+  endurance_test:
+    name: "Endurance Test - Long Duration"
+    users: 2000
+    duration_seconds: 3600
+    ramp_up_seconds: 300
+    message_frequency: 0.8
+    message_types: ["text", "image", "interactive"]
+    description: "Long-running test for stability and memory leaks"
+  
+  # Multimodal test focusing on different content types
+  multimodal_test:
+    name: "Multimodal Test - All Content Types"
+    users: 2000
+    duration_seconds: 600
+    ramp_up_seconds: 120
+    message_frequency: 1.2
+    message_types: ["text", "image", "audio", "video", "document", "interactive"]
+    description: "Test all supported message types with balanced load"
+  
+  # Ultra stress test - absolute maximum
+  ultra_stress:
+    name: "Ultra Stress Test - Maximum Load"
+    users: 10000
+    duration_seconds: 300
+    ramp_up_seconds: 60
+    message_frequency: 2.0
+    message_types: ["text"]
+    description: "Maximum possible load test (use with caution)"
+
+# Locust-specific configurations
+locust:
+  # Normal load test with Locust
+  normal:
+    users: 1000
+    spawn_rate: 10
+    run_time: "10m"
+    host: "http://localhost:8000"
+    
+  # Stress test with Locust
+  stress:
+    users: 3000
+    spawn_rate: 25
+    run_time: "15m"
+    host: "http://localhost:8000"
+    
+  # Peak load with Locust
+  peak:
+    users: 5000
+    spawn_rate: 50
+    run_time: "10m"
+    host: "http://localhost:8000"
+
+# Expected performance thresholds
+performance_thresholds:
+  response_time:
+    p50_ms: 500      # 50th percentile should be under 500ms
+    p90_ms: 1000     # 90th percentile should be under 1000ms
+    p95_ms: 2000     # 95th percentile should be under 2000ms
+    p99_ms: 5000     # 99th percentile should be under 5000ms
+    max_ms: 10000    # No request should take more than 10 seconds
+  
+  success_rate:
+    minimum: 99.0    # At least 99% success rate
+    target: 99.5     # Target 99.5% success rate
+  
+  throughput:
+    messages_per_second:
+      minimum: 500   # Minimum 500 messages/second
+      target: 1000   # Target 1000 messages/second
+      maximum: 2000  # Should handle up to 2000 messages/second
+  
+  resources:
+    cpu_usage_max: 80      # Maximum 80% CPU usage
+    memory_usage_max: 85   # Maximum 85% memory usage
+    queue_depth_max: 1000  # Queue should not exceed 1000 messages
+  
+  scaling:
+    auto_scale_trigger_cpu: 70     # Auto-scale when CPU > 70%
+    auto_scale_trigger_memory: 75  # Auto-scale when memory > 75%
+    scale_up_time_max: 180        # Should scale up within 3 minutes
+    scale_down_time_max: 300      # Should scale down within 5 minutes
+
+# Test execution phases
+test_phases:
+  
+  # Phase 1: Validation (before main test)
+  validation:
+    - smoke_test
+    - warm_up
+  
+  # Phase 2: Normal load testing
+  normal_load:
+    - load_test
+    - multimodal_test
+  
+  # Phase 3: Stress testing
+  stress_testing:
+    - stress_test
+    - spike_test
+    - peak_load
+  
+  # Phase 4: Stability testing
+  stability:
+    - endurance_test
+  
+  # Phase 5: Maximum load (use carefully)
+  maximum_load:
+    - ultra_stress
+
+# Monitoring during tests
+monitoring:
+  metrics_to_track:
+    - cpu_usage
+    - memory_usage
+    - disk_usage
+    - network_io
+    - response_time
+    - success_rate
+    - queue_depth
+    - cache_hit_rate
+    - database_connections
+    - redis_connections
+    - active_users
+    - messages_per_second
+  
+  alerts:
+    - name: "High Error Rate"
+      condition: "error_rate > 1%"
+      action: "stop_test"
+    
+    - name: "High Response Time"
+      condition: "p95_response_time > 5000ms"
+      action: "alert"
+    
+    - name: "Resource Exhaustion"
+      condition: "cpu_usage > 90% OR memory_usage > 90%"
+      action: "alert"
+    
+    - name: "System Failure"
+      condition: "success_rate < 95%"
+      action: "stop_test"
+
+# Results analysis
+results_analysis:
+  generate_report: true
+  export_formats: ["csv", "json", "html"]
+  include_graphs: true
+  
+  report_sections:
+    - summary
+    - response_times
+    - throughput
+    - error_analysis
+    - resource_usage
+    - scalability
+    - recommendations
+  
+  comparison_baselines:
+    - previous_test_results
+    - target_performance
+    - industry_benchmarks
+
+# Environment-specific configurations
+environments:
+  
+  development:
+    base_url: "http://localhost:8000"
+    webhook_secret: "dev-webhook-secret"
+    reduced_load_factor: 0.1  # 10% of normal load for dev testing
+  
+  staging:
+    base_url: "https://staging-robertai.example.com"
+    webhook_secret: "${STAGING_WEBHOOK_SECRET}"
+    reduced_load_factor: 0.5  # 50% of normal load for staging
+  
+  production:
+    base_url: "https://robertai.example.com"
+    webhook_secret: "${PROD_WEBHOOK_SECRET}"
+    reduced_load_factor: 1.0  # Full load for production testing
+    
+    # Extra safety checks for production
+    safety_checks:
+      require_confirmation: true
+      max_users_limit: 5000
+      max_duration_limit: 1800  # 30 minutes max
+      auto_stop_on_high_errors: true
+
+# Test execution commands (examples)
+commands:
+  
+  # Python async stress test
+  async_stress:
+    command: "python tests/stress_test_massive.py"
+    args:
+      - "--url ${BASE_URL}"
+      - "--webhook-secret ${WEBHOOK_SECRET}"
+      - "--scenario ${SCENARIO}"
+      - "--max-concurrent ${MAX_CONCURRENT}"
+      - "--export-csv"
+  
+  # Locust load test
+  locust_test:
+    command: "locust"
+    args:
+      - "-f tests/locust_load_test.py"
+      - "--host ${BASE_URL}"
+      - "--users ${USERS}"
+      - "--spawn-rate ${SPAWN_RATE}"
+      - "--run-time ${RUN_TIME}"
+      - "--html reports/locust_report.html"
+  
+  # Artillery load test (if using Artillery)
+  artillery_test:
+    command: "artillery run"
+    args:
+      - "tests/artillery_config.yaml"
+      - "--target ${BASE_URL}"
+      - "--output reports/artillery_report.json"
+
+# Cleanup and post-test actions
+post_test:
+  actions:
+    - generate_report
+    - cleanup_test_data
+    - reset_caches
+    - check_system_health
+    - send_notifications
+  
+  notifications:
+    slack:
+      webhook_url: "${SLACK_WEBHOOK_URL}"
+      channel: "#ops"
+      message_template: "Load test completed: ${TEST_NAME} - ${SUCCESS_RATE}% success rate"
+    
+    email:
+      recipients: ["ops@example.com"]
+      subject_template: "RobertAI Load Test Results - ${TEST_NAME}"
+      include_report: true

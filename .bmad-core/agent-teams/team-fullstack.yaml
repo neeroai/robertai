@@ -1,0 +1,12 @@
+bundle:
+  name: Team Fullstack
+  icon: 🚀
+  description: Team capable of full stack, front end only, or service development.
+agents:
+  - bmad-master
+  - analyst
+  - pm
+  - ux-expert
+  - architect
+  - po
+workflows: null

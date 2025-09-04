@@ -1,0 +1,111 @@
+#!/bin/sh
+# Pre-commit hook for RobertAI - Configuration Consistency Validation
+# Ensures .bmad-core and .claude configurations remain consistent
+
+echo "🔍 Validating configuration consistency before commit..."
+
+# Color codes for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Function to print colored messages
+print_success() {
+    echo "${GREEN}✅ $1${NC}"
+}
+
+print_warning() {
+    echo "${YELLOW}⚠️  $1${NC}"
+}
+
+print_error() {
+    echo "${RED}❌ $1${NC}"
+}
+
+# Check if validation scripts exist
+if [ ! -f "validate_configurations.py" ]; then
+    print_error "Main validation script not found: validate_configurations.py"
+    exit 1
+fi
+
+if [ ! -f ".claude/validate_config.py" ]; then
+    print_warning "Claude validation script not found: .claude/validate_config.py"
+fi
+
+# Run main configuration validation
+echo "\n📋 Running comprehensive configuration validation..."
+python3 validate_configurations.py
+
+# Check exit code
+if [ $? -ne 0 ]; then
+    print_error "Configuration validation failed!"
+    echo "\n🚫 Commit blocked due to configuration issues."
+    echo "📝 Please fix the validation errors before committing."
+    echo "💡 Run 'python3 validate_configurations.py' for detailed error information."
+    exit 1
+fi
+
+# Run Claude-specific validation if available
+if [ -f ".claude/validate_config.py" ]; then
+    echo "\n🤖 Running Claude-specific validation..."
+    cd .claude && python3 validate_config.py
+    
+    if [ $? -ne 0 ]; then
+        print_warning "Claude validation reported issues"
+        echo "⚠️  Consider reviewing .claude configuration"
+    else
+        print_success "Claude configuration validation passed"
+    fi
+    cd ..
+fi
+
+# Check for common configuration conflicts in staged files
+echo "\n🔄 Checking staged files for configuration conflicts..."
+
+# Check if any BMad namespace violations are being committed
+if git diff --staged --name-only | grep -q ".claude/"; then
+    # Check for BMad namespace in Claude files
+    git diff --staged --name-only | grep ".claude/" | while read file; do
+        if git diff --staged "$file" | grep -qi "bmad"; then
+            print_warning "Potential BMad namespace usage in Claude file: $file"
+        fi
+    done
+fi
+
+# Check if any Claude namespace violations are being committed  
+if git diff --staged --name-only | grep -q ".bmad-core/"; then
+    # Check for Claude-specific terms in BMad files
+    git diff --staged --name-only | grep ".bmad-core/" | while read file; do
+        if git diff --staged "$file" | grep -qi "bird\|whatsapp\|multimodal"; then
+            print_warning "Potential Claude namespace usage in BMad file: $file"
+        fi
+    done
+fi
+
+# Validate integration configuration exists and is current
+if [ ! -f ".config/integration.yaml" ]; then
+    print_warning "Integration configuration file not found"
+    print_warning "Run validation script to generate .config/integration.yaml"
+fi
+
+# Check for critical configuration files
+critical_files=(
+    ".bmad-core/core-config.yaml"
+    ".claude/tools.json"
+    ".claude/settings.local.json"
+    "CLAUDE.md"
+)
+
+for file in "${critical_files[@]}"; do
+    if [ ! -f "$file" ]; then
+        print_error "Critical configuration file missing: $file"
+        exit 1
+    fi
+done
+
+# Final success message
+print_success "All configuration validation checks passed!"
+echo "\n✨ Configuration consistency verified - proceeding with commit."
+
+exit 0

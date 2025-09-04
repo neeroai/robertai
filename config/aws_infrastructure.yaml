@@ -1,0 +1,1077 @@
+# AWS CloudFormation Template for RobertAI Massive Deployment
+# Infrastructure as Code for thousands of concurrent users
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'RobertAI Massive Deployment Infrastructure - Auto-scaling for 5000+ concurrent users'
+
+Parameters:
+  Environment:
+    Type: String
+    Default: 'production'
+    AllowedValues: ['development', 'staging', 'production']
+    Description: 'Deployment environment'
+  
+  KeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: 'EC2 Key Pair for SSH access'
+  
+  VpcCIDR:
+    Type: String
+    Default: '10.0.0.0/16'
+    Description: 'CIDR block for VPC'
+  
+  PublicSubnet1CIDR:
+    Type: String
+    Default: '10.0.1.0/24'
+    Description: 'CIDR block for Public Subnet 1'
+  
+  PublicSubnet2CIDR:
+    Type: String
+    Default: '10.0.2.0/24'
+    Description: 'CIDR block for Public Subnet 2'
+  
+  PrivateSubnet1CIDR:
+    Type: String
+    Default: '10.0.3.0/24'
+    Description: 'CIDR block for Private Subnet 1'
+  
+  PrivateSubnet2CIDR:
+    Type: String
+    Default: '10.0.4.0/24'
+    Description: 'CIDR block for Private Subnet 2'
+  
+  InstanceType:
+    Type: String
+    Default: 't3.xlarge'
+    AllowedValues: ['t3.large', 't3.xlarge', 't3.2xlarge', 'c5.xlarge', 'c5.2xlarge', 'c5.4xlarge']
+    Description: 'EC2 instance type for application servers'
+  
+  MinSize:
+    Type: Number
+    Default: 2
+    Description: 'Minimum number of instances in Auto Scaling Group'
+  
+  MaxSize:
+    Type: Number
+    Default: 10
+    Description: 'Maximum number of instances in Auto Scaling Group'
+  
+  DesiredCapacity:
+    Type: Number
+    Default: 3
+    Description: 'Desired number of instances in Auto Scaling Group'
+  
+  DBInstanceClass:
+    Type: String
+    Default: 'db.r5.large'
+    AllowedValues: ['db.r5.large', 'db.r5.xlarge', 'db.r5.2xlarge', 'db.r5.4xlarge']
+    Description: 'RDS instance type'
+  
+  RedisNodeType:
+    Type: String
+    Default: 'cache.r6g.xlarge'
+    AllowedValues: ['cache.r6g.large', 'cache.r6g.xlarge', 'cache.r6g.2xlarge']
+    Description: 'ElastiCache Redis node type'
+
+Mappings:
+  RegionMap:
+    us-east-1:
+      AMI: ami-0c55b159cbfafe1d0
+    us-west-2:
+      AMI: ami-0d6621c01e8c2de2c
+    eu-west-1:
+      AMI: ami-08935252a36e25f85
+
+Resources:
+  # ================================
+  # NETWORKING - VPC and Subnets
+  # ================================
+  
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCIDR
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-VPC-${Environment}'
+        - Key: Environment
+          Value: !Ref Environment
+        - Key: Project
+          Value: 'RobertAI'
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-IGW-${Environment}'
+
+  InternetGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref InternetGateway
+      VpcId: !Ref VPC
+
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [0, !GetAZs '']
+      CidrBlock: !Ref PublicSubnet1CIDR
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-Public-Subnet-1-${Environment}'
+        - Key: Type
+          Value: 'Public'
+
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [1, !GetAZs '']
+      CidrBlock: !Ref PublicSubnet2CIDR
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-Public-Subnet-2-${Environment}'
+        - Key: Type
+          Value: 'Public'
+
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [0, !GetAZs '']
+      CidrBlock: !Ref PrivateSubnet1CIDR
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-Private-Subnet-1-${Environment}'
+        - Key: Type
+          Value: 'Private'
+
+  PrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref VPC
+      AvailabilityZone: !Select [1, !GetAZs '']
+      CidrBlock: !Ref PrivateSubnet2CIDR
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-Private-Subnet-2-${Environment}'
+        - Key: Type
+          Value: 'Private'
+
+  NatGateway1EIP:
+    Type: AWS::EC2::EIP
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-NAT-EIP-1-${Environment}'
+
+  NatGateway2EIP:
+    Type: AWS::EC2::EIP
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      Domain: vpc
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-NAT-EIP-2-${Environment}'
+
+  NatGateway1:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt NatGateway1EIP.AllocationId
+      SubnetId: !Ref PublicSubnet1
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-NAT-Gateway-1-${Environment}'
+
+  NatGateway2:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt NatGateway2EIP.AllocationId
+      SubnetId: !Ref PublicSubnet2
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-NAT-Gateway-2-${Environment}'
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-Public-Routes-${Environment}'
+
+  DefaultPublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn: InternetGatewayAttachment
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PublicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet1
+
+  PublicSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      SubnetId: !Ref PublicSubnet2
+
+  PrivateRouteTable1:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-Private-Routes-1-${Environment}'
+
+  DefaultPrivateRoute1:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable1
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGateway1
+
+  PrivateSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable1
+      SubnetId: !Ref PrivateSubnet1
+
+  PrivateRouteTable2:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-Private-Routes-2-${Environment}'
+
+  DefaultPrivateRoute2:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable2
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NatGateway2
+
+  PrivateSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable2
+      SubnetId: !Ref PrivateSubnet2
+
+  # ================================
+  # SECURITY GROUPS
+  # ================================
+  
+  ALBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub 'RobertAI-ALB-SG-${Environment}'
+      GroupDescription: 'Security group for Application Load Balancer'
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+          Description: 'HTTP traffic'
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+          Description: 'HTTPS traffic'
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-ALB-SecurityGroup-${Environment}'
+
+  AppSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub 'RobertAI-App-SG-${Environment}'
+      GroupDescription: 'Security group for RobertAI application servers'
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 8000
+          ToPort: 8000
+          SourceSecurityGroupId: !Ref ALBSecurityGroup
+          Description: 'FastAPI from ALB'
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+          Description: 'SSH access'
+        - IpProtocol: tcp
+          FromPort: 9090
+          ToPort: 9090
+          SourceSecurityGroupId: !Ref ALBSecurityGroup
+          Description: 'Metrics endpoint'
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-App-SecurityGroup-${Environment}'
+
+  DatabaseSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub 'RobertAI-DB-SG-${Environment}'
+      GroupDescription: 'Security group for RDS PostgreSQL'
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          SourceSecurityGroupId: !Ref AppSecurityGroup
+          Description: 'PostgreSQL from app servers'
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-DB-SecurityGroup-${Environment}'
+
+  RedisSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Sub 'RobertAI-Redis-SG-${Environment}'
+      GroupDescription: 'Security group for ElastiCache Redis'
+      VpcId: !Ref VPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 6379
+          ToPort: 6379
+          SourceSecurityGroupId: !Ref AppSecurityGroup
+          Description: 'Redis from app servers'
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-Redis-SecurityGroup-${Environment}'
+
+  # ================================
+  # APPLICATION LOAD BALANCER
+  # ================================
+  
+  ApplicationLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: !Sub 'RobertAI-ALB-${Environment}'
+      Scheme: internet-facing
+      Type: application
+      Subnets:
+        - !Ref PublicSubnet1
+        - !Ref PublicSubnet2
+      SecurityGroups:
+        - !Ref ALBSecurityGroup
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-LoadBalancer-${Environment}'
+        - Key: Environment
+          Value: !Ref Environment
+
+  ALBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: !Sub 'RobertAI-TG-${Environment}'
+      Port: 8000
+      Protocol: HTTP
+      VpcId: !Ref VPC
+      HealthCheckEnabled: true
+      HealthCheckIntervalSeconds: 30
+      HealthCheckPath: '/health'
+      HealthCheckProtocol: HTTP
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 2
+      UnhealthyThresholdCount: 3
+      TargetType: instance
+      Matcher:
+        HttpCode: '200'
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-TargetGroup-${Environment}'
+
+  ALBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref ALBTargetGroup
+      LoadBalancerArn: !Ref ApplicationLoadBalancer
+      Port: 80
+      Protocol: HTTP
+
+  # ================================
+  # IAM ROLES AND POLICIES
+  # ================================
+  
+  EC2Role:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub 'RobertAI-EC2-Role-${Environment}'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy
+        - arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore
+      Policies:
+        - PolicyName: RobertAIAppPermissions
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                  - s3:DeleteObject
+                Resource: 
+                  - !Sub '${S3Bucket}/*'
+              - Effect: Allow
+                Action:
+                  - s3:ListBucket
+                Resource: !GetAtt S3Bucket.Arn
+              - Effect: Allow
+                Action:
+                  - cloudwatch:PutMetricData
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                  - logs:DescribeLogStreams
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - secretsmanager:GetSecretValue
+                Resource: 
+                  - !Ref DatabaseSecret
+                  - !Ref AppSecret
+
+  EC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      InstanceProfileName: !Sub 'RobertAI-EC2-InstanceProfile-${Environment}'
+      Roles:
+        - !Ref EC2Role
+
+  # ================================
+  # LAUNCH TEMPLATE AND AUTO SCALING
+  # ================================
+  
+  LaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateName: !Sub 'RobertAI-LaunchTemplate-${Environment}'
+      LaunchTemplateData:
+        ImageId: !FindInMap [RegionMap, !Ref 'AWS::Region', AMI]
+        InstanceType: !Ref InstanceType
+        IamInstanceProfile:
+          Arn: !GetAtt EC2InstanceProfile.Arn
+        SecurityGroupIds:
+          - !Ref AppSecurityGroup
+        KeyName: !Ref KeyName
+        UserData:
+          Fn::Base64: !Sub |
+            #!/bin/bash
+            yum update -y
+            yum install -y docker git python3 python3-pip
+            
+            # Start Docker
+            service docker start
+            usermod -a -G docker ec2-user
+            
+            # Install Docker Compose
+            curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            chmod +x /usr/local/bin/docker-compose
+            
+            # Install CloudWatch Agent
+            yum install -y amazon-cloudwatch-agent
+            
+            # Clone repository
+            cd /home/ec2-user
+            git clone https://github.com/your-org/robertai.git
+            cd robertai
+            
+            # Install Python dependencies
+            pip3 install -r requirements.txt
+            
+            # Set environment variables
+            echo "ENVIRONMENT=${Environment}" >> /home/ec2-user/.env
+            echo "DATABASE_URL=${DatabaseEndpoint}" >> /home/ec2-user/.env
+            echo "REDIS_URL=${RedisEndpoint}" >> /home/ec2-user/.env
+            echo "S3_BUCKET=${S3Bucket}" >> /home/ec2-user/.env
+            
+            # Start application
+            cd /home/ec2-user/robertai
+            python3 -m uvicorn main:app --host 0.0.0.0 --port 8000 &
+            
+            # Configure CloudWatch Agent
+            cat > /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json << 'EOF'
+            {
+                "metrics": {
+                    "namespace": "RobertAI/${Environment}",
+                    "metrics_collected": {
+                        "cpu": {
+                            "measurement": [
+                                "cpu_usage_idle",
+                                "cpu_usage_iowait",
+                                "cpu_usage_user",
+                                "cpu_usage_system"
+                            ],
+                            "metrics_collection_interval": 60
+                        },
+                        "disk": {
+                            "measurement": [
+                                "used_percent"
+                            ],
+                            "metrics_collection_interval": 60,
+                            "resources": ["*"]
+                        },
+                        "mem": {
+                            "measurement": [
+                                "mem_used_percent"
+                            ],
+                            "metrics_collection_interval": 60
+                        }
+                    }
+                },
+                "logs": {
+                    "logs_collected": {
+                        "files": {
+                            "collect_list": [
+                                {
+                                    "file_path": "/home/ec2-user/robertai/logs/app.log",
+                                    "log_group_name": "RobertAI-App-${Environment}",
+                                    "log_stream_name": "{instance_id}"
+                                }
+                            ]
+                        }
+                    }
+                }
+            }
+            EOF
+            
+            # Start CloudWatch Agent
+            /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json -s
+            
+            # Signal CloudFormation
+            /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource AutoScalingGroup --region ${AWS::Region}
+        
+        TagSpecifications:
+          - ResourceType: instance
+            Tags:
+              - Key: Name
+                Value: !Sub 'RobertAI-Instance-${Environment}'
+              - Key: Environment
+                Value: !Ref Environment
+              - Key: Project
+                Value: 'RobertAI'
+
+  AutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      AutoScalingGroupName: !Sub 'RobertAI-ASG-${Environment}'
+      VPCZoneIdentifier:
+        - !Ref PrivateSubnet1
+        - !Ref PrivateSubnet2
+      LaunchTemplate:
+        LaunchTemplateId: !Ref LaunchTemplate
+        Version: !GetAtt LaunchTemplate.LatestVersionNumber
+      MinSize: !Ref MinSize
+      MaxSize: !Ref MaxSize
+      DesiredCapacity: !Ref DesiredCapacity
+      TargetGroupARNs:
+        - !Ref ALBTargetGroup
+      HealthCheckType: ELB
+      HealthCheckGracePeriod: 300
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-ASG-${Environment}'
+          PropagateAtLaunch: false
+        - Key: Environment
+          Value: !Ref Environment
+          PropagateAtLaunch: true
+    CreationPolicy:
+      ResourceSignal:
+        Count: !Ref DesiredCapacity
+        Timeout: PT10M
+    UpdatePolicy:
+      AutoScalingRollingUpdate:
+        MinInstancesInService: 1
+        MaxBatchSize: 1
+        PauseTime: PT10M
+        WaitOnResourceSignals: true
+
+  # Auto Scaling Policies
+  ScaleUpPolicy:
+    Type: AWS::AutoScaling::ScalingPolicy
+    Properties:
+      AdjustmentType: ChangeInCapacity
+      AutoScalingGroupName: !Ref AutoScalingGroup
+      Cooldown: 300
+      ScalingAdjustment: 2
+      PolicyType: SimpleScaling
+
+  ScaleDownPolicy:
+    Type: AWS::AutoScaling::ScalingPolicy
+    Properties:
+      AdjustmentType: ChangeInCapacity
+      AutoScalingGroupName: !Ref AutoScalingGroup
+      Cooldown: 300
+      ScalingAdjustment: -1
+      PolicyType: SimpleScaling
+
+  # CloudWatch Alarms
+  CPUAlarmHigh:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'RobertAI-CPU-High-${Environment}'
+      AlarmDescription: 'Alarm when CPU exceeds 70%'
+      MetricName: CPUUtilization
+      Namespace: AWS/EC2
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 70
+      ComparisonOperator: GreaterThanThreshold
+      Dimensions:
+        - Name: AutoScalingGroupName
+          Value: !Ref AutoScalingGroup
+      AlarmActions:
+        - !Ref ScaleUpPolicy
+        - !Ref SNSAlert
+
+  CPUAlarmLow:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'RobertAI-CPU-Low-${Environment}'
+      AlarmDescription: 'Alarm when CPU falls below 25%'
+      MetricName: CPUUtilization
+      Namespace: AWS/EC2
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 25
+      ComparisonOperator: LessThanThreshold
+      Dimensions:
+        - Name: AutoScalingGroupName
+          Value: !Ref AutoScalingGroup
+      AlarmActions:
+        - !Ref ScaleDownPolicy
+
+  MemoryAlarmHigh:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub 'RobertAI-Memory-High-${Environment}'
+      AlarmDescription: 'Alarm when Memory exceeds 80%'
+      MetricName: mem_used_percent
+      Namespace: !Sub 'RobertAI/${Environment}'
+      Statistic: Average
+      Period: 300
+      EvaluationPeriods: 2
+      Threshold: 80
+      ComparisonOperator: GreaterThanThreshold
+      AlarmActions:
+        - !Ref ScaleUpPolicy
+        - !Ref SNSAlert
+
+  # ================================
+  # RDS PostgreSQL
+  # ================================
+  
+  DatabaseSubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: 'Subnet group for RobertAI database'
+      DBSubnetGroupName: !Sub 'robertai-db-subnet-group-${Environment}'
+      SubnetIds:
+        - !Ref PrivateSubnet1
+        - !Ref PrivateSubnet2
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-DB-SubnetGroup-${Environment}'
+
+  DatabaseSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Sub 'RobertAI/Database/${Environment}'
+      Description: 'Database credentials for RobertAI'
+      GenerateSecretString:
+        SecretStringTemplate: '{"username": "robertai"}'
+        GenerateStringKey: 'password'
+        PasswordLength: 32
+        ExcludeCharacters: '"@/\'
+
+  Database:
+    Type: AWS::RDS::DBInstance
+    DeletionPolicy: Snapshot
+    Properties:
+      DBName: robertai
+      DBInstanceIdentifier: !Sub 'robertai-${Environment}'
+      DBInstanceClass: !Ref DBInstanceClass
+      Engine: postgres
+      EngineVersion: '14.9'
+      AllocatedStorage: 100
+      MaxAllocatedStorage: 1000
+      StorageType: gp2
+      StorageEncrypted: true
+      MasterUsername: !Sub '{{resolve:secretsmanager:${DatabaseSecret}:SecretString:username}}'
+      MasterUserPassword: !Sub '{{resolve:secretsmanager:${DatabaseSecret}:SecretString:password}}'
+      VPCSecurityGroups:
+        - !Ref DatabaseSecurityGroup
+      DBSubnetGroupName: !Ref DatabaseSubnetGroup
+      BackupRetentionPeriod: 7
+      PreferredBackupWindow: '03:00-04:00'
+      PreferredMaintenanceWindow: 'sun:04:00-sun:05:00'
+      MultiAZ: true
+      PubliclyAccessible: false
+      MonitoringInterval: 60
+      MonitoringRoleArn: !Sub 'arn:aws:iam::${AWS::AccountId}:role/rds-monitoring-role'
+      EnablePerformanceInsights: true
+      PerformanceInsightsRetentionPeriod: 7
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-Database-${Environment}'
+        - Key: Environment
+          Value: !Ref Environment
+
+  DatabaseReadReplica:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceIdentifier: !Sub 'robertai-read-replica-${Environment}'
+      SourceDBInstanceIdentifier: !Ref Database
+      DBInstanceClass: !Ref DBInstanceClass
+      PubliclyAccessible: false
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-ReadReplica-${Environment}'
+        - Key: Environment
+          Value: !Ref Environment
+
+  # ================================
+  # ELASTICACHE REDIS
+  # ================================
+  
+  RedisSubnetGroup:
+    Type: AWS::ElastiCache::SubnetGroup
+    Properties:
+      Description: 'Subnet group for RobertAI Redis cluster'
+      SubnetIds:
+        - !Ref PrivateSubnet1
+        - !Ref PrivateSubnet2
+
+  RedisParameterGroup:
+    Type: AWS::ElastiCache::ParameterGroup
+    Properties:
+      CacheParameterGroupFamily: redis6.x
+      Description: 'Parameter group for RobertAI Redis'
+      Properties:
+        maxmemory-policy: allkeys-lru
+
+  RedisReplicationGroup:
+    Type: AWS::ElastiCache::ReplicationGroup
+    Properties:
+      ReplicationGroupId: !Sub 'robertai-redis-${Environment}'
+      Description: 'Redis cluster for RobertAI caching'
+      NodeType: !Ref RedisNodeType
+      Engine: redis
+      EngineVersion: '6.2'
+      Port: 6379
+      NumCacheClusters: 3
+      AutomaticFailoverEnabled: true
+      MultiAZEnabled: true
+      CacheSubnetGroupName: !Ref RedisSubnetGroup
+      SecurityGroupIds:
+        - !Ref RedisSecurityGroup
+      CacheParameterGroupName: !Ref RedisParameterGroup
+      AtRestEncryptionEnabled: true
+      TransitEncryptionEnabled: true
+      AutoMinorVersionUpgrade: true
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-Redis-${Environment}'
+        - Key: Environment
+          Value: !Ref Environment
+
+  # ================================
+  # S3 BUCKET
+  # ================================
+  
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub 'robertai-storage-${Environment}-${AWS::AccountId}'
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Id: DeleteIncompleteMultipartUploads
+            Status: Enabled
+            AbortIncompleteMultipartUpload:
+              DaysAfterInitiation: 7
+          - Id: TransitionToIA
+            Status: Enabled
+            Transition:
+              Days: 30
+              StorageClass: STANDARD_IA
+          - Id: TransitionToGlacier
+            Status: Enabled
+            Transition:
+              Days: 90
+              StorageClass: GLACIER
+      Tags:
+        - Key: Name
+          Value: !Sub 'RobertAI-Storage-${Environment}'
+        - Key: Environment
+          Value: !Ref Environment
+
+  # CloudFront Distribution for S3
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Origins:
+          - DomainName: !GetAtt S3Bucket.RegionalDomainName
+            Id: S3Origin
+            S3OriginConfig:
+              OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${CloudFrontOAI}'
+        Enabled: true
+        DefaultCacheBehavior:
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods: [GET, HEAD, OPTIONS]
+          CachedMethods: [GET, HEAD]
+          Compress: true
+          DefaultTTL: 86400
+          MaxTTL: 31536000
+        PriceClass: PriceClass_100
+        ViewerCertificate:
+          CloudFrontDefaultCertificate: true
+        Tags:
+          - Key: Name
+            Value: !Sub 'RobertAI-CDN-${Environment}'
+          - Key: Environment
+            Value: !Ref Environment
+
+  CloudFrontOAI:
+    Type: AWS::CloudFront::OriginAccessIdentity
+    Properties:
+      OriginAccessIdentityConfig:
+        Comment: !Sub 'OAI for RobertAI S3 bucket ${Environment}'
+
+  # ================================
+  # SECRETS AND CONFIGURATION
+  # ================================
+  
+  AppSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Sub 'RobertAI/Application/${Environment}'
+      Description: 'Application secrets for RobertAI'
+      SecretString: !Sub |
+        {
+          "JWT_SECRET": "your-jwt-secret-here",
+          "WHATSAPP_ACCESS_TOKEN": "your-whatsapp-token",
+          "WHATSAPP_PHONE_NUMBER_ID": "your-phone-number-id",
+          "WHATSAPP_BUSINESS_ACCOUNT_ID": "your-business-account-id",
+          "WHATSAPP_WEBHOOK_VERIFY_TOKEN": "your-webhook-verify-token",
+          "WHATSAPP_WEBHOOK_SECRET": "your-webhook-secret",
+          "OPENAI_API_KEY": "your-openai-api-key",
+          "SLACK_WEBHOOK_URL": "your-slack-webhook-url"
+        }
+
+  # ================================
+  # NOTIFICATIONS
+  # ================================
+  
+  SNSAlert:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub 'RobertAI-Alerts-${Environment}'
+      DisplayName: 'RobertAI System Alerts'
+
+  SNSSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Protocol: email
+      TopicArn: !Ref SNSAlert
+      Endpoint: 'alerts@your-domain.com'
+
+  # ================================
+  # CLOUDWATCH DASHBOARD
+  # ================================
+  
+  MonitoringDashboard:
+    Type: AWS::CloudWatch::Dashboard
+    Properties:
+      DashboardName: !Sub 'RobertAI-${Environment}'
+      DashboardBody: !Sub |
+        {
+          "widgets": [
+            {
+              "type": "metric",
+              "x": 0,
+              "y": 0,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "metrics": [
+                  [ "AWS/EC2", "CPUUtilization", "AutoScalingGroupName", "${AutoScalingGroup}" ],
+                  [ ".", "NetworkIn", ".", "." ],
+                  [ ".", "NetworkOut", ".", "." ]
+                ],
+                "period": 300,
+                "stat": "Average",
+                "region": "${AWS::Region}",
+                "title": "EC2 Instance Metrics"
+              }
+            },
+            {
+              "type": "metric",
+              "x": 12,
+              "y": 0,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "metrics": [
+                  [ "AWS/RDS", "CPUUtilization", "DBInstanceIdentifier", "${Database}" ],
+                  [ ".", "DatabaseConnections", ".", "." ],
+                  [ ".", "ReadLatency", ".", "." ],
+                  [ ".", "WriteLatency", ".", "." ]
+                ],
+                "period": 300,
+                "stat": "Average",
+                "region": "${AWS::Region}",
+                "title": "RDS Metrics"
+              }
+            },
+            {
+              "type": "metric",
+              "x": 0,
+              "y": 6,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "metrics": [
+                  [ "AWS/ElastiCache", "CPUUtilization", "CacheClusterId", "${RedisReplicationGroup}" ],
+                  [ ".", "CurrConnections", ".", "." ],
+                  [ ".", "CacheHits", ".", "." ],
+                  [ ".", "CacheMisses", ".", "." ]
+                ],
+                "period": 300,
+                "stat": "Average",
+                "region": "${AWS::Region}",
+                "title": "Redis Metrics"
+              }
+            },
+            {
+              "type": "metric",
+              "x": 12,
+              "y": 6,
+              "width": 12,
+              "height": 6,
+              "properties": {
+                "metrics": [
+                  [ "AWS/ApplicationELB", "RequestCount", "LoadBalancer", "${ApplicationLoadBalancer}" ],
+                  [ ".", "TargetResponseTime", ".", "." ],
+                  [ ".", "HTTPCode_Target_2XX_Count", ".", "." ],
+                  [ ".", "HTTPCode_Target_4XX_Count", ".", "." ],
+                  [ ".", "HTTPCode_Target_5XX_Count", ".", "." ]
+                ],
+                "period": 300,
+                "stat": "Sum",
+                "region": "${AWS::Region}",
+                "title": "Load Balancer Metrics"
+              }
+            }
+          ]
+        }
+
+Outputs:
+  VPC:
+    Description: 'A reference to the created VPC'
+    Value: !Ref VPC
+    Export:
+      Name: !Sub '${AWS::StackName}-VPC'
+
+  PublicSubnets:
+    Description: 'A list of the public subnets'
+    Value: !Join [',', [!Ref PublicSubnet1, !Ref PublicSubnet2]]
+    Export:
+      Name: !Sub '${AWS::StackName}-PublicSubnets'
+
+  PrivateSubnets:
+    Description: 'A list of the private subnets'
+    Value: !Join [',', [!Ref PrivateSubnet1, !Ref PrivateSubnet2]]
+    Export:
+      Name: !Sub '${AWS::StackName}-PrivateSubnets'
+
+  LoadBalancerURL:
+    Description: 'URL of the Application Load Balancer'
+    Value: !Sub 'http://${ApplicationLoadBalancer.DNSName}'
+    Export:
+      Name: !Sub '${AWS::StackName}-LoadBalancerURL'
+
+  DatabaseEndpoint:
+    Description: 'RDS PostgreSQL Endpoint'
+    Value: !GetAtt Database.Endpoint.Address
+    Export:
+      Name: !Sub '${AWS::StackName}-DatabaseEndpoint'
+
+  DatabaseReadReplicaEndpoint:
+    Description: 'RDS PostgreSQL Read Replica Endpoint'
+    Value: !GetAtt DatabaseReadReplica.Endpoint.Address
+    Export:
+      Name: !Sub '${AWS::StackName}-DatabaseReadReplicaEndpoint'
+
+  RedisEndpoint:
+    Description: 'ElastiCache Redis Endpoint'
+    Value: !GetAtt RedisReplicationGroup.RedisEndpoint.Address
+    Export:
+      Name: !Sub '${AWS::StackName}-RedisEndpoint'
+
+  S3Bucket:
+    Description: 'S3 Bucket for file storage'
+    Value: !Ref S3Bucket
+    Export:
+      Name: !Sub '${AWS::StackName}-S3Bucket'
+
+  CloudFrontDistribution:
+    Description: 'CloudFront Distribution for S3'
+    Value: !GetAtt CloudFrontDistribution.DomainName
+    Export:
+      Name: !Sub '${AWS::StackName}-CloudFrontDistribution'
+
+  DatabaseSecret:
+    Description: 'ARN of the database secret'
+    Value: !Ref DatabaseSecret
+    Export:
+      Name: !Sub '${AWS::StackName}-DatabaseSecret'
+
+  AppSecret:
+    Description: 'ARN of the application secret'
+    Value: !Ref AppSecret
+    Export:
+      Name: !Sub '${AWS::StackName}-AppSecret'
+
+  SNSAlertTopic:
+    Description: 'SNS Topic for alerts'
+    Value: !Ref SNSAlert
+    Export:
+      Name: !Sub '${AWS::StackName}-SNSAlertTopic'

@@ -1,0 +1,8 @@
+bundle:
+  name: Team All
+  icon: 👥
+  description: Includes every core system agent.
+agents:
+  - bmad-master
+  - '*'
+workflows: null

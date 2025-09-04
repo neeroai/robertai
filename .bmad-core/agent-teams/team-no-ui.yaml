@@ -1,0 +1,11 @@
+bundle:
+  name: Team No UI
+  icon: 🔧
+  description: Team with no UX or UI Planning.
+agents:
+  - bmad-master
+  - analyst
+  - pm
+  - architect
+  - po
+workflows: null
