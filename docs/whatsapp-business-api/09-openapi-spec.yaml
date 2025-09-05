@@ -1,0 +1,978 @@
+openapi: 3.0.3
+info:
+  title: WhatsApp Business API - RobertAI Integration
+  description: |
+    Especificación completa de WhatsApp Business API optimizada para integración con Bird.com AI Employees.
+    
+    Esta API permite enviar y recibir mensajes multimedia a través de WhatsApp Business API, 
+    incluyendo soporte nativo para:
+    - Mensajes de texto con formato
+    - Contenido multimedia (imágenes, videos, audio, documentos)
+    - Mensajes interactivos (botones, listas, carruseles)
+    - Plantillas empresariales pre-aprobadas
+    - Webhooks para eventos en tiempo real
+    
+    **Canal Principal**: WhatsApp Business API es el canal principal y recomendado para 
+    implementaciones de Bird.com AI Employees en el ecosistema RobertAI.
+  version: 2.0.0
+  contact:
+    name: RobertAI Support
+    url: https://robertai.com/support
+    email: soporte@robertai.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: https://graph.facebook.com/v18.0
+    description: WhatsApp Business API - Production
+  - url: https://api.robertai.com/v1/whatsapp
+    description: RobertAI WhatsApp Proxy - Production
+  - url: https://staging-api.robertai.com/v1/whatsapp  
+    description: RobertAI WhatsApp Proxy - Staging
+
+security:
+  - bearerAuth: []
+
+paths:
+  /{phone-number-id}/messages:
+    post:
+      summary: Enviar Mensaje
+      description: |
+        Endpoint principal para envío de mensajes a través de WhatsApp Business API.
+        Soporta todos los tipos de mensaje: texto, multimedia, interactivos y plantillas.
+      operationId: sendMessage
+      tags:
+        - Messages
+      parameters:
+        - name: phone-number-id
+          in: path
+          required: true
+          description: ID del número de teléfono de WhatsApp Business
+          schema:
+            type: string
+            example: "102290129340398"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/TextMessage'
+                - $ref: '#/components/schemas/ImageMessage'
+                - $ref: '#/components/schemas/VideoMessage'
+                - $ref: '#/components/schemas/AudioMessage'
+                - $ref: '#/components/schemas/DocumentMessage'
+                - $ref: '#/components/schemas/InteractiveButtonMessage'
+                - $ref: '#/components/schemas/InteractiveListMessage'
+                - $ref: '#/components/schemas/TemplateMessage'
+                - $ref: '#/components/schemas/LocationMessage'
+                - $ref: '#/components/schemas/ContactMessage'
+              discriminator:
+                propertyName: type
+                mapping:
+                  text: '#/components/schemas/TextMessage'
+                  image: '#/components/schemas/ImageMessage'
+                  video: '#/components/schemas/VideoMessage'
+                  audio: '#/components/schemas/AudioMessage'
+                  document: '#/components/schemas/DocumentMessage'
+                  interactive: '#/components/schemas/InteractiveButtonMessage'
+                  template: '#/components/schemas/TemplateMessage'
+                  location: '#/components/schemas/LocationMessage'
+                  contacts: '#/components/schemas/ContactMessage'
+      responses:
+        '200':
+          description: Mensaje enviado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+        '400':
+          description: Solicitud inválida
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Token de autorización inválido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: Acceso denegado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit excedido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Error interno del servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /{phone-number-id}/media:
+    post:
+      summary: Subir Archivo Multimedia
+      description: |
+        Subir archivos multimedia para usar en mensajes. Retorna un media_id que puede
+        ser usado en mensajes de imagen, video, audio o documento.
+      operationId: uploadMedia
+      tags:
+        - Media
+      parameters:
+        - name: phone-number-id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Archivo a subir
+                type:
+                  type: string
+                  enum: [image, video, audio, document]
+                  description: Tipo de archivo multimedia
+              required:
+                - file
+                - type
+      responses:
+        '200':
+          description: Archivo subido exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaUploadResponse'
+        '400':
+          description: Solicitud inválida o archivo no soportado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /{media-id}:
+    get:
+      summary: Obtener Información de Archivo
+      description: Obtener información sobre un archivo multimedia previamente subido
+      operationId: getMediaInfo
+      tags:
+        - Media
+      parameters:
+        - name: media-id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Información del archivo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MediaInfo'
+        '404':
+          description: Archivo no encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /webhooks/whatsapp:
+    get:
+      summary: Verificar Webhook
+      description: Endpoint de verificación requerido por Meta para configurar webhooks
+      operationId: verifyWebhook
+      tags:
+        - Webhooks
+      parameters:
+        - name: hub.mode
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [subscribe]
+        - name: hub.verify_token
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: hub.challenge
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Challenge devuelto para verificación exitosa
+          content:
+            text/plain:
+              schema:
+                type: string
+        '403':
+          description: Token de verificación inválido
+
+    post:
+      summary: Recibir Eventos de Webhook
+      description: |
+        Endpoint para recibir eventos de WhatsApp Business API, incluyendo:
+        - Mensajes entrantes
+        - Estados de entrega
+        - Confirmaciones de lectura
+        - Errores de entrega
+      operationId: receiveWebhook
+      tags:
+        - Webhooks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvent'
+      responses:
+        '200':
+          description: Evento procesado exitosamente
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "OK"
+        '400':
+          description: Evento inválido
+        '401':
+          description: Firma HMAC inválida
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Token de acceso de WhatsApp Business API
+
+  schemas:
+    # Mensaje base
+    BaseMessage:
+      type: object
+      required:
+        - messaging_product
+        - recipient_type
+        - to
+        - type
+      properties:
+        messaging_product:
+          type: string
+          enum: [whatsapp]
+          description: Siempre debe ser 'whatsapp'
+        recipient_type:
+          type: string
+          enum: [individual, group]
+          default: individual
+        to:
+          type: string
+          pattern: '^[1-9]\d{7,14}$'
+          description: Número de teléfono del destinatario (sin +)
+          example: "573001234567"
+        type:
+          type: string
+          enum: [text, image, video, audio, document, interactive, template, location, contacts]
+        context:
+          $ref: '#/components/schemas/MessageContext'
+
+    # Contexto de mensaje (para respuestas)
+    MessageContext:
+      type: object
+      properties:
+        message_id:
+          type: string
+          description: ID del mensaje al que se está respondiendo
+          example: "wamid.ABC123"
+
+    # Mensaje de texto
+    TextMessage:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum: [text]
+            text:
+              type: object
+              required:
+                - body
+              properties:
+                preview_url:
+                  type: boolean
+                  default: true
+                  description: Habilitar preview de URLs
+                body:
+                  type: string
+                  maxLength: 4096
+                  description: Contenido del mensaje
+                  example: "¡Hola! Soy tu asistente de RobertAI 🤖"
+
+    # Mensaje de imagen
+    ImageMessage:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum: [image]
+            image:
+              type: object
+              oneOf:
+                - required: [id]
+                - required: [link]
+              properties:
+                id:
+                  type: string
+                  description: Media ID de archivo previamente subido
+                  example: "1234567890123456"
+                link:
+                  type: string
+                  format: uri
+                  description: URL pública del archivo
+                  example: "https://robertai.com/assets/demo.jpg"
+                caption:
+                  type: string
+                  maxLength: 1024
+                  description: Descripción de la imagen
+                  example: "Análisis visual completado por RobertAI 🔍"
+
+    # Mensaje de video
+    VideoMessage:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum: [video]
+            video:
+              type: object
+              oneOf:
+                - required: [id]
+                - required: [link]
+              properties:
+                id:
+                  type: string
+                  description: Media ID de archivo previamente subido
+                link:
+                  type: string
+                  format: uri
+                  description: URL pública del video
+                caption:
+                  type: string
+                  maxLength: 1024
+                  description: Descripción del video
+
+    # Mensaje de audio
+    AudioMessage:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum: [audio]
+            audio:
+              type: object
+              oneOf:
+                - required: [id]
+                - required: [link]
+              properties:
+                id:
+                  type: string
+                  description: Media ID de archivo previamente subido
+                link:
+                  type: string
+                  format: uri
+                  description: URL pública del audio
+
+    # Mensaje de documento
+    DocumentMessage:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum: [document]
+            document:
+              type: object
+              oneOf:
+                - required: [id]
+                - required: [link]
+              properties:
+                id:
+                  type: string
+                  description: Media ID de archivo previamente subido
+                link:
+                  type: string
+                  format: uri
+                  description: URL pública del documento
+                caption:
+                  type: string
+                  maxLength: 1024
+                  description: Descripción del documento
+                filename:
+                  type: string
+                  description: Nombre del archivo
+                  example: "Reporte_Analisis_AI.pdf"
+
+    # Mensaje interactivo con botones
+    InteractiveButtonMessage:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum: [interactive]
+            interactive:
+              type: object
+              required:
+                - type
+                - body
+                - action
+              properties:
+                type:
+                  type: string
+                  enum: [button]
+                header:
+                  $ref: '#/components/schemas/InteractiveHeader'
+                body:
+                  type: object
+                  required:
+                    - text
+                  properties:
+                    text:
+                      type: string
+                      maxLength: 1024
+                      example: "¿En qué puedo ayudarte hoy?"
+                footer:
+                  type: object
+                  properties:
+                    text:
+                      type: string
+                      maxLength: 60
+                      example: "Powered by RobertAI"
+                action:
+                  type: object
+                  required:
+                    - buttons
+                  properties:
+                    buttons:
+                      type: array
+                      minItems: 1
+                      maxItems: 3
+                      items:
+                        $ref: '#/components/schemas/InteractiveButton'
+
+    # Mensaje interactivo con lista
+    InteractiveListMessage:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum: [interactive]
+            interactive:
+              type: object
+              required:
+                - type
+                - body
+                - action
+              properties:
+                type:
+                  type: string
+                  enum: [list]
+                header:
+                  $ref: '#/components/schemas/InteractiveHeader'
+                body:
+                  type: object
+                  required:
+                    - text
+                  properties:
+                    text:
+                      type: string
+                      maxLength: 1024
+                footer:
+                  type: object
+                  properties:
+                    text:
+                      type: string
+                      maxLength: 60
+                action:
+                  type: object
+                  required:
+                    - button
+                    - sections
+                  properties:
+                    button:
+                      type: string
+                      maxLength: 20
+                      example: "Ver Opciones"
+                    sections:
+                      type: array
+                      maxItems: 10
+                      items:
+                        $ref: '#/components/schemas/ListSection'
+
+    # Header interactivo
+    InteractiveHeader:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [text, image, video, document]
+        text:
+          type: string
+          maxLength: 60
+          description: Solo si type = text
+        image:
+          type: object
+          description: Solo si type = image
+          oneOf:
+            - required: [id]
+            - required: [link]
+          properties:
+            id:
+              type: string
+            link:
+              type: string
+              format: uri
+
+    # Botón interactivo
+    InteractiveButton:
+      type: object
+      required:
+        - type
+        - reply
+      properties:
+        type:
+          type: string
+          enum: [reply]
+        reply:
+          type: object
+          required:
+            - id
+            - title
+          properties:
+            id:
+              type: string
+              maxLength: 256
+              example: "info_servicios"
+            title:
+              type: string
+              maxLength: 20
+              example: "🔍 Ver Servicios"
+
+    # Sección de lista
+    ListSection:
+      type: object
+      required:
+        - rows
+      properties:
+        title:
+          type: string
+          maxLength: 24
+          example: "🚀 Servicios Principales"
+        rows:
+          type: array
+          maxItems: 10
+          items:
+            $ref: '#/components/schemas/ListRow'
+
+    # Fila de lista
+    ListRow:
+      type: object
+      required:
+        - id
+        - title
+      properties:
+        id:
+          type: string
+          maxLength: 200
+          example: "consultoria_ai"
+        title:
+          type: string
+          maxLength: 24
+          example: "Consultoría en IA"
+        description:
+          type: string
+          maxLength: 72
+          example: "Estrategia e implementación de IA para tu empresa"
+
+    # Mensaje de plantilla
+    TemplateMessage:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum: [template]
+            template:
+              type: object
+              required:
+                - name
+                - language
+              properties:
+                name:
+                  type: string
+                  description: Nombre de la plantilla aprobada
+                  example: "bienvenida_robertai"
+                language:
+                  type: object
+                  required:
+                    - code
+                  properties:
+                    code:
+                      type: string
+                      description: Código de idioma ISO 639-1
+                      example: "es"
+                components:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/TemplateComponent'
+
+    # Componente de plantilla
+    TemplateComponent:
+      type: object
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          enum: [header, body, button]
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/TemplateParameter'
+
+    # Parámetro de plantilla
+    TemplateParameter:
+      type: object
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          enum: [text, currency, date_time, image, document, video]
+        text:
+          type: string
+          description: Solo si type = text
+
+    # Mensaje de ubicación
+    LocationMessage:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum: [location]
+            location:
+              type: object
+              required:
+                - latitude
+                - longitude
+              properties:
+                latitude:
+                  type: number
+                  format: double
+                  minimum: -90
+                  maximum: 90
+                  example: 4.6097
+                longitude:
+                  type: number
+                  format: double
+                  minimum: -180
+                  maximum: 180
+                  example: -74.0817
+                name:
+                  type: string
+                  example: "RobertAI - Oficina Principal"
+                address:
+                  type: string
+                  example: "Carrera 11 #93-07, Bogotá, Colombia"
+
+    # Mensaje de contacto
+    ContactMessage:
+      allOf:
+        - $ref: '#/components/schemas/BaseMessage'
+        - type: object
+          properties:
+            type:
+              type: string
+              enum: [contacts]
+            contacts:
+              type: array
+              maxItems: 5
+              items:
+                $ref: '#/components/schemas/Contact'
+
+    # Contacto
+    Contact:
+      type: object
+      properties:
+        name:
+          type: object
+          properties:
+            formatted_name:
+              type: string
+              example: "RobertAI Soporte"
+            first_name:
+              type: string
+              example: "RobertAI"
+        phones:
+          type: array
+          items:
+            type: object
+            properties:
+              phone:
+                type: string
+                example: "+573001234567"
+              type:
+                type: string
+                enum: [CELL, MAIN, IPHONE, HOME, WORK]
+
+    # Respuesta de envío de mensaje
+    MessageResponse:
+      type: object
+      properties:
+        messaging_product:
+          type: string
+          enum: [whatsapp]
+        contacts:
+          type: array
+          items:
+            type: object
+            properties:
+              input:
+                type: string
+                description: Número de teléfono enviado
+              wa_id:
+                type: string
+                description: WhatsApp ID del contacto
+        messages:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: ID único del mensaje
+                example: "wamid.HBgLNTczMDA5..."
+              message_status:
+                type: string
+                enum: [accepted, queued, sent, delivered, read, failed]
+
+    # Respuesta de subida de archivo
+    MediaUploadResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Media ID único
+          example: "1234567890123456"
+
+    # Información de archivo multimedia
+    MediaInfo:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          description: URL para descargar el archivo
+        mime_type:
+          type: string
+          example: "image/jpeg"
+        sha256:
+          type: string
+          description: Hash SHA256 del archivo
+        file_size:
+          type: integer
+          description: Tamaño del archivo en bytes
+        id:
+          type: string
+          description: Media ID
+
+    # Evento de webhook
+    WebhookEvent:
+      type: object
+      required:
+        - object
+        - entry
+      properties:
+        object:
+          type: string
+          enum: [whatsapp_business_account]
+        entry:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookEntry'
+
+    # Entrada de webhook
+    WebhookEntry:
+      type: object
+      properties:
+        id:
+          type: string
+          description: WhatsApp Business Account ID
+        changes:
+          type: array
+          items:
+            $ref: '#/components/schemas/WebhookChange'
+
+    # Cambio en webhook
+    WebhookChange:
+      type: object
+      properties:
+        value:
+          type: object
+          properties:
+            messaging_product:
+              type: string
+              enum: [whatsapp]
+            metadata:
+              type: object
+              properties:
+                display_phone_number:
+                  type: string
+                phone_number_id:
+                  type: string
+            messages:
+              type: array
+              items:
+                $ref: '#/components/schemas/WebhookMessage'
+            statuses:
+              type: array
+              items:
+                $ref: '#/components/schemas/WebhookMessageStatus'
+        field:
+          type: string
+          enum: [messages]
+
+    # Mensaje en webhook (entrante)
+    WebhookMessage:
+      type: object
+      required:
+        - from
+        - id
+        - timestamp
+        - type
+      properties:
+        from:
+          type: string
+          description: Número del remitente
+        id:
+          type: string
+          description: ID único del mensaje
+        timestamp:
+          type: string
+          format: date-time
+          description: Timestamp Unix del mensaje
+        type:
+          type: string
+          enum: [text, image, video, audio, document, location, contacts, interactive]
+        text:
+          type: object
+          properties:
+            body:
+              type: string
+        image:
+          $ref: '#/components/schemas/WebhookMediaObject'
+        interactive:
+          type: object
+          properties:
+            type:
+              type: string
+              enum: [button_reply, list_reply]
+            button_reply:
+              type: object
+              properties:
+                id:
+                  type: string
+                title:
+                  type: string
+
+    # Objeto multimedia en webhook
+    WebhookMediaObject:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Media ID
+        mime_type:
+          type: string
+        caption:
+          type: string
+
+    # Estado de mensaje en webhook
+    WebhookMessageStatus:
+      type: object
+      properties:
+        id:
+          type: string
+          description: ID del mensaje
+        status:
+          type: string
+          enum: [sent, delivered, read, failed]
+        timestamp:
+          type: string
+          format: date-time
+        recipient_id:
+          type: string
+          description: WhatsApp ID del destinatario
+
+    # Respuesta de error
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            message:
+              type: string
+              description: Descripción del error
+            type:
+              type: string
+              description: Tipo de error
+            code:
+              type: integer
+              description: Código de error HTTP
+            error_subcode:
+              type: integer
+              description: Subcódigo específico del error
+
+tags:
+  - name: Messages
+    description: Operaciones para envío de mensajes
+  - name: Media
+    description: Operaciones para manejo de archivos multimedia
+  - name: Webhooks
+    description: Configuración y manejo de webhooks
+
+externalDocs:
+  description: Documentación oficial de WhatsApp Business API
+  url: https://developers.facebook.com/docs/whatsapp

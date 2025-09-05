@@ -1,0 +1,216 @@
+{
+  "faqs_robertai": {
+    "metadata": {
+      "version": "1.0.0",
+      "last_updated": "2025-09-04",
+      "language": "es-LATAM",
+      "total_faqs": 45,
+      "categories": ["funcionalidades", "recordatorios", "multimedia", "agendamiento", "troubleshooting", "privacidad"]
+    },
+    
+    "funcionalidades_generales": [
+      {
+        "id": "F001",
+        "categoria": "funcionalidades",
+        "pregunta": "¿Qué puede hacer RobertAI?",
+        "respuesta": "¡Hola! Soy tu asistente personal inteligente. Puedo ayudarte con:\n• ⏰ Recordatorios inteligentes (únicos y recurrentes)\n• 📅 Agendamiento de citas y reservas\n• 📸 Análisis de imágenes y documentos\n• 🎵 Transcripción de mensajes de voz\n• 💬 Mensajería programada 24/7\n• 📊 Integración con Google Calendar\n\nPuedes escribirme, enviarme fotos o audios - ¡proceso todo! 😊",
+        "keywords": ["que hace", "funciones", "capacidades", "puede hacer"],
+        "frecuencia_uso": 95
+      },
+      
+      {
+        "id": "F002", 
+        "categoria": "funcionalidades",
+        "pregunta": "¿Cómo funciona RobertAI?",
+        "respuesta": "Funciono con inteligencia artificial avanzada a través de WhatsApp. Solo tienes que:\n\n1. 💬 Escríbeme naturalmente lo que necesitas\n2. 📸 O envíame fotos/audios para que los analice\n3. ✅ Yo entiendo tu solicitud y te ayudo inmediatamente\n4. 🔄 Mantengo el contexto de nuestras conversaciones\n\n¡Es como hablar con un amigo súper organizado que nunca olvida nada!",
+        "keywords": ["como funciona", "como usar", "instrucciones"],
+        "frecuencia_uso": 80
+      },
+      
+      {
+        "id": "F003",
+        "categoria": "funcionalidades", 
+        "pregunta": "¿RobertAI está disponible 24/7?",
+        "respuesta": "¡Exacto! 🌙✨ Estoy disponible las 24 horas, los 7 días de la semana. Puedes escribirme:\n• De madrugada para programar algo urgente\n• Los fines de semana para organizar planes\n• En vacaciones para recordatorios importantes\n• Cualquier momento que necesites ayuda\n\nSiempre respondo rápido, normalmente en menos de 3 segundos.",
+        "keywords": ["24/7", "disponible", "horario", "cuando", "siempre"],
+        "frecuencia_uso": 70
+      }
+    ],
+    
+    "recordatorios": [
+      {
+        "id": "R001",
+        "categoria": "recordatorios",
+        "pregunta": "¿Cómo programo un recordatorio?",
+        "respuesta": "¡Súper fácil! Solo dime qué y cuándo:\n\n📝 **Ejemplos que entiendo:**\n• \"Recuérdame llamar a mamá en 2 horas\"\n• \"Ponme recordatorio de pagar la luz el día 25\"\n• \"Que no se me olvide comprar pan cuando salga del trabajo\"\n• \"Todos los lunes recordarme hacer ejercicio\"\n\n⏰ Puedes usar:\n• Tiempo relativo: \"en 30 minutos\", \"mañana\"\n• Tiempo específico: \"15 de marzo a las 3pm\" \n• Recurrente: \"todos los días\", \"cada semana\"",
+        "keywords": ["recordatorio", "como programar", "recordar", "alarma"],
+        "frecuencia_uso": 90
+      },
+      
+      {
+        "id": "R002",
+        "categoria": "recordatorios", 
+        "pregunta": "¿Puedo cancelar o modificar recordatorios?",
+        "respuesta": "¡Por supuesto! 🔄 Es súper sencillo:\n\n✅ **Para modificar:**\n• \"Cambia mi recordatorio de las 3pm para las 5pm\"\n• \"El recordatorio de mañana mejor el jueves\"\n\n❌ **Para cancelar:**\n• \"Cancela mi recordatorio de llamar al doctor\"\n• \"Ya no necesito el recordatorio de las 6pm\"\n\n📋 **Para ver todos:**\n• \"¿Qué recordatorios tengo?\"\n• \"Muéstrame mi lista de recordatorios\"",
+        "keywords": ["cancelar recordatorio", "modificar recordatorio", "cambiar", "editar"],
+        "frecuencia_uso": 75
+      },
+      
+      {
+        "id": "R003",
+        "categoria": "recordatorios",
+        "pregunta": "¿Qué pasa si no veo el recordatorio?",
+        "respuesta": "¡No te preocupes! 🔔 Tengo varias formas de asegurarme:\n\n🔄 **Sistema de respaldo:**\n• Te envío el recordatorio por WhatsApp\n• Si no respondes en 5 min, te reenvío\n• Para cosas importantes, insisto hasta que confirmes\n\n📱 **Consejos para no perderte nada:**\n• Mantén las notificaciones de WhatsApp activas\n• Revisa que no tengas silenciado mi chat\n• Si tienes problemas, avísame y ajustamos juntos\n\n¡Mi trabajo es que NO se te olvide nada! 💪",
+        "keywords": ["no veo recordatorio", "no llega", "notificaciones", "problema"],
+        "frecuencia_uso": 60
+      }
+    ],
+    
+    "multimedia": [
+      {
+        "id": "M001",
+        "categoria": "multimedia",
+        "pregunta": "¿Qué tipos de imágenes puedo enviar?",
+        "respuesta": "¡Puedo analizar casi cualquier imagen! 📸✨\n\n✅ **Tipos que proceso perfectamente:**\n• 📄 Documentos (facturas, contratos, recibos)\n• 📋 Screenshots de pantalla\n• 🍽️ Fotos de menús de restaurantes\n• 📝 Notas escritas a mano\n• 🏥 Recetas médicas\n• 📊 Gráficas y tablas\n• 🎫 Boletos y tickets\n\n🔍 **Lo que puedo hacer:**\n• Extraer texto (OCR)\n• Identificar fechas importantes\n• Leer números y precios\n• Entender el contexto\n• Sugerir acciones relevantes",
+        "keywords": ["imagenes", "fotos", "que puedo enviar", "tipos", "ocr"],
+        "frecuencia_uso": 85
+      },
+      
+      {
+        "id": "M002",
+        "categoria": "multimedia",
+        "pregunta": "¿Puedes transcribir mensajes de voz?",
+        "respuesta": "¡Claro que sí! 🎵➡️📝 Soy experto en transcribir audio:\n\n✅ **Lo que manejo perfecto:**\n• Español de toda Latinoamérica\n• Inglés básico\n• Audios hasta 10 minutos\n• Diferentes calidades de grabación\n• Detectar emociones (urgencia, alegría, estrés)\n\n🎯 **Mi proceso:**\n1. Recibo tu audio\n2. Lo transcribo con 92%+ precisión \n3. Entiendo qué necesitas\n4. Te respondo con acciones concretas\n\n💡 **Tip:** Habla claro y en ambiente sin mucho ruido para mejor resultado!",
+        "keywords": ["audio", "voz", "transcribir", "mensaje de voz", "grabacion"],
+        "frecuencia_uso": 70
+      },
+      
+      {
+        "id": "M003",
+        "categoria": "multimedia", 
+        "pregunta": "¿Qué haces con los documentos PDF?",
+        "respuesta": "¡Los PDFs son mi especialidad! 📄🔍 Puedo ayudarte con:\n\n📋 **Lo que extraigo automáticamente:**\n• Fechas importantes y plazos\n• Montos y números clave\n• Contactos y direcciones\n• Términos y condiciones importantes\n\n💡 **Servicios que ofrezco:**\n• Resúmenes de documentos largos\n• Identificar puntos críticos\n• Programar recordatorios de fechas límite\n• Explicarte en palabras simples qué dice\n\n📊 **Tipos que manejo:**\n• Contratos • Estados de cuenta • Facturas\n• Reportes • Manuales • Formularios",
+        "keywords": ["pdf", "documentos", "archivo", "contrato", "factura"],
+        "frecuencia_uso": 65
+      }
+    ],
+    
+    "agendamiento": [
+      {
+        "id": "A001",
+        "categoria": "agendamiento",
+        "pregunta": "¿Puedes hacer reservas por mí?",
+        "respuesta": "¡Te ayudo a coordinar todo! 🗓️✨ Aunque no puedo llamar directamente, soy tu asistente perfecto:\n\n🎯 **Lo que SÍ hago:**\n• Te busco opciones de lugares y horarios\n• Te ayudo a redactar mensajes para reservar\n• Programo recordatorios para confirmar\n• Te doy toda la info (teléfonos, direcciones)\n• Coordino tu agenda para evitar conflictos\n\n📞 **Para reservas necesitas:**\n• Llamar tú mismo (te doy el script perfecto)\n• O usar apps del lugar (te guío paso a paso)\n\n¡Es como tener un asistente que te prepara todo para que solo ejecutes! 💪",
+        "keywords": ["reservas", "agendar", "restaurante", "cita", "puede reservar"],
+        "frecuencia_uso": 80
+      },
+      
+      {
+        "id": "A002",
+        "categoria": "agendamiento",
+        "pregunta": "¿Cómo me ayudas con citas médicas?",
+        "respuesta": "¡Las citas médicas son súper importantes! 👨‍⚕️ Te ayudo completamente:\n\n📋 **Mi proceso completo:**\n• Te recuerdo cuándo necesitas checkups\n• Busco doctores en tu zona si necesitas\n• Te ayudo a preparar preguntas para la consulta\n• Programo recordatorios antes de la cita\n• Te recuerdo llevar estudios/documentos\n\n⏰ **Recordatorios inteligentes:**\n• 24h antes: Confirmar asistencia\n• 2h antes: Preparar documentos\n• 30min antes: Salir considerando tráfico\n\n💡 **Plus:** Si necesitas reagendar por emergencia, te ayudo a redactar mensaje profesional al doctor.",
+        "keywords": ["cita medica", "doctor", "medico", "hospital", "consulta"],
+        "frecuencia_uso": 75
+      },
+      
+      {
+        "id": "A003",
+        "categoria": "agendamiento",
+        "pregunta": "¿Te integras con Google Calendar?",
+        "respuesta": "¡Sí! 📅💫 La integración con Google Calendar es una de mis funciones estrella:\n\n🔄 **Sincronización completa:**\n• Veo tu agenda actual para evitar conflictos\n• Agrego automáticamente citas que programes conmigo\n• Te aviso si hay choques de horarios\n• Actualizo cambios en tiempo real\n\n⚡ **Funciones avanzadas:**\n• Te muestro tu agenda del día cada mañana\n• Te recuerdo preparación para reuniones\n• Detecto patrones en tu agenda\n• Sugiero mejores horarios basado en tu rutina\n\n🔐 **Seguridad:** Solo accedo con tu autorización explícita y nunca comparto tu información.",
+        "keywords": ["google calendar", "calendario", "agenda", "integracion", "sincronizar"],
+        "frecuencia_uso": 70
+      }
+    ],
+    
+    "troubleshooting": [
+      {
+        "id": "T001",
+        "categoria": "troubleshooting", 
+        "pregunta": "RobertAI no me está respondiendo",
+        "respuesta": "¡Ups! 😅 Si no te estoy respondiendo, veamos qué puede estar pasando:\n\n🔍 **Chequeos rápidos:**\n• ¿Tienes internet/datos activos?\n• ¿El mensaje se envió (palomitas azules)?\n• ¿Tienes espacio en tu teléfono?\n• ¿WhatsApp está actualizado?\n\n🔄 **Soluciones que funcionan:**\n• Espera 30 segundos y reenvía el mensaje\n• Cierra y abre WhatsApp\n• Si sigo sin responder, escribe \"RESET\"\n\n🚨 **Si nada funciona:** Escribe \"SOPORTE\" y te conecto con ayuda técnica inmediata. ¡Mi trabajo es estar siempre disponible para ti!",
+        "keywords": ["no responde", "no funciona", "problema", "error", "bugs"],
+        "frecuencia_uso": 40
+      },
+      
+      {
+        "id": "T002",
+        "categoria": "troubleshooting",
+        "pregunta": "No entendiste lo que quise decir",
+        "respuesta": "¡Ay no! 😳 Odio cuando eso pasa. Vamos a arreglarlo juntos:\n\n🤖 **Por favor ayúdame explicándome:**\n• ¿Qué era exactamente lo que necesitabas?\n• ¿Malinterpreté alguna palabra específica?\n• ¿Faltó contexto que debería haber considerado?\n\n📚 **Mientras tanto:**\n• Intenta ser más específico en tiempo y fechas\n• Usa palabras claras para acciones importantes\n• Si es algo urgente, escribe \"URGENTE\" al inicio\n\n🧠 **Mi promesa:** Cada vez que me corriges, aprendo algo nuevo. ¡Tu paciencia me hace mejor asistente para todos!",
+        "keywords": ["no entendiste", "malinterprete", "no comprende", "confusion"],
+        "frecuencia_uso": 50
+      },
+      
+      {
+        "id": "T003",
+        "categoria": "troubleshooting",
+        "pregunta": "¿Por qué no pude analizar mi imagen/audio?",
+        "respuesta": "¡Veamos qué pasó! 🔍 Algunas causas comunes:\n\n📸 **Para imágenes:**\n• Muy borrosa o poca luz\n• Muy pesada (>5MB)\n• Formato no compatible\n• Texto muy pequeño para leer\n\n🎵 **Para audios:**\n• Mucho ruido de fondo\n• Muy largo (>10 min)\n• Volumen muy bajo\n• Idioma que no reconozco bien\n\n✅ **Solución fácil:**\n• Reenvía con mejor calidad\n• O descríbeme qué necesitas por texto\n• Siempre encuentro una forma de ayudarte! 💪",
+        "keywords": ["no analizo", "imagen borrosa", "audio", "problema archivo"],
+        "frecuencia_uso": 45
+      }
+    ],
+    
+    "privacidad": [
+      {
+        "id": "P001",
+        "categoria": "privacidad",
+        "pregunta": "¿Qué haces con mi información personal?",
+        "respuesta": "¡Tu privacidad es sagrada! 🛡️ Te explico exactamente qué hago:\n\n✅ **Lo que SÍ hago:**\n• Guardo contexto de nuestras conversaciones para ayudarte mejor\n• Recuerdo tus preferencias (horarios, lugares favoritos)\n• Mantengo tu información encriptada y segura\n• Solo uso tus datos para el servicio que me pides\n\n❌ **Lo que NUNCA haré:**\n• Vender tu información a terceros\n• Compartir tus datos con otras personas\n• Acceder a tus cuentas sin tu permiso explícito\n• Recordar información que me pidas olvidar\n\n🔒 **Tu control total:** Puedes pedirme que olvide algo específico o todo, cuando quieras.",
+        "keywords": ["privacidad", "datos personales", "informacion", "seguridad"],
+        "frecuencia_uso": 60
+      },
+      
+      {
+        "id": "P002", 
+        "categoria": "privacidad",
+        "pregunta": "¿Puedes acceder a mis otras conversaciones de WhatsApp?",
+        "respuesta": "¡Para nada! 🚫 Solo tengo acceso a nuestro chat específico:\n\n🔐 **Mis limitaciones (que son tu protección):**\n• Solo veo mensajes que ME envías directamente\n• No puedo leer tus otros chats de WhatsApp\n• No accedo a tu lista de contactos\n• No veo tus estados ni fotos de perfil\n• No tengo acceso a tus llamadas\n\n✅ **Funciono como:**\n• Un chat completamente separado e independiente\n• Con acceso únicamente a nuestra conversación\n• Respetando 100% la privacidad de tus demás contactos\n\n¡Es como tener una caja fuerte digital solo para nosotros dos! 🗝️",
+        "keywords": ["acceso whatsapp", "otros chats", "conversaciones", "privacidad"],
+        "frecuencia_uso": 55
+      },
+      
+      {
+        "id": "P003",
+        "categoria": "privacidad", 
+        "pregunta": "¿Por cuánto tiempo guardas mi información?",
+        "respuesta": "¡Excelente pregunta! ⏰ Soy transparente con los tiempos:\n\n📊 **Información que guardo:**\n• Conversaciones recientes: 30 días (para contexto)\n• Recordatorios activos: Hasta que se cumplan\n• Preferencias básicas: Mientras uses el servicio\n• Archivos multimedia: 7 días máximo\n\n🗑️ **Eliminación automática:**\n• Mensajes antiguos se borran solos\n• Información sensible se elimina inmediatamente después de usarla\n• Backups encriptados solo por tiempo legal requerido\n\n🎛️ **Tu control:** Puedes pedirme borrar todo tu historial diciendo \"BORRAR TODO\" y lo haré al instante. ¡Sin preguntas!",
+        "keywords": ["cuanto tiempo", "borrar informacion", "eliminar datos", "historial"],
+        "frecuencia_uso": 50
+      }
+    ],
+    
+    "casos_especificos": [
+      {
+        "id": "E001",
+        "categoria": "casos_especificos",
+        "pregunta": "¿Entiendes modismos mexicanos/argentinos/colombianos?",
+        "respuesta": "¡Por supuesto! 🌎 Soy súper consciente de la cultura LATAM:\n\n🇲🇽 **Mexicanismos que entiendo:**\n• \"Ahorita\" = tiempo flexible, no específico\n• \"¿Qué onda?\" = ¿Cómo estás?\n• \"Híjole\" = expresión de sorpresa\n• \"Al chile\" = en serio, honestamente\n\n🇦🇷 **Argentinismos que manejo:**\n• \"Dale\" = confirmación, está bien\n• \"Bárbaro\" = excelente, genial\n• \"Che\" = oye, escucha\n• \"Pila\" = mucho, cantidad grande\n\n🇨🇴 **Colombianismos que conozco:**\n• \"Chimba\" = genial, excelente\n• \"Parcero\" = amigo, compañero\n• \"¡Qué nota!\" = ¡qué genial!\n\n¡Habla como normalmente hablas - te entiendo perfecto! 😊",
+        "keywords": ["modismos", "mexicanos", "argentinos", "colombianos", "expresiones"],
+        "frecuencia_uso": 65
+      },
+      
+      {
+        "id": "E002",
+        "categoria": "casos_especificos", 
+        "pregunta": "¿Puedes ayudarme en emergencias?",
+        "respuesta": "¡Claro que puedo ayudar! 🚨 Aunque tengo limitaciones importantes:\n\n✅ **En emergencias SÍ puedo:**\n• Darte números de emergencia de tu país\n• Ayudarte a redactar mensajes urgentes\n• Programar contactos de emergencia\n• Coordinar información rápidamente\n• Mantenerme contigo hasta que llegue ayuda\n\n⚠️ **Pero IMPORTANTE:**\n• Primero llama a emergencias (911, 112, etc.)\n• Yo no reemplazo servicios de emergencia reales\n• No puedo hacer llamadas por ti\n• Para emergencias médicas graves: directo al hospital\n\n💪 **Mi valor:** Soy tu apoyo organizacional durante crisis, pero siempre busca ayuda profesional primero.",
+        "keywords": ["emergencia", "urgente", "ayuda", "crisis", "911"],
+        "frecuencia_uso": 30
+      }
+    ],
+    
+    "tips_uso": [
+      {
+        "id": "U001",
+        "categoria": "tips_uso",
+        "pregunta": "¿Cómo puedo usarte de forma más eficiente?",
+        "respuesta": "¡Genial que preguntes! 🚀 Aquí mis mejores tips:\n\n💬 **Para comunicación:**\n• Sé específico con fechas y horarios\n• Usa \"URGENTE\" para prioridades altas\n• Combina texto + imágenes para mayor contexto\n• Habla natural, no formal\n\n⏰ **Para recordatorios:**\n• Programa con tiempo buffer (no a último minuto)\n• Usa recordatorios recurrentes para rutinas\n• Incluye DÓNDE además de CUÁNDO\n• Confirma que entendí correctamente\n\n🎯 **Para maximizar mi ayuda:**\n• Cuéntame tu rutina para sugerencias personalizadas\n• Envía capturas de pantalla cuando tengas dudas\n• Pídeme que explique mis sugerencias\n• ¡Usa mi ayuda multimodal al máximo!",
+        "keywords": ["tips", "como usar mejor", "eficiente", "consejos"],
+        "frecuencia_uso": 40
+      }
+    ]
+  }
+}

@@ -1,5 +1,7 @@
 # 01 - Introducción a Bird.com AI Employees
 
+> 👨‍💻 **Para Desarrolladores**: Si eres developer, ve directo al [⚡ Developer Quick Start](../developer-quickstart.md) para comenzar con la API en 5 minutos, o consulta el [📚 API Reference](../api-reference.md) para documentación técnica completa.
+
 ## 🌟 ¿Qué es Bird.com?
 
 Bird.com es una plataforma de Customer Engagement que permite a las empresas comunicarse con sus clientes a través de múltiples canales (WhatsApp, SMS, Email, Voice) de manera unificada. Su característica más poderosa son los **AI Employees** (Empleados de IA), que son agentes conversacionales inteligentes capaces de manejar interacciones complejas con clientes.

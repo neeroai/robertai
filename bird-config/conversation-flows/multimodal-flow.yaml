@@ -1,0 +1,636 @@
+# 🎭 Flujo Conversacional Multimodal - RobertAI
+# Procesamiento Inteligente de Imágenes, Audio y Documentos
+# Versión: 1.0.0 | Fecha: 2025-09-04
+
+flow_name: "intelligent_multimodal_processing"
+flow_type: "core_functionality"
+priority: "highest"
+language: "es-LATAM"
+
+# ========================================
+# TRIGGERS DE ACTIVACIÓN
+# ========================================
+activation_triggers:
+  media_received: 
+    - "image_uploaded"
+    - "audio_message_received"  
+    - "document_uploaded"
+    - "video_received"
+  
+  processing_requests:
+    - "analizar imagen"
+    - "transcribir audio"
+    - "leer documento"
+    - "¿qué dice aquí?"
+    - "ayúdame con esto"
+
+# ========================================
+# ANÁLISIS AUTOMÁTICO DE CONTENIDO
+# ========================================
+content_analysis_system:
+  
+  # CLASIFICACIÓN AUTOMÁTICA
+  automatic_classification:
+    
+    image_type_detection:
+      document_images:
+        patterns: ["text_heavy", "structured_layout", "official_format"]
+        subtypes: 
+          - "invoice_bill"
+          - "contract_legal" 
+          - "medical_prescription"
+          - "identification_document"
+          - "receipt_ticket"
+          - "form_application"
+        confidence_threshold: 0.85
+        
+      informational_images:
+        patterns: ["menu", "screenshot", "informational_graphic"]
+        subtypes:
+          - "restaurant_menu"
+          - "app_screenshot" 
+          - "social_media_post"
+          - "map_directions"
+          - "product_catalog"
+        processing_approach: "context_extraction_with_suggestions"
+        
+      personal_images:
+        patterns: ["people", "events", "personal_moments"]
+        privacy_handling: "high_privacy_mode"
+        processing_limitation: "basic_description_only"
+    
+    audio_type_detection:
+      voice_messages:
+        characteristics: ["human_speech", "conversational_tone"]
+        language_detection: ["spanish", "english", "mixed"]
+        urgency_analysis: ["tone_of_voice", "speech_pace", "keywords"]
+        
+      recorded_content:
+        characteristics: ["meeting", "lecture", "phone_call"]
+        processing_complexity: "high_accuracy_transcription"
+        
+    document_type_detection:
+      business_documents:
+        types: ["contract", "invoice", "report", "presentation"]
+        processing_priority: "data_extraction_focused"
+        
+      personal_documents:  
+        types: ["certificate", "medical", "educational"]
+        privacy_level: "maximum_confidentiality"
+
+# ========================================
+# PROCESAMIENTO DE IMÁGENES
+# ========================================
+image_processing_flows:
+  
+  # PROCESAMIENTO DE DOCUMENTOS (OCR)
+  document_ocr_flow:
+    
+    step_1_initial_analysis:
+      processing_message: |
+        📸 **Analizando tu imagen...**
+        
+        🔍 Detectando texto y estructura...
+        ⚡ Esto tomará solo unos segundos
+        
+      auto_detection_categories:
+        - "factura_recibo"
+        - "contrato_documento_legal" 
+        - "receta_medica"
+        - "identificacion_oficial"
+        - "formulario_aplicacion"
+
+    step_2_extraction_and_analysis:
+      
+      invoice_bill_processing:
+        data_extraction:
+          - "company_name"
+          - "total_amount" 
+          - "due_date"
+          - "service_period"
+          - "account_number"
+          
+        analysis_response: |
+          💰 **Factura analizada:**
+          
+          🏢 **Empresa:** {company_name}
+          💵 **Monto:** ${total_amount}
+          📅 **Vencimiento:** {due_date}
+          📋 **Servicio:** {service_description}
+          
+          💡 **¿Te ayudo a:**
+          • Programar recordatorio para pagar antes del vencimiento?
+          • Agregar este gasto a tu tracking mensual?
+          • Coordinar el método de pago?
+          
+        proactive_suggestions:
+          - text: "⏰ Recordatorio de pago"
+            action: "create_payment_reminder"
+          - text: "📊 Agregar a gastos"
+            action: "add_to_expense_tracking"
+          - text: "✅ Solo guardar info"
+            action: "save_document_info"
+      
+      contract_processing:
+        critical_data_extraction:
+          - "contract_parties"
+          - "key_dates"
+          - "important_amounts"
+          - "obligations_responsibilities"
+          - "termination_clauses"
+          
+        analysis_response: |
+          📋 **Contrato analizado:**
+          
+          👥 **Partes:** {contract_parties}
+          📅 **Fechas clave:** {important_dates}
+          💰 **Montos:** {financial_terms}
+          
+          ⚠️ **Puntos importantes detectados:**
+          {key_obligations}
+          
+          💡 **¿Quieres que:**
+          • Programe recordatorios para fechas límite?
+          • Resuma los puntos más críticos?
+          • Identifique obligaciones pendientes?
+          
+      medical_prescription_processing:
+        extraction_focus:
+          - "doctor_name"
+          - "patient_name"  
+          - "medications_prescribed"
+          - "dosage_instructions"
+          - "treatment_duration"
+          
+        analysis_response: |
+          💊 **Receta médica procesada:**
+          
+          👨‍⚕️ **Doctor:** {doctor_name}
+          💊 **Medicamentos:** {medication_list}
+          ⏰ **Horarios:** {dosage_schedule}
+          📅 **Duración:** {treatment_period}
+          
+          💡 **¿Te ayudo a:**
+          • Programar recordatorios para tomar medicamentos?
+          • Agendar cita de seguimiento con el doctor?
+          • Recordarte comprar los medicamentos?
+          
+        privacy_note: "Información médica manejada con máxima confidencialidad"
+
+  # PROCESAMIENTO DE MENÚS Y CONTENIDO INFORMACIONAL
+  informational_content_flow:
+    
+    restaurant_menu_processing:
+      content_extraction:
+        - "restaurant_name"
+        - "food_categories"
+        - "dish_names_and_prices"
+        - "special_offers"
+        - "contact_information"
+        
+      analysis_response: |
+        🍽️ **Menú analizado:**
+        
+        🏪 **Restaurante:** {restaurant_name}
+        
+        **🔥 Platillos destacados:**
+        {featured_dishes_with_prices}
+        
+        **💰 Rango de precios:** {price_range}
+        **📞 Contacto:** {contact_info}
+        
+        ¿Te ayudo con algo?
+        
+      interaction_options:
+        - text: "🍽️ Hacer reservación"
+          action: "initiate_reservation_flow"
+        - text: "💰 Ver opciones por presupuesto"
+          action: "filter_by_budget"
+        - text: "📍 Ubicación y cómo llegar"
+          action: "provide_location_info"
+
+    screenshot_processing:
+      context_analysis: "determine_screenshot_purpose_and_content"
+      
+      common_screenshot_types:
+        conversation_screenshot:
+          processing: "extract_key_information_and_context"
+          response: |
+            💬 **Screenshot de conversación:**
+            
+            📝 **Información clave:** {extracted_info}
+            
+            ¿Necesitas que te ayude con algo relacionado a este mensaje?
+            
+        app_interface_screenshot:
+          processing: "identify_app_and_relevant_information"
+          assistance_offer: "¿Te ayudo a entender algo específico o hacer alguna acción?"
+          
+        error_message_screenshot:
+          processing: "identify_error_and_suggest_solutions"
+          response: |
+            ⚠️ **Error detectado:**
+            
+            🔍 **Problema:** {error_description}
+            💡 **Posibles soluciones:** {suggested_fixes}
+            
+            ¿Quieres que te ayude paso a paso?
+
+# ========================================
+# PROCESAMIENTO DE AUDIO
+# ========================================
+audio_processing_flows:
+  
+  # TRANSCRIPCIÓN INTELIGENTE
+  intelligent_transcription:
+    
+    step_1_audio_analysis:
+      initial_processing: |
+        🎵 **Procesando tu mensaje de voz...**
+        
+        🔄 Transcribiendo con precisión 92%+
+        🧠 Analizando intención y contexto
+        
+      quality_assessment:
+        - "audio_clarity_level"
+        - "background_noise_detection"
+        - "language_identification"
+        - "urgency_tone_analysis"
+
+    step_2_transcription_and_intent:
+      
+      standard_voice_message:
+        transcription_display: |
+          📝 **Transcripción:**
+          "{transcribed_text}"
+          
+          🧠 **Entendí que necesitas:** {interpreted_intent}
+          
+          ¿Es correcto? ¿Procedo con eso?
+          
+        confidence_levels:
+          high_confidence: "Proceed automatically with confirmation"
+          medium_confidence: "Ask for verification before proceeding"
+          low_confidence: "Request clarification or text alternative"
+          
+      complex_instructions_audio:
+        multi_task_detection: "identify_multiple_requests_in_single_audio"
+        
+        breakdown_response: |
+          📋 **Audio con múltiples tareas procesado:**
+          
+          **🎯 Detecté {task_count} tareas:**
+          
+          {task_breakdown_list}
+          
+          ¿Procedo con todas o hay alguna específica que prefieres primero?
+          
+        task_prioritization_options:
+          - text: "✅ Todas en orden"
+            action: "process_all_tasks_sequentially"
+          - text: "🎯 Solo la urgente"
+            action: "identify_and_process_urgent_task"
+          - text: "📝 Déjame elegir"
+            action: "present_individual_task_options"
+
+    step_3_emotional_context_analysis:
+      
+      urgency_detection:
+        high_urgency_indicators: ["fast_speech", "urgent_keywords", "stress_tone"]
+        
+        urgent_response: |
+          🚨 **Detecté urgencia en tu mensaje:**
+          
+          📝 **Transcripción:** "{transcribed_text}"
+          
+          ⚡ **Te ayudo inmediatamente.**
+          {immediate_action_plan}
+          
+      emotional_support:
+        stress_frustration_detection: |
+          😔 **Noté que suenas {detected_emotion}:**
+          
+          📝 **Transcripción:** "{transcribed_text}"
+          
+          💪 **Tranquilo, te ayudo paso a paso.**
+          
+          ¿Por dónde empezamos?
+
+# ========================================
+# PROCESAMIENTO DE DOCUMENTOS
+# ========================================
+document_processing_flows:
+  
+  # ANÁLISIS DE PDFs
+  pdf_document_analysis:
+    
+    step_1_document_classification:
+      automatic_categorization:
+        - "legal_contract"
+        - "financial_statement"  
+        - "medical_report"
+        - "academic_document"
+        - "business_report"
+        - "government_form"
+        
+      classification_response: |
+        📄 **Documento PDF analizado:**
+        
+        📋 **Tipo:** {document_type}
+        📊 **Páginas:** {page_count}
+        📝 **Contenido principal:** {main_content_summary}
+        
+        ¿Qué necesitas específicamente del documento?
+
+    step_2_targeted_extraction:
+      
+      legal_contract_analysis:
+        key_information_extraction:
+          - "contract_date_and_duration"
+          - "parties_involved"
+          - "financial_obligations"
+          - "key_deadlines"
+          - "termination_clauses"
+          
+        analysis_output: |
+          ⚖️ **Análisis de contrato:**
+          
+          **📅 Fechas importantes:**
+          {critical_dates}
+          
+          **💰 Obligaciones financieras:**
+          {financial_terms}
+          
+          **⚠️ Cláusulas críticas:**
+          {important_clauses}
+          
+          ¿Quieres que programe recordatorios para las fechas importantes?
+          
+      financial_statement_analysis:
+        data_extraction_focus:
+          - "account_balances"
+          - "income_expenses"
+          - "important_transactions"
+          - "payment_due_dates"
+          
+        financial_insights: |
+          💰 **Estado financiero analizado:**
+          
+          **💳 Saldos principales:**
+          {account_summary}
+          
+          **📈 Movimientos importantes:**
+          {key_transactions}
+          
+          **⚠️ Fechas de pago próximas:**
+          {upcoming_payments}
+          
+          ¿Te ayudo a organizar los pagos pendientes?
+
+    step_3_actionable_recommendations:
+      
+      deadline_management:
+        automatic_deadline_detection: "scan_for_dates_and_time_sensitive_items"
+        
+        deadline_alert: |
+          ⏰ **Fechas límite detectadas:**
+          
+          {deadline_list_with_importance}
+          
+          💡 **Recomiendo programar recordatorios para:**
+          {recommended_reminder_schedule}
+          
+      task_generation:
+        document_based_tasks: |
+          📋 **Tareas sugeridas basadas en el documento:**
+          
+          {suggested_action_items}
+          
+          ¿Quieres que programe alguna de estas como recordatorio?
+
+# ========================================
+# RESPUESTAS CONTEXTUALES INTELIGENTES
+# ========================================
+contextual_response_system:
+  
+  # GENERACIÓN DE RESPUESTAS PERSONALIZADAS
+  personalized_responses:
+    
+    user_context_consideration:
+      historical_patterns: "consider_user_previous_similar_requests"
+      current_situation: "factor_in_time_of_day_and_recent_interactions"
+      preference_adaptation: "adjust_formality_and_detail_level"
+      
+    response_personalization: |
+      {context_aware_greeting}
+      
+      {content_analysis_results}
+      
+      {personalized_suggestions_based_on_user_history}
+      
+      {call_to_action_matching_user_style}
+
+  # SUGERENCIAS PROACTIVAS
+  proactive_assistance:
+    
+    pattern_recognition:
+      recurring_document_types: "Veo que procesaste varias facturas este mes, ¿quieres que te ayude a organizarlas?"
+      related_content_detection: "Esta imagen parece relacionada con tu cita médica de mañana"
+      opportunity_identification: "Detecté información que podría ser útil para tu recordatorio pendiente"
+      
+    intelligent_suggestions: |
+      💡 **Basado en lo que veo, te sugiero:**
+      
+      {contextual_suggestions_list}
+      
+      ¿Alguna de estas opciones te es útil?
+
+# ========================================
+# MANEJO DE ERRORES Y CASOS ESPECIALES
+# ========================================
+error_handling_system:
+  
+  # CONTENIDO NO PROCESABLE
+  unprocessable_content:
+    
+    poor_quality_media:
+      image_issues:
+        - "blurry_or_low_resolution"
+        - "poor_lighting_conditions"
+        - "text_too_small_to_read"
+        - "partial_content_visible"
+        
+      quality_improvement_guidance: |
+        📸 **La imagen está un poco borrosa para procesar óptimamente:**
+        
+        💡 **Para mejor resultado:**
+        • Asegúrate de tener buena luz
+        • Mantén el teléfono firme
+        • Acerca la cámara al texto
+        • Toma la foto directamente (sin ángulo)
+        
+        ¿Puedes tomar otra foto o me dices qué necesitas específicamente?
+        
+      audio_issues:
+        - "background_noise_too_high"
+        - "audio_too_quiet"
+        - "speech_too_fast_or_unclear"
+        
+      audio_improvement_guidance: |
+        🎵 **Tu audio tiene mucho ruido de fondo:**
+        
+        💡 **Para mejor transcripción:**
+        • Graba en lugar más silencioso
+        • Acerca el teléfono a tu boca
+        • Habla un poco más despacio
+        • Evita lugares con eco
+        
+        ¿Puedes enviar otro audio o me escribes lo que necesitas?
+
+  # CONTENIDO SENSIBLE O PRIVADO
+  privacy_protection:
+    
+    sensitive_content_detection:
+      personal_information: "Detecté información personal sensible"
+      financial_data: "Identifico datos financieros confidenciales" 
+      medical_information: "Reconozco información médica privada"
+      
+    privacy_assurance: |
+      🔒 **Información sensible detectada:**
+      
+      Tu privacidad es mi prioridad máxima:
+      ✅ Esta información se procesa de forma segura
+      ✅ No se almacena permanentemente
+      ✅ Solo tú y yo tenemos acceso
+      ✅ Se elimina después de ayudarte
+      
+      ¿Procedo con el análisis?
+      
+    privacy_options:
+      - text: "✅ Sí, proceder"
+        action: "process_with_privacy_protection"
+      - text: "📝 Solo info general"
+        action: "basic_processing_only"
+      - text: "❌ Mejor no"
+        action: "cancel_processing"
+
+  # LIMITACIONES TÉCNICAS
+  technical_limitations:
+    
+    unsupported_formats:
+      format_limitation_message: |
+        📎 **Formato no soportado actualmente:**
+        
+        🔍 **Recibí:** {file_format}
+        ✅ **Formatos que manejo:** JPG, PNG, PDF, MP3, MP4, DOCX
+        
+        💡 **¿Puedes:**
+        • Convertir a formato compatible?
+        • Tomar screenshot si es contenido visual?
+        • Describir qué necesitas si no puedes cambiar formato?
+        
+    processing_timeout:
+      timeout_recovery: |
+        ⏰ **El procesamiento está tomando más tiempo del esperado:**
+        
+        🔄 **Voy a intentar de nuevo con optimización...**
+        
+        Si sigue tardando, ¿puedes:
+        • Describir qué necesitas del archivo?
+        • Enviar una versión más pequeña?
+        • Dividir en partes si es muy extenso?
+
+# ========================================
+# INTEGRACIÓN CON OTRAS FUNCIONALIDADES
+# ========================================
+functionality_integration:
+  
+  # CONEXIÓN CON RECORDATORIOS
+  reminder_integration:
+    
+    automatic_reminder_creation:
+      from_document_analysis: |
+        📅 **Fechas importantes detectadas en tu documento:**
+        
+        {extracted_dates_with_context}
+        
+        ¿Programo recordatorios automáticamente?
+        
+      from_audio_instructions:
+        voice_to_reminder: |
+          ⏰ **Tu audio incluía recordatorios:**
+          
+          {extracted_reminder_requests}
+          
+          ¿Los programo así o necesitas ajustar algo?
+
+  # CONEXIÓN CON AGENDAMIENTO  
+  scheduling_integration:
+    
+    appointment_information_extraction:
+      from_medical_documents: "Extract doctor info and suggest appointment booking"
+      from_service_receipts: "Identify service providers for future scheduling"
+      from_business_cards: "Save contact info for meeting coordination"
+      
+    scheduling_suggestions: |
+      📅 **Detecté información útil para agendar:**
+      
+      {extracted_contact_scheduling_info}
+      
+      ¿Te ayudo a coordinar una cita?
+
+# ========================================
+# MÉTRICAS Y OPTIMIZACIÓN
+# ========================================
+performance_optimization:
+  
+  # MÉTRICAS DE PRECISIÓN
+  accuracy_tracking:
+    ocr_accuracy: "Track text extraction precision by document type"
+    transcription_accuracy: "Monitor speech-to-text quality by language and accent"
+    intent_recognition: "Measure how well we understand user needs from media"
+    
+  # OPTIMIZACIÓN CONTINUA
+  continuous_improvement:
+    error_pattern_analysis: "Identify common processing failures for improvement"
+    user_satisfaction_tracking: "Monitor how helpful multimodal responses are"
+    processing_speed_optimization: "Reduce time while maintaining quality"
+    
+  # ADAPTACIÓN PERSONALIZADA
+  user_adaptation:
+    content_type_preferences: "Learn which types of content user sends most"
+    response_style_optimization: "Adapt detail level and tone based on feedback"
+    proactive_suggestion_tuning: "Improve suggestions based on user acceptance rates"
+
+# ========================================
+# CONFIGURACIÓN AVANZADA
+# ========================================
+advanced_configuration:
+  
+  # CONFIGURACIÓN DE CALIDAD
+  quality_settings:
+    processing_modes:
+      speed_optimized: "Fast processing with good accuracy"
+      accuracy_optimized: "Slower processing with maximum precision"  
+      balanced_mode: "Optimal balance of speed and accuracy"
+      
+  # CONFIGURACIÓN DE PRIVACIDAD
+  privacy_settings:
+    data_retention:
+      temporary_processing: "Process and delete immediately"
+      session_retention: "Keep during conversation only"
+      user_controlled: "User decides retention period"
+      
+  # CONFIGURACIÓN DE RESPUESTA
+  response_customization:
+    detail_levels:
+      minimal: "Basic analysis with essential information only"
+      standard: "Comprehensive analysis with actionable suggestions"
+      detailed: "Deep analysis with extensive context and options"
+      
+    interaction_styles:
+      professional: "Formal tone with structured responses"
+      casual: "Friendly tone with conversational responses"
+      adaptive: "Adjust based on content type and user preference"
+
+# Fin del flujo multimodal

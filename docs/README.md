@@ -1,180 +1,134 @@
-# RobertAI - Documentación de Bird.com AI Employees
+# RobertAI - Documentación del Proyecto
 
-## 🎯 Descripción del Proyecto
+## Introducción
 
-RobertAI es un repositorio integral de documentación y análisis para la implementación de Empleados de IA de Bird.com. Este repositorio contiene documentación exhaustiva, guías arquitectónicas y estrategias de mejora multimodal para agentes de IA conversacional, con **WhatsApp Business API como canal predeterminado y principal** para implementaciones en múltiples plataformas de comunicación.
+Bienvenido a la documentación oficial de **RobertAI**, el asistente personal multimodal más avanzado para WhatsApp en Latinoamérica. Este directorio contiene toda la información necesaria para entender, configurar e implementar las funcionalidades del asistente.
 
-## 🚀 Inicio Rápido
+## Estructura de Documentación
 
-### Para Nuevas Implementaciones
-1. **Comienza con [Introducción](getting-started/introduction.md)** - Comprende los fundamentos
-2. **Revisa [Arquitectura](getting-started/architecture.md)** - Planifica tu arquitectura técnica
-3. **Sigue [Configuración Básica](getting-started/basic-setup.md)** - Configura tu primer Empleado de IA
+### Documentos Principales
 
-### Para Usuarios Avanzados
-1. **Implementa [AI Actions](development/ai-actions.md)** - Agrega capacidades dinámicas
-2. **Diseña [Flujos Conversacionales](development/conversation-flows.md)** - Crea flujos de conversación
-3. **Integra [APIs Externas](development/api-integrations.md)** - Conecta sistemas externos
+- **[ASSISTANT_SPECS.md](../ASSISTANT_SPECS.md)**: Especificaciones técnicas completas del asistente personal
+- **[CLAUDE.md](../CLAUDE.md)**: Guía de configuración y arquitectura del sistema
+- **[investigacion.md](./investigacion.md)**: Investigación de mercado y análisis de funcionalidades populares en LATAM
 
-## 📚 Estructura de la Documentación
+### Funcionalidades Core Documentadas
 
-### 🌱 Primeros Pasos
-- **[Introducción](getting-started/introduction.md)** - Comprende qué son los AI Employees de Bird.com
-- **[Arquitectura](getting-started/architecture.md)** - Arquitectura técnica e integración
-- **[Configuración Básica](getting-started/basic-setup.md)** - Configuración inicial y primeros pasos
+#### 🔔 Gestión de Recordatorios
+- Recordatorios únicos y recurrentes
+- Sincronización con calendarios
+- Notificaciones inteligentes contextuales
 
-### ⚙️ Configuración
-- **[Configuración Avanzada](configuration/advanced-config.md)** - Configuraciones avanzadas del sistema
-- **[Personalidad y Comportamiento](configuration/personality.md)** - Diseño de personalidad del agente
-- **[Base de Conocimiento](configuration/knowledge-base.md)** - Configuración de la base de conocimiento
+#### 📅 Agendamiento Inteligente  
+- Programación automática de citas
+- Integración con servicios externos
+- Gestión de disponibilidad y conflictos
 
-### 🛠️ Desarrollo
-- **[AI Actions](development/ai-actions.md)** - Acciones de IA e integración de APIs
-- **[Flujos Conversacionales](development/conversation-flows.md)** - Diseño de flujos de conversación
-- **[Integraciones API](development/api-integrations.md)** - Integraciones con APIs externas
-- **[Webhooks y Eventos](development/webhooks.md)** - Configuración de webhooks y eventos
+#### 🎯 Procesamiento Multimodal
+- Transcripción de audio a texto
+- Análisis OCR de imágenes y documentos
+- Generación de contenido multimedia
 
-### 🎯 Operaciones
-- **[Testing y Validación](operations/testing.md)** - Estrategias de prueba y validación
-- **[Monitoreo y Analytics](operations/monitoring.md)** - Monitoreo y análisis de rendimiento
-- **[Seguridad y Compliance](operations/security.md)** - Seguridad y cumplimiento normativo
-- **[Troubleshooting](operations/troubleshooting.md)** - Guía de resolución de problemas
+#### 💬 Mensajería Avanzada
+- Envío programado de mensajes
+- Respuestas automáticas 24/7
+- Difusión personalizada masiva
 
-### 📁 Recursos y Plantillas
-- **[Templates](templates/)** - Plantillas de implementación y configuración
+#### 🔗 Integraciones
+- Google Calendar / Apple Calendar
+- APIs de clima y noticias
+- Servicios de reservas y e-commerce
+- Plataformas de mapas y transporte
 
-## 🏗️ Arquitectura del Sistema
+## Quick Start
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    Bird.com Platform                      │
-├─────────────────────────────────────────────────────────┤
-│                                                          │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐    │
-│  │   Channels   │  │  AI Engine   │  │ Integrations │    │
-│  │             │  │              │  │              │    │
-│  │ • WhatsApp  │  │ • NLP/NLU    │  │ • APIs       │    │
-│  │ • SMS       │  │ • Context    │  │ • Webhooks   │    │
-│  │ • Email     │  │ • Actions    │  │ • Databases  │    │
-│  │ • Voice     │  │ • Learning   │  │ • CRMs       │    │
-│  └─────────────┘  └─────────────┘  └─────────────┘    │
-│                                                          │
-└─────────────────────────────────────────────────────────┘
+Para comenzar con RobertAI:
+
+1. **Revisar especificaciones**: Lee [ASSISTANT_SPECS.md](../ASSISTANT_SPECS.md) para entender las capacidades completas
+2. **Configurar entorno**: Sigue las instrucciones en [CLAUDE.md](../CLAUDE.md) para la configuración técnica
+3. **Implementar funcionalidades**: Utiliza los agentes especializados definidos en `.claude/agents/`
+
+## Agentes Especializados
+
+```bash
+/robert-master            # Orquestador universal del asistente
+/multimodal-analyst       # Análisis de contenido multimedia  
+/conversation-designer    # Diseño de flujos conversacionales
+/whatsapp-specialist      # Optimización para WhatsApp Business API
+/reminder-specialist      # Gestión de recordatorios y alarmas
+/integration-engineer     # APIs y webhooks
 ```
 
-## ⭐ Características Principales
+## Arquitectura del Sistema
 
-### Capacidades Centrales
-- **Agentes de IA Multimodales** - Procesamiento de texto, voz e imagen
-- **Integración WhatsApp Business API** - Canal de comunicación principal
-- **Soporte Multi-idioma** - Capacidades de despliegue global
-- **Analytics en Tiempo Real** - Monitoreo y optimización del rendimiento
+RobertAI utiliza una arquitectura en capas optimizada para WhatsApp Business API:
 
-### Características Avanzadas
-- **Base de Conocimiento Dinámico** - Sistemas de información auto-actualizables
-- **Integraciones API** - Conexión con CRM, ERP y sistemas de negocio
-- **IA Conversacional** - Comprensión y generación de lenguaje natural
-- **Gestión de Escalamiento** - Transferencia fluida a agentes humanos
-- **Seguridad Empresarial** - Medidas de seguridad de nivel empresarial
+```
+WhatsApp Business API
+        ↓
+Webhook Handler & Message Router
+        ↓
+Multimodal Processing Engine
+        ↓
+AI Action Engine (6 categorías)
+        ↓
+Integration Layer
+        ↓
+Database Layer (PostgreSQL + Redis)
+```
 
-## 📊 Roadmap de Implementación
+## Stack Tecnológico
 
-### Fase 1: Fundamentos (Semanas 1-2)
-- [ ] Configuración de plataforma y cuenta
-- [ ] Creación básica de AI Employee
-- [ ] Estructura de base de conocimiento
-- [ ] Definición de personalidad
+- **Backend**: Python 3.9+ (FastAPI), Node.js 16+
+- **IA/ML**: OpenAI GPT-4o, Whisper API, Computer Vision
+- **Base de datos**: PostgreSQL 14+, Redis 6+
+- **WhatsApp**: Business API, Webhooks, Media API
+- **Integraciones**: Google Calendar, Weather APIs, News APIs
 
-### Fase 2: Integración (Semanas 3-4)
-- [ ] Conexión WhatsApp Business API
-- [ ] Configuración de integraciones API
-- [ ] Configuración de AI Actions
-- [ ] Diseño de flujos conversacionales
+## Casos de Uso Principales
 
-### Fase 3: Optimización (Semanas 5-6)
-- [ ] Testing y validación
-- [ ] Monitoreo de rendimiento
-- [ ] Implementación de analytics
-- [ ] Revisión de seguridad
+### Usuarios Personales
+- Organización de agenda y recordatorios diarios
+- Transcripción y análisis de mensajes de voz
+- Programación automática de mensajes importantes
+- Gestión inteligente de reservas y citas
 
-### Fase 4: Lanzamiento (Semana 7)
-- [ ] Lanzamiento suave con grupo piloto
-- [ ] Monitoreo y ajustes
-- [ ] Despliegue completo
-- [ ] Entrenamiento del equipo
+### Usuarios Profesionales  
+- Automatización de respuestas de ausencia
+- Sincronización con calendarios de trabajo
+- Gestión de reuniones y seguimientos
+- Integración con herramientas empresariales
 
-## 🎯 Canal Predeterminado: WhatsApp Business API
+## Métricas de Éxito
 
-**WhatsApp Business API** es el canal predeterminado y recomendado para implementaciones de AI Employees de Bird.com. Todas las características principales, flujos de trabajo e integraciones están diseñados y optimizados primero para WhatsApp Business API, con canales adicionales disponibles como opciones secundarias.
+- **Performance**: < 3 segundos procesamiento multimedia
+- **Precisión**: > 95% OCR, > 92% transcripción audio
+- **Adopción**: > 75% uso de recordatorios
+- **Satisfacción**: > 4.2/5 rating usuario
 
-### Beneficios de WhatsApp Business API
-- Soporte nativo para multimedia (imágenes, documentos, audio, video)
-- Capacidades de mensajería interactiva enriquecida
-- Amplia adopción y familiaridad del usuario
-- Soporte robusto de webhook e integración API
-- Características avanzadas de negocio y analytics
+## Contribuir al Proyecto
 
-## 📈 Métricas de Éxito
+1. **Validar configuraciones**: Ejecuta `python3 validate_configurations.py`
+2. **Seguir namespaces**: Respeta la separación `.bmad-core` vs `.claude`
+3. **Documentar cambios**: Actualiza la documentación relevante
+4. **Testing**: Incluye pruebas para nuevas funcionalidades
 
-### KPIs Técnicos
-- **Tasa de Resolución**: >80% consultas resueltas sin escalamiento
-- **Tiempo de Respuesta**: <3 segundos promedio
-- **Tasa de Éxito API**: >95% llamadas API exitosas
-- **Disponibilidad**: >99.9% uptime
+## Investigación de Mercado
 
-### KPIs de Negocio
-- **Satisfacción del Cliente**: >4.0/5.0 puntuación CSAT
-- **Reducción de Costos**: 60-80% reducción en costos de servicio al cliente
-- **Tasa de Escalamiento**: <20% de conversaciones
-- **Tasa de Participación**: >70% tasa de respuesta a mensajes
+El desarrollo de RobertAI está basado en investigación extensiva del mercado latinoamericano de asistentes IA para WhatsApp. Los principales insights se encuentran en [investigacion.md](./investigacion.md), incluyendo:
 
-## 🛡️ Seguridad y Cumplimiento
+- Funcionalidades más demandadas por usuarios personales vs profesionales
+- Tendencias de adopción en LATAM
+- Preferencias de la comunidad tech hispanohablante
+- Casos de éxito de herramientas como Zapia y Dola AI
 
-### Protección de Datos
-- Encriptación de extremo a extremo para todas las comunicaciones
-- Cumplimiento GDPR y CCPA
-- Autenticación API segura
-- Políticas de retención de datos
+## Soporte y Contacto
 
-### Controles de Privacidad
-- Gestión de consentimiento del usuario
-- Capacidades de anonimización de datos
-- Mantenimiento de pistas de auditoría
-- Transmisión segura de datos
-
-## 🔧 Requisitos Técnicos
-
-### Requisitos de Plataforma
-- Cuenta Bird.com Business o superior
-- Aprobación WhatsApp Business API
-- Créditos API OpenAI (para características de IA)
-- Acceso a API externa (para integraciones)
-
-### Requisitos de Desarrollo
-- Conocimiento de API REST
-- Formatos de datos JSON/XML
-- Implementación de webhooks
-- Conceptos básicos de programación
-
-## 🤝 Soporte y Comunidad
-
-### Actualizaciones de Documentación
-Este repositorio se mantiene para reflejar las últimas características de la plataforma Bird.com y mejores prácticas.
-
-### Mejores Prácticas
-- Comienza simple e itera
-- Monitorea el rendimiento continuamente
-- Recopila feedback del usuario regularmente
-- Mantén actualizaciones de la base de conocimiento
-
-## 📝 Referencia Completa
-
-Para una guía completa en un solo documento, consulta [COMPREHENSIVE-GUIDE.md](COMPREHENSIVE-GUIDE.md) que sintetiza toda la información de implementación.
+Para consultas técnicas o contribuciones:
+- Revisa la documentación completa en `/docs`
+- Utiliza los agentes especializados para desarrollo
+- Sigue las guías de configuración en `CLAUDE.md`
 
 ---
 
-**Nota**: Esta documentación se enfoca en la implementación de AI Employees de Bird.com. Para características específicas de la plataforma o actualizaciones, siempre consulta la documentación oficial de Bird.com y canales de soporte.
-
-**Última Actualización**: 2025-01-29  
-**Versión**: 2.0.0  
-**Mantenido Por**: Equipo de Implementación de IA
+**RobertAI** - *Tu asistente personal inteligente en WhatsApp* 🤖✨

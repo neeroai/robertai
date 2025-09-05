@@ -1,0 +1,454 @@
+{
+  "common_tasks_robertai": {
+    "metadata": {
+      "version": "1.0.0",
+      "last_updated": "2025-09-04",
+      "language": "es-LATAM",
+      "total_tasks": 150,
+      "categories": ["recordatorios", "agendamiento", "multimedia", "mensajeria", "familia", "trabajo", "salud", "finanzas"]
+    },
+
+    "recordatorios_frecuentes": {
+      "tareas_diarias": [
+        {
+          "id": "RD001",
+          "tarea": "recordar_tomar_medicamentos",
+          "variaciones_usuario": [
+            "recuérdame tomar mis pastillas",
+            "la medicina de la presión",
+            "mis vitaminas de la mañana",
+            "el medicamento de las 8pm"
+          ],
+          "respuesta_tipo": "¡Listo! 💊 Te recordaré tomar {medicamento} {horario}. ¿Es todos los días o días específicos?",
+          "contexto_adicional": "medicina_frecuencia_dosis",
+          "prioridad": "alta",
+          "recurrencia_tipica": "diaria"
+        },
+        
+        {
+          "id": "RD002", 
+          "tarea": "recordar_llamadas_importantes",
+          "variaciones_usuario": [
+            "llamar a mamá",
+            "hablarle a mi hermana",
+            "contactar al doctor",
+            "llamar al trabajo"
+          ],
+          "respuesta_tipo": "¡Perfecto! 📞 Te recordaré llamar a {persona} {horario}. ¿Hay algo específico que necesites recordar de la llamada?",
+          "contexto_adicional": "proposito_llamada_duracion",
+          "prioridad": "media",
+          "recurrencia_tipica": "semanal"
+        },
+        
+        {
+          "id": "RD003",
+          "tarea": "recordar_comidas_horarios",
+          "variaciones_usuario": [
+            "hora del almuerzo", 
+            "desayunar",
+            "recordarme comer",
+            "la cena"
+          ],
+          "respuesta_tipo": "¡Dale! 🍽️ Te recordaré {comida} a las {hora}. ¿Quieres que considere tu ubicación o rutina de trabajo?",
+          "contexto_adicional": "ubicacion_trabajo_preferencias",
+          "prioridad": "media",
+          "recurrencia_tipica": "diaria"
+        }
+      ],
+
+      "tareas_semanales": [
+        {
+          "id": "RS001",
+          "tarea": "hacer_ejercicio",
+          "variaciones_usuario": [
+            "ir al gym",
+            "hacer deporte",
+            "mi rutina de ejercicio",
+            "salir a correr"
+          ],
+          "respuesta_tipo": "¡Excelente! 💪 Te recordaré {actividad} {dias_semana}. ¿A qué hora prefieres y necesitas que considere el clima?",
+          "contexto_adicional": "tipo_ejercicio_clima_ubicacion",
+          "prioridad": "media",
+          "recurrencia_tipica": "2-3_veces_semana"
+        },
+        
+        {
+          "id": "RS002",
+          "tarea": "hacer_compras_supermercado",
+          "variaciones_usuario": [
+            "ir al súper",
+            "hacer el mandado",
+            "compras de la semana",
+            "mercado"
+          ],
+          "respuesta_tipo": "¡Listo! 🛒 Te recordaré hacer las compras {dia}. ¿Quieres que te ayude con una lista básica o tienes tu propia lista?",
+          "contexto_adicional": "lista_compras_presupuesto",
+          "prioridad": "media", 
+          "recurrencia_tipica": "semanal"
+        }
+      ],
+
+      "tareas_mensuales": [
+        {
+          "id": "RM001",
+          "tarea": "pagar_servicios",
+          "variaciones_usuario": [
+            "pagar la luz",
+            "recibo del agua",
+            "renta del depa",
+            "tarjeta de crédito"
+          ],
+          "respuesta_tipo": "¡Importante! 💳 Te recordaré pagar {servicio} el {fecha}. ¿Quieres recordatorio unos días antes para que tengas el dinero listo?",
+          "contexto_adicional": "monto_aproximado_metodo_pago",
+          "prioridad": "alta",
+          "recurrencia_tipica": "mensual"
+        }
+      ]
+    },
+
+    "agendamiento_comun": {
+      "citas_medicas": [
+        {
+          "id": "CM001",
+          "tipo_cita": "doctor_general",
+          "variaciones_usuario": [
+            "agendar con mi doctor",
+            "cita médica",
+            "checkup general",
+            "consulta"
+          ],
+          "proceso_asistencia": {
+            "paso_1": "identificar_tipo_consulta",
+            "paso_2": "verificar_doctor_preferido", 
+            "paso_3": "sugerir_horarios_disponibles",
+            "paso_4": "preparar_informacion_contacto",
+            "paso_5": "programar_recordatorios_previos"
+          },
+          "respuesta_inicial": "¡Por supuesto! 👨‍⚕️ ¿Es consulta de rutina o algo específico? Te ayudo a coordinar con tu doctor de preferencia.",
+          "recordatorios_incluidos": [
+            "24h_antes_confirmar_asistencia",
+            "2h_antes_preparar_documentos", 
+            "30min_antes_salir_considerando_trafico"
+          ]
+        },
+        
+        {
+          "id": "CM002",
+          "tipo_cita": "especialistas",
+          "subtipos": ["dentista", "ginecólogo", "dermatólogo", "psicólogo"],
+          "variaciones_usuario": [
+            "cita con el dentista",
+            "ginecólogo para chequeo",
+            "dermatólogo para revisión",
+            "sesión de psicología"
+          ],
+          "consideraciones_especiales": {
+            "dentista": "recordar_no_comer_antes_si_procedimiento",
+            "ginecólogo": "recordar_fecha_ultima_menstruacion",
+            "dermatólogo": "recordar_no_cremas_dia_anterior",
+            "psicólogo": "recordar_temas_a_tratar"
+          }
+        }
+      ],
+
+      "servicios_personales": [
+        {
+          "id": "SP001",
+          "servicio": "peluquería_barbería",
+          "variaciones_usuario": [
+            "cortarme el pelo",
+            "peluquería",
+            "barbería",
+            "arreglarme"
+          ],
+          "asistencia_proceso": "Te ayudo a encontrar horario con tu estilista de confianza o busco opciones nuevas según tu zona y presupuesto.",
+          "recordatorios_incluidos": [
+            "dia_antes_confirmar_cita",
+            "hora_antes_salir_a_tiempo"
+          ],
+          "sugerencias_adicionales": "¿Quieres que busque reseñas de lugares nuevos o prefieres tu lugar habitual?"
+        },
+        
+        {
+          "id": "SP002",
+          "servicio": "servicios_hogar",
+          "subtipos": ["limpieza", "plomero", "electricista", "internet"],
+          "variaciones_usuario": [
+            "que venga la señora de la limpieza",
+            "llamar al plomero", 
+            "electricista para revisión",
+            "técnico de internet"
+          ],
+          "consideraciones_acceso": "recordar_estar_presente_o_dejar_llaves"
+        }
+      ],
+
+      "reservas_sociales": [
+        {
+          "id": "RS001",
+          "evento": "restaurante_cena",
+          "variaciones_usuario": [
+            "reserva en restaurante",
+            "mesa para cenar",
+            "lugar para comer",
+            "restaurante romántico"
+          ],
+          "informacion_necesaria": [
+            "fecha_hora_preferida",
+            "numero_personas",
+            "tipo_comida_preferencia",
+            "zona_ubicacion",
+            "presupuesto_aproximado"
+          ],
+          "asistencia_completa": "Te busco opciones perfectas, te ayudo con la reserva, y programo recordatorios de confirmación."
+        }
+      ]
+    },
+
+    "procesamiento_multimedia_comun": {
+      "imagenes_frecuentes": [
+        {
+          "id": "IF001",
+          "tipo_imagen": "facturas_recibos",
+          "casos_uso": [
+            "factura_luz_agua_gas",
+            "recibo_telefono_internet", 
+            "boleta_supermercado",
+            "ticket_gasolina"
+          ],
+          "extraccion_automatica": [
+            "monto_total",
+            "fecha_vencimiento",
+            "numero_referencia",
+            "metodo_pago_sugerido"
+          ],
+          "accion_proactiva": "¿Programo recordatorio para pagar antes del vencimiento?",
+          "valor_agregado": "organizacion_automatica_finanzas_personales"
+        },
+        
+        {
+          "id": "IF002",
+          "tipo_imagen": "menus_restaurante",
+          "proceso_analisis": "extraer_platillos_precios_especialidades",
+          "respuesta_tipo": "¡Qué rico se ve ese menú! 🍽️ Veo que tienen {especialidad} por ${precio}. ¿Te ayudo a hacer la reserva?",
+          "contexto_util": "sugerir_mejores_opciones_segun_preferencias"
+        },
+        
+        {
+          "id": "IF003",
+          "tipo_imagen": "documentos_importantes",
+          "subtipos": ["contrato", "identificación", "certificado", "receta_médica"],
+          "proceso_seguridad": "analisis_confidencial_sin_almacenamiento_permanente",
+          "extraccion_inteligente": [
+            "fechas_criticas",
+            "montos_importantes",
+            "requisitos_cumplir",
+            "contactos_relevantes"
+          ]
+        }
+      ],
+
+      "audio_frecuente": [
+        {
+          "id": "AF001",
+          "tipo_audio": "instrucciones_multiples",
+          "ejemplo_tipico": "Robert, recuérdame llamar a mamá el domingo, comprar pan y que mañana tengo reunión a las 3",
+          "proceso_inteligente": "separacion_tareas_individuales_con_horarios_especificos",
+          "confirmacion_estructurada": "Perfecto! Te organizo todo: 1) Llamar mamá - Domingo, 2) Comprar pan - hoy, 3) Reunión mañana 3pm"
+        },
+        
+        {
+          "id": "AF002", 
+          "tipo_audio": "situaciones_urgentes",
+          "indicadores_urgencia": ["tono_acelerado", "palabras_clave_urgente", "contexto_tiempo_limitado"],
+          "respuesta_priorizada": "¡Tranquilo! Detecté que es urgente. Te ayudo paso a paso con lo más importante primero.",
+          "escalamiento_inteligente": "ofercer_asistencia_estructurada_para_crisis"
+        }
+      ]
+    },
+
+    "mensajeria_inteligente": {
+      "mensajes_programados_comunes": [
+        {
+          "id": "MPC001",
+          "ocasion": "cumpleanos_familiares",
+          "variaciones_usuario": [
+            "el cumpleaños de mi hermana es el 25",
+            "recordarme felicitar a mi mamá", 
+            "cumpleaños de mi novio"
+          ],
+          "asistencia_completa": {
+            "recordatorio_previo": "dia_anterior_para_preparar_regalo",
+            "mensaje_automatico": "dia_del_cumpleanos_mensaje_personalizado",
+            "seguimiento": "preguntar_como_estuvo_celebracion"
+          },
+          "personalizacion": "sugerir_regalo_basado_en_gustos_conocidos"
+        },
+        
+        {
+          "id": "MPC002",
+          "ocasion": "mensajes_ausencia_viaje", 
+          "configuracion_automatica": {
+            "trabajo": "mensaje_profesional_con_contacto_alternativo",
+            "familia": "mensaje_casual_con_fecha_regreso",
+            "amigos": "mensaje_divertido_con_ubicacion_viaje"
+          },
+          "activacion_inteligente": "detectar_patron_viaje_en_calendario_activar_automaticamente"
+        }
+      ],
+
+      "respuestas_automaticas": [
+        {
+          "id": "RA001",
+          "situacion": "horario_trabajo_intenso",
+          "trigger": "reunion_toda_la_mañana_deadline_importante",
+          "mensaje_tipo": "En reunión hasta las 2pm. Te respondo en cuanto termine. Para urgencias: [contacto alternativo]",
+          "personalizacion_contextual": "ajustar_segun_tipo_contacto_nivel_formalidad"
+        }
+      ]
+    },
+
+    "tareas_contexto_familiar": {
+      "coordinacion_familia": [
+        {
+          "id": "CF001",
+          "situacion": "actividades_ninos",
+          "casos_comunes": [
+            "fútbol_hijo_martes_jueves",
+            "clases_piano_hija_sabados",
+            "cita_pediatra_checkup", 
+            "reunion_padres_colegio"
+          ],
+          "organizacion_inteligente": {
+            "preparacion_previa": "recordar_uniforme_instrumentos_documentos",
+            "logistica_transporte": "considerar_trafico_tiempo_traslado",
+            "coordinacion_pareja": "compartir_responsabilidades_automaticamente"
+          }
+        },
+        
+        {
+          "id": "CF002",
+          "situacion": "eventos_familiares_grandes",
+          "ejemplos": ["boda_primo", "graduacion_hermana", "aniversario_padres"],
+          "planificacion_completa": {
+            "preparacion_regalo": "sugerir_opciones_organizar_compra",
+            "coordinacion_asistencia": "gestionar_horarios_familia_completa",
+            "logistica_evento": "direcciones_horarios_dress_code"
+          }
+        }
+      ]
+    },
+
+    "tareas_contexto_profesional": {
+      "gestion_reuniones": [
+        {
+          "id": "GP001",
+          "tipo_reunion": "cliente_importante",
+          "preparacion_automatica": {
+            "24h_antes": "recordar_preparar_presentacion_documentos",
+            "2h_antes": "revisar_agenda_cliente_puntos_importantes",
+            "30min_antes": "salir_considerando_trafico_llegar_puntual"
+          },
+          "seguimiento_post_reunion": "recordar_enviar_follow_up_24h_despues"
+        },
+        
+        {
+          "id": "GP002",
+          "situacion": "deadline_proyecto_importante",
+          "gestion_tiempo": {
+            "desglose_tareas": "dividir_proyecto_en_sub_tareas_con_fechas",
+            "recordatorios_progreso": "checkpoints_regulares_avance",
+            "preparacion_entrega": "recordar_revision_final_envio_puntual"
+          }
+        }
+      ]
+    },
+
+    "tareas_salud_bienestar": [
+      {
+        "id": "SB001",
+        "categoria": "medicamentos_tratamientos",
+        "casos_comunes": [
+          "pastillas_presion_diarias",
+          "vitaminas_mañana_noche",
+          "tratamiento_temporal_antibioticos",
+          "medicamento_dolor_cronico"
+        ],
+        "gestion_inteligente": {
+          "recordatorios_horarios": "adaptados_rutina_personal_comidas",
+          "seguimiento_tratamiento": "progreso_efectos_secundarios",
+          "renovacion_recetas": "recordar_cita_doctor_antes_terminar"
+        }
+      },
+      
+      {
+        "id": "SB002",
+        "categoria": "ejercicio_rutina_salud",
+        "adaptacion_personalizada": {
+          "principiante": "rutina_suave_motivacion_constante",
+          "intermedio": "variedad_ejercicios_seguimiento_progreso", 
+          "avanzado": "optimizacion_rendimiento_recuperacion"
+        },
+        "consideraciones_clima": "sugerir_alternativas_mal_tiempo"
+      }
+    ],
+
+    "tareas_finanzas_personales": [
+      {
+        "id": "FP001",
+        "categoria": "pagos_regulares",
+        "servicios_comunes": [
+          "renta_departamento",
+          "servicios_luz_agua_gas",
+          "tarjetas_credito",
+          "seguros_varios",
+          "suscripciones_digitales"
+        ],
+        "optimizacion_pagos": {
+          "recordatorio_anticipado": "3_dias_antes_verificar_saldo",
+          "agrupacion_inteligente": "sugerir_dias_especificos_todos_pagos",
+          "tracking_gastos": "identificar_patrones_gastos_mensuales"
+        }
+      }
+    ],
+
+    "patrones_uso_inteligente": {
+      "deteccion_automatica": {
+        "usuario_nuevo": {
+          "patron": "preguntas_basicas_funcionalidades",
+          "respuesta_adaptada": "explicaciones_detalladas_ejemplos_practicos",
+          "onboarding": "guiar_gradualmente_todas_capacidades"
+        },
+        
+        "usuario_frecuente": {
+          "patron": "solicitudes_complejas_contexto_previo",
+          "respuesta_adaptada": "respuestas_concisas_asumir_conocimiento",
+          "personalizacion": "sugerencias_proactivas_basadas_historial"
+        },
+        
+        "usuario_experto": {
+          "patron": "maximizar_funcionalidades_integraciones_avanzadas",
+          "respuesta_adaptada": "opciones_avanzadas_automatizacion_maxima",
+          "colaboracion": "sugerir_nuevas_formas_optimizar_productividad"
+        }
+      },
+      
+      "adaptacion_contextual": {
+        "horario_manana": {
+          "enfoque": "organizacion_dia_recordatorios_importantes",
+          "tono": "energetico_motivacional_productivo"
+        },
+        
+        "horario_tarde": {
+          "enfoque": "tareas_pendientes_planificacion_siguiente_dia",
+          "tono": "reflexivo_organizativo_preparatorio"
+        },
+        
+        "horario_noche": {
+          "enfoque": "resumen_dia_preparacion_manana",
+          "tono": "relajado_tranquilo_satisfactorio"
+        }
+      }
+    }
+  }
+}

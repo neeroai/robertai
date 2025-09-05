@@ -1,0 +1,620 @@
+# 📅 Flujo Conversacional de Agendamiento - RobertAI
+# Sistema Inteligente de Coordinación de Citas y Reservas
+# Versión: 1.0.0 | Fecha: 2025-09-04
+
+flow_name: "intelligent_scheduling_system"
+flow_type: "core_functionality"
+priority: "highest"
+language: "es-LATAM"
+
+# ========================================
+# TRIGGERS DE ACTIVACIÓN
+# ========================================
+activation_triggers:
+  primary_keywords: ["agendar", "cita", "reserva", "appointment", "programar"]
+  secondary_keywords: ["doctor", "dentista", "peluquería", "restaurante", "reunión"]
+  intent_patterns:
+    - "schedule_appointment_request"
+    - "booking_assistance_needed"
+    - "calendar_coordination"
+    - "service_provider_contact"
+
+# ========================================
+# CATEGORIZACIÓN DE TIPOS DE CITAS
+# ========================================
+appointment_categories:
+  
+  # CITAS MÉDICAS
+  medical_appointments:
+    
+    subtypes:
+      general_doctor:
+        keywords: ["doctor general", "médico", "consulta", "checkup"]
+        typical_duration: "30-60 minutes"
+        advance_booking: "1-2 weeks"
+        preparation_needed: ["documentos médicos", "lista síntomas", "estudios previos"]
+        
+      specialists:
+        dentist:
+          keywords: ["dentista", "dental", "dientes"]
+          preparation: ["no comer 1h antes si hay procedimiento"]
+          follow_up: ["cuidados post-consulta"]
+          
+        gynecologist:
+          keywords: ["ginecólogo", "ginecóloga", "revisión femenina"]
+          preparation: ["fecha última menstruación", "estudios previos"]
+          privacy_note: "confidential_handling"
+          
+        dermatologist:
+          keywords: ["dermatólogo", "piel", "lunares"]
+          preparation: ["no usar cremas día anterior", "lista de medicamentos"]
+          
+        psychologist:
+          keywords: ["psicólogo", "terapia", "sesión"]
+          preparation: ["temas a tratar", "estado emocional actual"]
+          follow_up: ["frecuencia sesiones"]
+
+  # SERVICIOS PERSONALES
+  personal_services:
+    
+    beauty_wellness:
+      hair_salon:
+        keywords: ["peluquería", "corte", "pelo", "tinte", "peinado"]
+        duration_options: ["corte (1h)", "tinte (2-3h)", "peinado evento (1.5h)"]
+        advance_booking: "3-7 days"
+        
+      barbershop:
+        keywords: ["barbería", "corte masculino", "barba"]
+        typical_duration: "30-45 minutes"
+        advance_booking: "1-3 days"
+        
+      spa_massage:
+        keywords: ["spa", "masaje", "relajación", "facial"]
+        duration_options: ["30min", "60min", "90min", "paquete completo"]
+        
+    home_services:
+      cleaning:
+        keywords: ["limpieza", "empleada doméstica", "aseo"]
+        scheduling_notes: ["estar presente", "dejar llaves", "dar instrucciones"]
+        
+      maintenance:
+        plumber:
+          keywords: ["plomero", "tubería", "agua", "baño"]
+          urgency_levels: ["emergencia", "programado", "mantenimiento"]
+          
+        electrician:
+          keywords: ["electricista", "luz", "instalación eléctrica"]
+          safety_priority: "high"
+
+  # RESERVAS SOCIALES
+  social_bookings:
+    
+    restaurants:
+      fine_dining:
+        keywords: ["restaurante", "cena", "almuerzo", "reserva mesa"]
+        information_needed: ["fecha", "hora", "número personas", "ocasión especial"]
+        advance_booking: "1-7 days depending on restaurant"
+        
+      casual_dining:
+        keywords: ["lugar casual", "comida rápida", "cafetería"]
+        booking_flexibility: "usually same day possible"
+        
+    events_entertainment:
+      movies:
+        keywords: ["cine", "película", "función"]
+        booking_process: "app assistance or ticket selection"
+        
+      concerts_shows:
+        keywords: ["concierto", "obra", "show", "evento"]
+        advance_planning: "weeks to months ahead"
+
+  # REUNIONES PROFESIONALES
+  business_meetings:
+    
+    client_meetings:
+      keywords: ["reunión cliente", "junta", "presentación"]
+      preparation_intensive: ["agenda", "documentos", "presentación"]
+      follow_up_required: "always"
+      
+    team_meetings:
+      keywords: ["reunión equipo", "staff meeting", "colaboradores"]
+      scheduling_complexity: "coordinate multiple calendars"
+      
+    interviews:
+      keywords: ["entrevista", "interview", "candidato"]
+      preparation_critical: ["CV review", "questions prepared", "logistics"]
+
+# ========================================
+# FLUJO PRINCIPAL DE AGENDAMIENTO
+# ========================================
+scheduling_workflow:
+  
+  # PASO 1: IDENTIFICACIÓN Y CATEGORIZACIÓN
+  step_1_identification:
+    
+    category_detection:
+      automatic_categorization: "analyze_keywords_and_context"
+      
+      confirmation_message: |
+        📅 **¡Perfecto! Te ayudo a agendar.**
+        
+        Detecté que necesitas: **{detected_category}**
+        
+        ¿Es correcto o es algo diferente?
+        
+      category_options_if_unclear:
+        - text: "🏥 Cita médica"
+          category: "medical"
+        - text: "✂️ Servicio personal"
+          category: "personal_service"
+        - text: "🍽️ Reserva restaurant"
+          category: "restaurant"
+        - text: "💼 Reunión trabajo"
+          category: "business"
+        - text: "📝 Otro tipo"
+          category: "custom"
+
+  # PASO 2: RECOLECCIÓN DE INFORMACIÓN
+  step_2_information_gathering:
+    
+    essential_information:
+      
+      # INFORMACIÓN BÁSICA UNIVERSAL
+      basic_info_collection:
+        when_needed: "¿Para cuándo necesitas la cita?"
+        duration_preference: "¿Tienes preferencia de horario? (mañana/tarde)"
+        urgency_level: "¿Qué tan urgente es? (hoy/esta semana/flexible)"
+        
+      # INFORMACIÓN ESPECÍFICA POR CATEGORÍA
+      category_specific_info:
+        
+        medical_specific:
+          provider_preference: |
+            🏥 **Para tu cita médica:**
+            • ¿Tienes doctor/dentista de preferencia?
+            • ¿Es consulta de rutina o algo específico?
+            • ¿Necesitas que busque opciones cerca de ti?
+            
+          insurance_considerations: "¿Tu seguro cubre este tipo de consulta?"
+          
+        personal_service_specific:
+          service_details: |
+            ✂️ **Para tu servicio personal:**
+            • ¿Qué servicio específico necesitas?
+            • ¿Tienes lugar/persona de confianza?
+            • ¿Presupuesto aproximado?
+            
+        restaurant_specific:
+          dining_details: |
+            🍽️ **Para tu reserva:**
+            • ¿Para cuántas personas?
+            • ¿Qué tipo de comida prefieres?
+            • ¿Zona/ubicación específica?
+            • ¿Presupuesto por persona?
+            • ¿Ocasión especial?
+
+  # PASO 3: BÚSQUEDA Y COORDINACIÓN
+  step_3_coordination:
+    
+    # BÚSQUEDA DE OPCIONES
+    option_research:
+      
+      provider_search_strategy:
+        user_has_preference:
+          process: "verify_contact_info_and_availability"
+          message: |
+            📞 **Contactando a {preferred_provider}:**
+            
+            Te ayudo a coordinar con ellos:
+            • Verifico su información de contacto
+            • Te doy script para llamar/mensaje
+            • Te ayudo a confirmar disponibilidad
+            
+        user_needs_options:
+          search_criteria: ["location", "ratings", "price_range", "availability"]
+          results_presentation: |
+            🔍 **Encontré {number} opciones excelentes:**
+            
+            {option_list_with_details}
+            
+            ¿Con cuál te gustaría que te ayude a coordinar?
+
+    # ASISTENCIA EN CONTACTO
+    contact_assistance:
+      
+      phone_call_preparation:
+        script_provision: |
+          📞 **Script para tu llamada:**
+          
+          "Hola, quisiera agendar una cita para {service_type}.
+          ¿Tienen disponibilidad {preferred_timeframe}?
+          {additional_specific_requirements}"
+          
+          **Información a confirmar:**
+          • Fecha y hora exacta
+          • Costo del servicio
+          • Qué necesitas llevar
+          • Dirección exacta
+          • Teléfono de contacto
+          
+        post_call_follow_up: "¿Cómo te fue? ¿Necesitas que programe recordatorios?"
+        
+      digital_booking_assistance:
+        app_guidance: "Te guío paso a paso para reservar por la app/web"
+        form_completion_help: "Te ayudo a completar formularios online"
+
+  # PASO 4: CONFIRMACIÓN Y PROGRAMACIÓN
+  step_4_confirmation:
+    
+    appointment_confirmation:
+      
+      details_verification: |
+        ✅ **Confirmación de tu cita:**
+        
+        📋 **Servicio:** {service_type}
+        👤 **Proveedor:** {provider_name}
+        📅 **Fecha:** {appointment_date}
+        🕐 **Hora:** {appointment_time}
+        📍 **Lugar:** {location}
+        💰 **Costo:** {cost_if_available}
+        
+        ¿Todo correcto?
+        
+      confirmation_options:
+        - text: "✅ Perfecto"
+          action: "finalize_appointment"
+        - text: "📝 Cambiar algo"
+          action: "modify_details"
+        - text: "📞 Llamar para confirmar"
+          action: "provide_contact_script"
+
+    # PROGRAMACIÓN DE RECORDATORIOS
+    reminder_setup:
+      
+      automatic_reminders:
+        reminder_schedule:
+          advance_confirmation: "24 hours before - confirm attendance"
+          preparation_reminder: "2 hours before - gather documents/prepare"
+          departure_reminder: "time_to_leave considering traffic"
+          
+        reminder_message_template: |
+          🔔 **Recordatorio de cita:**
+          
+          {service_type} con {provider}
+          📅 {date} a las {time}
+          📍 {location}
+          
+          {specific_preparation_notes}
+          
+          ¿Todo listo o necesitas ayuda con algo?
+
+# ========================================
+# GESTIÓN AVANZADA DE CITAS
+# ========================================
+advanced_scheduling:
+  
+  # DETECCIÓN Y RESOLUCIÓN DE CONFLICTOS
+  conflict_management:
+    
+    calendar_integration:
+      conflict_detection: |
+        ⚠️ **Posible conflicto detectado:**
+        
+        🔔 **Nueva cita:** {new_appointment}
+        📅 **Evento existente:** {existing_event}
+        ⏰ **Conflicto en:** {conflict_time}
+        
+        ¿Cómo resolvemos esto?
+        
+      resolution_options:
+        - text: "📅 Mover nueva cita"
+          action: "reschedule_new_appointment"
+        - text: "🔄 Cambiar evento existente"
+          action: "modify_existing_event"
+        - text: "⏰ Buscar horario alternativo"
+          action: "find_alternative_time"
+        - text: "✅ Mantener ambos (lo manejo yo)"
+          action: "accept_tight_schedule"
+
+  # COORDINACIÓN MULTI-PERSONA
+  group_scheduling:
+    
+    multiple_attendees:
+      coordination_process: |
+        👥 **Coordinación grupal para {event_type}:**
+        
+        🎯 **Participantes:** {attendee_list}
+        📅 **Opciones de fecha:** {date_options}
+        
+        Te ayudo a encontrar el horario que funcione para todos.
+        
+      polling_system:
+        availability_check: "Send availability poll to all attendees"
+        consensus_building: "Find optimal time based on responses"
+        final_confirmation: "Confirm with all parties once decided"
+
+  # REAGENDAMIENTO Y CANCELACIONES
+  rescheduling_system:
+    
+    modification_requests:
+      user_initiated_changes:
+        change_request_processing: |
+          🔄 **Cambio de cita solicitado:**
+          
+          📅 **Cita actual:** {current_appointment}
+          🔄 **Cambio necesario:** {change_reason}
+          
+          Te ayudo a coordinar el cambio:
+          
+        rescheduling_assistance:
+          - "Contact provider to explain change"
+          - "Find new available time slot"
+          - "Update all related reminders"
+          - "Confirm new arrangement"
+
+    emergency_cancellations:
+      urgent_cancellation_support: |
+        🚨 **Cancelación de emergencia:**
+        
+        Te ayudo inmediatamente:
+        • Contacto rápido al proveedor
+        • Mensaje profesional explicando situación
+        • Reagendamiento prioritario si necesitas
+        • Actualización de recordatorios
+        
+      cancellation_etiquette:
+        professional_message_template: |
+          "Disculpe, necesito cancelar mi cita de {date} a las {time} 
+          por {brief_reason}. ¿Podríamos reagendar para {alternative_timeframe}? 
+          Gracias por su comprensión."
+
+# ========================================
+# PREPARACIÓN Y SEGUIMIENTO
+# ========================================
+appointment_lifecycle:
+  
+  # PREPARACIÓN PRE-CITA
+  pre_appointment_preparation:
+    
+    customized_preparation:
+      
+      medical_appointment_prep:
+        document_checklist: |
+          📋 **Para tu cita médica:**
+          
+          ✅ **Documentos necesarios:**
+          • Identificación oficial
+          • Tarjeta del seguro médico
+          • Estudios/análisis previos
+          • Lista de medicamentos actuales
+          
+          ✅ **Información a recordar:**
+          • Síntomas específicos y cuándo empezaron
+          • Preguntas para el doctor
+          • Cambios en tu salud desde última visita
+          
+        logistics_reminder: |
+          🚗 **Logística:**
+          • Salir a las {departure_time} (considerando tráfico)
+          • Estacionamiento: {parking_info}
+          • Llegar 15 min antes para registro
+          
+      business_meeting_prep:
+        professional_preparation: |
+          💼 **Para tu reunión profesional:**
+          
+          📊 **Preparación necesaria:**
+          • Agenda de temas a tratar
+          • Documentos/presentaciones listas
+          • Objetivos claros de la reunión
+          • Material de apoyo impreso
+          
+          👔 **Detalles logísticos:**
+          • Dress code: {dress_code}
+          • Ubicación exacta: {detailed_location}
+          • Contacto en caso de emergencia: {contact_info}
+
+  # SEGUIMIENTO POST-CITA
+  post_appointment_follow_up:
+    
+    automatic_check_in:
+      follow_up_timing: "2 hours after scheduled end time"
+      
+      check_in_message: |
+        😊 **¿Cómo te fue en tu {appointment_type}?**
+        
+        Espero que todo haya salido excelente.
+        
+        ¿Necesitas:
+        • Programar seguimiento o próxima cita?
+        • Recordatorios para indicaciones recibidas?
+        • Ayuda con algo relacionado?
+        
+    outcome_processing:
+      
+      medical_follow_up:
+        next_steps_management: |
+          🏥 **Seguimiento médico:**
+          
+          ¿El doctor te dio:
+          • Nuevos medicamentos? (programo recordatorios)
+          • Estudios pendientes? (ayudo a agendar)
+          • Próxima cita? (la agrego a tu calendario)
+          • Indicaciones especiales? (recordatorios personalizados)
+          
+      service_satisfaction:
+        quality_check: "¿Quedaste satisfecho con el servicio?"
+        provider_rating: "¿Recomendarías este lugar para futuras referencias?"
+        improvement_notes: "¿Algo que deba considerar para próximas citas similares?"
+
+# ========================================
+# INTEGRACIONES INTELIGENTES
+# ========================================
+smart_integrations:
+  
+  # INTEGRACIÓN CON CALENDARIO
+  calendar_sync:
+    
+    automatic_calendar_entry:
+      event_creation: |
+        📅 **Agregando a tu calendario:**
+        
+        📝 **Título:** {appointment_title}
+        🕐 **Hora:** {start_time} - {end_time}
+        📍 **Ubicación:** {location_with_address}
+        📝 **Notas:** {preparation_notes}
+        
+        ✅ **Sincronizado con Google Calendar**
+        
+    travel_time_calculation:
+      intelligent_scheduling: |
+        🚗 **Cálculo inteligente de tiempo:**
+        
+        📍 **Desde:** {current_location}
+        📍 **Hasta:** {appointment_location}
+        🕐 **Tiempo estimado:** {travel_time}
+        ⏰ **Hora de salida sugerida:** {departure_time}
+        
+        (Incluyendo tiempo de estacionamiento y registro)
+
+  # INTEGRACIÓN CON PROVEEDORES
+  provider_integration:
+    
+    business_directory_connection:
+      information_enrichment:
+        - "Real-time availability checking"
+        - "Current pricing information"
+        - "Customer reviews and ratings"
+        - "Special offers or promotions"
+        
+    booking_platform_integration:
+      direct_booking_capability: |
+        💻 **Reserva directa disponible:**
+        
+        Puedo hacer la reserva directamente a través de:
+        • OpenTable (restaurantes)
+        • Calendly (profesionales)
+        • App del proveedor
+        
+        ¿Prefieres que reserve yo o te guío para hacerlo?
+
+# ========================================
+# CASOS ESPECIALES Y MANEJO DE ERRORES
+# ========================================
+special_scenarios:
+  
+  # SITUACIONES URGENTES
+  urgent_scheduling:
+    
+    emergency_appointments:
+      immediate_need_detection:
+        keywords: ["urgente", "emergencia", "hoy mismo", "ya", "inmediato"]
+        
+      urgent_response_protocol: |
+        🚨 **Situación urgente detectada:**
+        
+        Entiendo que necesitas {service_type} urgentemente.
+        
+        **Acciones inmediatas:**
+        1. Busco opciones de emergencia/citas del día
+        2. Te doy contactos directos para llamar
+        3. Te ayudo con mensaje urgente pero profesional
+        4. Coordino todo lo necesario en paralelo
+        
+        ¿Es una emergencia médica? Si es grave, ve al hospital.
+        
+    same_day_booking:
+      availability_search: "Focus on providers with same-day availability"
+      persistence_strategy: "Multiple contact attempts with urgency emphasis"
+
+  # PROVEEDORES NO DISPONIBLES
+  unavailability_management:
+    
+    fully_booked_scenarios:
+      alternative_strategy: |
+        😔 **Tu primera opción está llena, pero no te preocupes:**
+        
+        🎯 **Plan B activado:**
+        • Te busco alternativas igual de buenas
+        • Pregunto por lista de espera/cancelaciones
+        • Coordino para fechas futuras disponibles
+        • Te doy opciones en ubicaciones cercanas
+        
+        ¿Prefieres esperar o exploramos otras opciones?
+        
+    provider_unresponsive:
+      backup_coordination: |
+        📞 **Proveedor no responde - activando backup:**
+        
+        • Intento diferentes métodos de contacto
+        • Busco proveedores alternativos similar calidad
+        • Te mantengo informado del progreso
+        • Aseguro que tengas cita confirmada hoy
+        
+        Mi compromiso: no quedas sin tu cita programada.
+
+# ========================================
+# PERSONALIZACIÓN Y APRENDIZAJE
+# ========================================
+personalization_system:
+  
+  # PREFERENCIAS DE USUARIO
+  user_preference_learning:
+    
+    behavioral_pattern_recognition:
+      scheduling_preferences:
+        - "Preferred time slots (morning vs afternoon vs evening)"
+        - "Advance booking tendency (last minute vs well planned)"
+        - "Provider loyalty (stick to favorites vs try new places)"
+        - "Communication style preference (phone vs message vs app)"
+        
+    preference_adaptation:
+      automatic_suggestions: |
+        💡 **Basado en tu historial:**
+        
+        Noté que prefieres {identified_pattern}.
+        ¿Para esta cita también prefieres {suggested_approach}?
+        
+      preference_confirmation: "¿Esta sugerencia es útil o prefieres diferente?"
+
+  # MEJORA CONTINUA
+  continuous_improvement:
+    
+    success_pattern_analysis:
+      - "Which scheduling approaches work best for this user"
+      - "Optimal timing for different types of appointments"
+      - "Most successful provider recommendations"
+      - "Effective reminder timing and frequency"
+      
+    adaptation_implementation:
+      - "Adjust default suggestions based on success patterns"
+      - "Personalize communication style and formality"
+      - "Optimize reminder timing for individual response patterns"
+      - "Improve provider recommendations based on satisfaction"
+
+# ========================================
+# MÉTRICAS Y ANÁLISIS
+# ========================================
+analytics_framework:
+  
+  # MÉTRICAS DE ÉXITO
+  success_metrics:
+    appointment_completion_rate: "Percentage of scheduled appointments that actually happen"
+    user_satisfaction_scores: "Post-appointment satisfaction ratings"
+    booking_efficiency: "Time from request to confirmed appointment"
+    conflict_resolution_success: "How well conflicts are resolved"
+    
+  # ANÁLISIS DE RENDIMIENTO
+  performance_analysis:
+    provider_success_rates: "Which providers consistently deliver good experiences"
+    optimal_scheduling_patterns: "Best times and methods for different appointment types"
+    user_engagement_patterns: "How users interact with scheduling features"
+    
+  # OPTIMIZACIÓN CONTINUA
+  optimization_opportunities:
+    - "Improve provider recommendation algorithm"
+    - "Enhance conflict detection and resolution"
+    - "Optimize reminder timing and content"
+    - "Streamline information gathering process"
+
+# Fin del flujo de agendamiento

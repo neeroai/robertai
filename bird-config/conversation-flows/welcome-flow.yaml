@@ -1,0 +1,424 @@
+# 🎉 Flujo Conversacional de Bienvenida - RobertAI
+# Optimizado para WhatsApp Business API via Bird.com
+# Versión: 1.0.0 | Fecha: 2025-09-04
+
+flow_name: "welcome_onboarding"
+flow_type: "initial_user_interaction"
+priority: "highest"
+language: "es-LATAM"
+
+# ========================================
+# TRIGGERS DE ACTIVACIÓN
+# ========================================
+activation_triggers:
+  - first_time_user
+  - user_says_hello_after_30_days
+  - user_types_specific_keywords: ["hola", "empezar", "ayuda", "inicio"]
+  - user_restarts_conversation_explicitly
+
+# ========================================
+# FLUJO PRINCIPAL DE BIENVENIDA
+# ========================================
+conversation_steps:
+  
+  # PASO 1: SALUDO INICIAL CÁLIDO
+  step_1_greeting:
+    id: "welcome_01"
+    trigger_conditions: ["new_user", "restart_flow"]
+    message_type: "text_with_emojis"
+    
+    message_content: |
+      ¡Hola! 👋 Soy **Robert**, tu asistente personal inteligente.
+      
+      Me da mucho gusto conocerte! Estoy aquí para hacerte la vida más fácil y organizada. 😊
+    
+    wait_for_response: false
+    auto_continue: true
+    delay_seconds: 2
+
+  # PASO 2: PRESENTACIÓN DE CAPACIDADES
+  step_2_capabilities:
+    id: "welcome_02"
+    message_type: "text_with_interactive_buttons"
+    
+    message_content: |
+      ✨ **¿En qué te puedo ayudar?**
+      
+      • ⏰ **Recordatorios inteligentes** (únicos y recurrentes)
+      • 📅 **Agendamiento automático** de citas y reservas  
+      • 📸 **Análisis de imágenes** y documentos
+      • 🎵 **Transcripción de audios** a texto
+      • 💬 **Mensajería programada** 24/7
+      • 🗓️ **Sincronización con Google Calendar**
+      
+      ¡Puedes escribirme, enviarme fotos o audios - proceso todo! 🚀
+
+    interactive_buttons:
+      - text: "🚀 ¡Empezar ahora!"
+        payload: "START_USING"
+      - text: "📋 Ver ejemplos"
+        payload: "SHOW_EXAMPLES"  
+      - text: "❓ Tengo preguntas"
+        payload: "HAVE_QUESTIONS"
+
+    wait_for_response: true
+    timeout_seconds: 120
+    timeout_action: "proceed_to_examples"
+
+  # RAMAS DEL FLUJO SEGÚN RESPUESTA
+  branches:
+    
+    # RAMA A: Usuario quiere empezar inmediatamente
+    start_using_branch:
+      trigger_payload: "START_USING"
+      
+      response_message: |
+        ¡Excelente! 🎯 Me encanta tu actitud.
+        
+        **Para empezar, solo dime qué necesitas:**
+        
+        📝 *Ejemplos que entiendo perfectamente:*
+        • "Recuérdame llamar a mamá mañana a las 7pm"
+        • "Ayúdame a agendar con el dentista" 
+        • [Enviar foto de una factura]
+        • [Mandar audio con instrucciones]
+        
+        ¡Habla conmigo como le hablas a un amigo! 😊
+      
+      interactive_buttons:
+        - text: "⏰ Crear recordatorio"
+          payload: "CREATE_REMINDER"
+        - text: "📅 Agendar algo"
+          payload: "SCHEDULE_APPOINTMENT"
+        - text: "📸 Analizar imagen"
+          payload: "ANALYZE_IMAGE_INSTRUCTION"
+
+      next_step: "handle_first_task"
+
+    # RAMA B: Usuario quiere ver ejemplos
+    show_examples_branch:
+      trigger_payload: "SHOW_EXAMPLES"
+      
+      response_message: |
+        ¡Perfecto! 📋 Te muestro exactamente lo que puedo hacer:
+        
+        **🔥 Casos reales de usuarios:**
+        
+        💊 **"Recuérdame tomar mis pastillas todos los días a las 8am"**
+        ➤ *Programo recordatorio diario con confirmación*
+        
+        🦷 **"Necesito cita con el dentista esta semana"**  
+        ➤ *Te ayudo a coordinar horarios y te doy toda la info*
+        
+        📸 **[Foto de factura de luz]**
+        ➤ *"Veo que vence el 20 de marzo, ¿programo recordatorio?"*
+        
+        🎵 **[Audio: "Robert, organízame todo para mañana"]**
+        ➤ *Transcribo y organizo cada tarea automáticamente*
+
+      interactive_buttons:
+        - text: "¡Quiero probar!"
+          payload: "START_USING"
+        - text: "🤔 Más ejemplos"
+          payload: "MORE_EXAMPLES"
+
+      next_step: "wait_for_choice"
+
+    # RAMA C: Usuario tiene preguntas
+    have_questions_branch:
+      trigger_payload: "HAVE_QUESTIONS"
+      
+      response_message: |
+        ¡Claro! 💭 Pregúntame lo que quieras. Estas son las más comunes:
+        
+        **❓ Preguntas frecuentes:**
+        • "¿Cómo funciona exactamente?"
+        • "¿Es seguro? ¿Qué pasa con mi información?"
+        • "¿Puedo cancelar recordatorios?"
+        • "¿Funciona con mi calendario actual?"
+        • "¿Está disponible 24/7?"
+        
+        **O pregúntame cualquier cosa que tengas en mente** 🤗
+        
+        ¡No hay preguntas tontas, solo respuestas útiles!
+
+      interactive_buttons:
+        - text: "🔒 Privacidad/Seguridad"
+          payload: "PRIVACY_QUESTIONS"
+        - text: "⚙️ Cómo funciona"
+          payload: "HOW_IT_WORKS"
+        - text: "✅ Listo, empezar"
+          payload: "START_USING"
+
+      next_step: "handle_questions"
+
+# ========================================
+# MANEJO DE PREGUNTAS ESPECÍFICAS
+# ========================================
+question_handlers:
+  
+  privacy_questions:
+    trigger_payload: "PRIVACY_QUESTIONS"
+    message_type: "informative_reassuring"
+    
+    response_content: |
+      🛡️ **Tu privacidad es sagrada para mí:**
+      
+      ✅ **Lo que SÍ hago:**
+      • Recuerdo nuestras conversaciones para ayudarte mejor
+      • Guardo tus preferencias (horarios favoritos, etc.)
+      • Mantengo todo encriptado y super seguro
+      
+      ❌ **Lo que NUNCA haré:**
+      • Compartir tu información con nadie
+      • Vender tus datos (¡jamás!)
+      • Acceder a tus otros chats de WhatsApp
+      • Recordar cosas que me pidas olvidar
+      
+      **🎛️ Tienes control total:** Puedes pedirme que olvide algo específico cuando quieras.
+
+    follow_up_buttons:
+      - text: "👍 Perfecto, empezar"
+        payload: "START_USING"
+      - text: "🤔 Más preguntas"
+        payload: "MORE_QUESTIONS"
+
+  how_it_works:
+    trigger_payload: "HOW_IT_WORKS"
+    
+    response_content: |
+      🧠 **Es súper sencillo, funciono con IA avanzada:**
+      
+      **1️⃣ Me escribes naturalmente** 
+      *"Recuérdame X cosa" o me mandas foto/audio*
+      
+      **2️⃣ Yo entiendo el contexto** 
+      *No solo las palabras, sino lo que realmente necesitas*
+      
+      **3️⃣ Te ayudo inmediatamente**
+      *Con confirmación clara de lo que haré*
+      
+      **4️⃣ Ejecuto perfectamente**
+      *Recordatorios puntuales, seguimiento inteligente*
+      
+      **🎯 La magia:** Hablas conmigo como con un amigo súper organizado que nunca olvida nada.
+
+    follow_up_buttons:
+      - text: "🚀 ¡Vamos a probarlo!"
+        payload: "START_USING"
+      - text: "📱 ¿Funciona 24/7?"
+        payload: "AVAILABILITY_QUESTION"
+
+# ========================================
+# MANEJO DE PRIMERA TAREA
+# ========================================
+first_task_handlers:
+  
+  create_reminder_guide:
+    trigger_payload: "CREATE_REMINDER"
+    
+    guidance_message: |
+      ⏰ **¡Perfecto! Vamos a crear tu primer recordatorio.**
+      
+      **Solo dime qué y cuándo:**
+      
+      💬 *Ejemplos que funcionan perfecto:*
+      • "En 30 minutos recuérdame revisar el horno"
+      • "Mañana a las 9am llamar al doctor"  
+      • "Todos los lunes hacer ejercicio"
+      • "El 15 de marzo pagar la renta"
+      
+      **¡Escribe tu recordatorio ahora!** 👇
+
+    wait_for_input: true
+    input_type: "natural_language_reminder"
+    process_with: "reminder_creation_flow"
+
+  schedule_appointment_guide:
+    trigger_payload: "SCHEDULE_APPOINTMENT"
+    
+    guidance_message: |
+      📅 **¡Genial! Te ayudo a agendar lo que necesites.**
+      
+      **¿Qué tipo de cita es?**
+      
+      🏥 *Médicas:* Doctor, dentista, especialista
+      ✂️ *Personales:* Peluquería, barbería, spa  
+      🍽️ *Sociales:* Restaurante, eventos
+      🔧 *Servicios:* Plomero, electricista, limpieza
+      
+      **Solo dime qué necesitas agendar** 👇
+
+    interactive_buttons:
+      - text: "🏥 Cita médica"
+        payload: "MEDICAL_APPOINTMENT"
+      - text: "✂️ Servicio personal"  
+        payload: "PERSONAL_SERVICE"
+      - text: "🍽️ Reserva social"
+        payload: "SOCIAL_RESERVATION"
+      - text: "🔧 Servicio hogar"
+        payload: "HOME_SERVICE"
+
+    next_step: "appointment_type_handler"
+
+  analyze_image_instruction:
+    trigger_payload: "ANALYZE_IMAGE_INSTRUCTION"
+    
+    instruction_message: |
+      📸 **¡Excelente! Puedo analizar cualquier imagen.**
+      
+      **📋 Lo que proceso perfectamente:**
+      • Facturas y recibos (extraigo fechas y montos)
+      • Menús de restaurantes 
+      • Documentos importantes
+      • Screenshots de mensajes
+      • Notas escritas a mano
+      • ¡Y mucho más!
+      
+      **📤 Simplemente envía tu imagen y yo me encargo del resto.**
+      
+      *Te diré qué veo y qué puedo hacer por ti* ✨
+
+    wait_for_media: true
+    media_type: "image"
+    process_with: "image_analysis_flow"
+
+# ========================================
+# CONFIGURACIÓN DE PERSONALIZACIÓN
+# ========================================
+personalization_setup:
+  
+  collect_preferences:
+    when_triggered: "after_first_successful_task"
+    
+    preference_questions:
+      - question: "🕐 **¿A qué hora sueles estar más activo?** (para sugerir mejor horarios)"
+        options: ["Mañana (6am-12pm)", "Tarde (12pm-6pm)", "Noche (6pm-12am)", "Variable"]
+        
+      - question: "📍 **¿En qué zona vives principalmente?** (para sugerencias locales)"
+        input_type: "free_text_optional"
+        
+      - question: "⏰ **¿Prefieres recordatorios con anticipación o justo a tiempo?**"
+        options: ["Con tiempo (30min-1hr antes)", "Justo a tiempo", "Depende del tipo"]
+
+    personalization_confirmation: |
+      ¡Perfecto! 🎯 Ya tengo tu perfil básico.
+      
+      Ahora mis sugerencias serán mucho más personalizadas para ti.
+      
+      **¿Algo más en lo que te pueda ayudar hoy?** 😊
+
+# ========================================
+# MENSAJES DE FINALIZACIÓN
+# ========================================
+completion_messages:
+  
+  successful_onboarding: |
+    🎉 **¡Bienvenido oficialmente al equipo, {user_name}!**
+    
+    Ya estás completamente configurado. Desde ahora:
+    
+    ✅ **Puedes escribirme cuando quieras**
+    ✅ **Enviarme fotos, audios o documentos** 
+    ✅ **Pedirme cualquier recordatorio o cita**
+    ✅ **Contar conmigo 24/7 para organizarte**
+    
+    **💡 Tip pro:** Mientras más me uses, mejor te entiendo y más personalizada es mi ayuda.
+    
+    ¡A hacerte la vida más fácil! 🚀
+
+  partial_onboarding: |
+    👍 **Perfecto, ya estás listo para usar RobertAI.**
+    
+    Recuerda que puedes:
+    • Escribirme naturalmente cualquier cosa
+    • Enviar imágenes, audios o documentos
+    • Pedirme ayuda cuando la necesites
+    
+    **¡Estoy aquí 24/7 para ti!** 😊
+
+# ========================================
+# CONFIGURACIÓN DE REACTIVACIÓN
+# ========================================
+reactivation_flow:
+  
+  returning_user_greeting:
+    trigger_condition: "user_inactive_30_plus_days"
+    
+    message: |
+      ¡Hola de nuevo! 👋 ¡Qué gusto verte por aquí!
+      
+      Soy Robert, tu asistente personal. ¿Te acuerdas de mí? 😊
+      
+      **¿En qué te puedo ayudar hoy?**
+      
+      Si necesitas refrescar la memoria de lo que puedo hacer, solo pregúntame.
+
+    quick_options:
+      - text: "¡Sí me acuerdo! Ayúdame con algo"
+        payload: "CONTINUE_NORMAL"
+      - text: "Recuérdame qué puedes hacer"
+        payload: "SHOW_CAPABILITIES_AGAIN"
+
+# ========================================
+# CONFIGURACIÓN DE ERRORES Y FALLBACKS
+# ========================================
+error_handling:
+  
+  user_confusion:
+    trigger_keywords: ["no entiendo", "confuso", "qué", "cómo"]
+    
+    clarification_response: |
+      ¡No te preocupes! 😅 A veces no soy súper claro.
+      
+      **Te explico de nuevo súper simple:**
+      
+      1️⃣ **Me escribes lo que necesitas** (como hablarle a un amigo)
+      2️⃣ **Yo te entiendo y te ayudo**
+      3️⃣ **¡Listo!** 
+      
+      **¿Qué te gustaría probar primero?**
+
+    simple_options:
+      - text: "Un recordatorio simple"
+        payload: "SIMPLE_REMINDER"
+      - text: "Ayuda con una cita"
+        payload: "SIMPLE_APPOINTMENT"
+
+  technical_issues:
+    trigger_conditions: ["message_delivery_failure", "processing_timeout"]
+    
+    recovery_message: |
+      ¡Ups! 😅 Parece que algo falló técnicamente.
+      
+      **Vamos a intentar de nuevo:**
+      
+      • ¿Podrías repetir lo que necesitabas?
+      • O si prefieres, escribe "REINICIAR" y empezamos fresco
+      
+      ¡Siempre encuentro la forma de ayudarte! 💪
+
+# ========================================
+# MÉTRICAS Y ANÁLISIS
+# ========================================
+analytics_tracking:
+  
+  conversion_events:
+    - welcome_flow_completed
+    - first_task_completed
+    - personalization_completed
+    - user_returned_after_onboarding
+    
+  engagement_metrics:
+    - time_to_first_interaction
+    - completion_rate_by_step
+    - most_chosen_first_task
+    - user_questions_frequency
+    
+  optimization_points:
+    - message_clarity_testing
+    - button_placement_effectiveness 
+    - personalization_impact_measurement
+    - user_satisfaction_post_onboarding
+
+# Fin del flujo de bienvenida

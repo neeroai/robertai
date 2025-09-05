@@ -1,5 +1,7 @@
 # 10 - Webhooks y Eventos
 
+> 👨‍💻 **Para Desarrolladores**: Ver [📚 API Reference - Webhooks](../api-reference.md#webhook-events) para ejemplos de código completos y [⚡ Developer Quick Start](../developer-quickstart.md#step-5-set-up-webhooks-optional) para configuración rápida.
+
 ## 🔔 Arquitectura de Eventos
 
 ### Flujo Bidireccional de Eventos

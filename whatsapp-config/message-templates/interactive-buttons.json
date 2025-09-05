@@ -1,0 +1,546 @@
+{
+  "interactive_button_templates": {
+    "metadata": {
+      "version": "1.0.0",
+      "last_updated": "2025-09-04",
+      "platform": "whatsapp_business_api",
+      "language": "es-LATAM",
+      "total_templates": 25
+    },
+
+    "reminder_templates": {
+      "reminder_confirmation": {
+        "template_id": "reminder_confirmation_001",
+        "use_case": "Confirmar creación de recordatorio",
+        "header": "⏰ Recordatorio Programado",
+        "body": "He programado tu recordatorio: \"{reminder_task}\" para {reminder_datetime}.\n\n¿Todo correcto?",
+        "buttons": [
+          {
+            "id": "confirm_reminder",
+            "title": "✅ Perfecto",
+            "action": "confirm_reminder_creation"
+          },
+          {
+            "id": "modify_reminder", 
+            "title": "✏️ Modificar",
+            "action": "modify_reminder_details"
+          },
+          {
+            "id": "cancel_reminder",
+            "title": "❌ Cancelar",
+            "action": "cancel_reminder_creation"
+          }
+        ],
+        "variables": ["reminder_task", "reminder_datetime"]
+      },
+
+      "reminder_notification": {
+        "template_id": "reminder_notification_002",
+        "use_case": "Notificación de recordatorio activo",
+        "header": "🔔 Es Hora!",
+        "body": "📝 **Recordatorio:** {task_description}\n🕐 **Programado para:** {scheduled_time}\n\n¿Ya está listo?",
+        "buttons": [
+          {
+            "id": "task_completed",
+            "title": "✅ Listo",
+            "action": "mark_task_completed"
+          },
+          {
+            "id": "snooze_reminder",
+            "title": "⏰ 10 min más",
+            "action": "snooze_reminder_10min"
+          },
+          {
+            "id": "reschedule_reminder",
+            "title": "📅 Reagendar",
+            "action": "reschedule_reminder_flow"
+          }
+        ],
+        "variables": ["task_description", "scheduled_time"]
+      },
+
+      "recurring_reminder_setup": {
+        "template_id": "recurring_reminder_setup_003",
+        "use_case": "Configurar recordatorio recurrente",
+        "header": "🔄 Recordatorio Recurrente",
+        "body": "Quieres crear un recordatorio recurrente para: \"{task}\"\n\n¿Con qué frecuencia?",
+        "buttons": [
+          {
+            "id": "daily_recurring",
+            "title": "📅 Diario",
+            "action": "setup_daily_recurring"
+          },
+          {
+            "id": "weekly_recurring",
+            "title": "📆 Semanal",
+            "action": "setup_weekly_recurring"
+          },
+          {
+            "id": "custom_recurring",
+            "title": "⚙️ Personalizado",
+            "action": "setup_custom_recurring"
+          }
+        ],
+        "variables": ["task"]
+      }
+    },
+
+    "scheduling_templates": {
+      "appointment_type_selection": {
+        "template_id": "appointment_type_001",
+        "use_case": "Seleccionar tipo de cita",
+        "header": "📅 ¿Qué necesitas agendar?",
+        "body": "Te ayudo a coordinar tu cita. ¿Qué tipo de servicio necesitas?",
+        "buttons": [
+          {
+            "id": "medical_appointment",
+            "title": "🏥 Cita médica",
+            "action": "start_medical_scheduling"
+          },
+          {
+            "id": "personal_service",
+            "title": "✂️ Servicio personal",
+            "action": "start_personal_service_scheduling"
+          },
+          {
+            "id": "business_meeting",
+            "title": "💼 Reunión trabajo",
+            "action": "start_business_meeting_scheduling"
+          }
+        ]
+      },
+
+      "appointment_confirmation": {
+        "template_id": "appointment_confirmation_002",
+        "use_case": "Confirmar detalles de cita agendada",
+        "header": "✅ Cita Confirmada",
+        "body": "📋 **Servicio:** {service_type}\n👤 **Proveedor:** {provider_name}\n📅 **Fecha:** {appointment_date}\n🕐 **Hora:** {appointment_time}\n📍 **Lugar:** {location}",
+        "buttons": [
+          {
+            "id": "confirm_appointment",
+            "title": "✅ Confirmar",
+            "action": "finalize_appointment"
+          },
+          {
+            "id": "modify_appointment",
+            "title": "📝 Cambiar",
+            "action": "modify_appointment_details"
+          },
+          {
+            "id": "add_calendar",
+            "title": "📅 A mi calendario",
+            "action": "add_to_google_calendar"
+          }
+        ],
+        "variables": ["service_type", "provider_name", "appointment_date", "appointment_time", "location"]
+      },
+
+      "time_preference_selection": {
+        "template_id": "time_preference_003",
+        "use_case": "Seleccionar preferencia horaria",
+        "header": "🕐 ¿Qué horario prefieres?",
+        "body": "Para tu {service_type}, ¿en qué horario te acomoda mejor?",
+        "buttons": [
+          {
+            "id": "morning_preference",
+            "title": "🌅 Mañana (9am-12pm)",
+            "action": "set_morning_preference"
+          },
+          {
+            "id": "afternoon_preference", 
+            "title": "🌞 Tarde (1pm-5pm)",
+            "action": "set_afternoon_preference"
+          },
+          {
+            "id": "evening_preference",
+            "title": "🌙 Noche (6pm-8pm)",
+            "action": "set_evening_preference"
+          }
+        ],
+        "variables": ["service_type"]
+      }
+    },
+
+    "multimedia_templates": {
+      "media_processing_options": {
+        "template_id": "media_processing_001",
+        "use_case": "Opciones después de procesar multimedia",
+        "header": "📸 Imagen Analizada",
+        "body": "{analysis_result}\n\n¿Qué te gustaría hacer?",
+        "buttons": [
+          {
+            "id": "create_reminder_from_media",
+            "title": "⏰ Crear recordatorio",
+            "action": "create_reminder_from_extracted_info"
+          },
+          {
+            "id": "schedule_based_on_media",
+            "title": "📅 Agendar algo",
+            "action": "start_scheduling_from_media"
+          },
+          {
+            "id": "save_info",
+            "title": "💾 Guardar info",
+            "action": "save_extracted_information"
+          }
+        ],
+        "variables": ["analysis_result"]
+      },
+
+      "document_analysis_actions": {
+        "template_id": "document_analysis_001",
+        "use_case": "Acciones después de analizar documento",
+        "header": "📄 Documento Procesado",
+        "body": "He analizado tu documento ({document_type}).\n\n**Puntos clave encontrados:**\n{key_points}\n\n¿Te ayudo con algo específico?",
+        "buttons": [
+          {
+            "id": "extract_deadlines",
+            "title": "⏰ Fechas importantes",
+            "action": "extract_and_schedule_deadlines"
+          },
+          {
+            "id": "summarize_document",
+            "title": "📋 Resumen completo",
+            "action": "generate_document_summary"
+          },
+          {
+            "id": "create_tasks",
+            "title": "✅ Crear tareas",
+            "action": "create_tasks_from_document"
+          }
+        ],
+        "variables": ["document_type", "key_points"]
+      },
+
+      "audio_transcription_options": {
+        "template_id": "audio_transcription_001", 
+        "use_case": "Opciones después de transcribir audio",
+        "header": "🎵 Audio Transcrito",
+        "body": "**Transcripción:**\n\"{transcribed_text}\"\n\n¿Procedo con lo que solicitas?",
+        "buttons": [
+          {
+            "id": "process_audio_request",
+            "title": "✅ Sí, proceder",
+            "action": "process_transcribed_request"
+          },
+          {
+            "id": "correct_transcription",
+            "title": "✏️ Corregir texto",
+            "action": "manual_transcription_correction"
+          },
+          {
+            "id": "resend_audio",
+            "title": "🎤 Enviar de nuevo",
+            "action": "request_audio_resend"
+          }
+        ],
+        "variables": ["transcribed_text"]
+      }
+    },
+
+    "messaging_templates": {
+      "message_scheduling_confirmation": {
+        "template_id": "message_scheduling_001",
+        "use_case": "Confirmar programación de mensaje",
+        "header": "💬 Mensaje Programado",
+        "body": "📤 **Para:** {recipient}\n📝 **Mensaje:** \"{message_preview}\"\n🕐 **Se enviará:** {send_datetime}",
+        "buttons": [
+          {
+            "id": "confirm_scheduled_message",
+            "title": "✅ Confirmar envío",
+            "action": "confirm_message_scheduling"
+          },
+          {
+            "id": "edit_message",
+            "title": "✏️ Editar mensaje",
+            "action": "edit_scheduled_message"
+          },
+          {
+            "id": "change_send_time",
+            "title": "⏰ Cambiar hora",
+            "action": "modify_send_time"
+          }
+        ],
+        "variables": ["recipient", "message_preview", "send_datetime"]
+      },
+
+      "auto_response_setup": {
+        "template_id": "auto_response_001",
+        "use_case": "Configurar respuesta automática",
+        "header": "🤖 Respuesta Automática",
+        "body": "¿Para qué situación necesitas respuesta automática?",
+        "buttons": [
+          {
+            "id": "vacation_auto_response",
+            "title": "🏖️ Vacaciones",
+            "action": "setup_vacation_auto_response"
+          },
+          {
+            "id": "meeting_auto_response",
+            "title": "💼 En reunión",
+            "action": "setup_meeting_auto_response"
+          },
+          {
+            "id": "custom_auto_response",
+            "title": "⚙️ Personalizado",
+            "action": "setup_custom_auto_response"
+          }
+        ]
+      },
+
+      "birthday_message_setup": {
+        "template_id": "birthday_message_001",
+        "use_case": "Configurar mensaje de cumpleaños",
+        "header": "🎂 Mensaje de Cumpleaños",
+        "body": "Perfecto! Configuro el mensaje de cumpleaños para {contact_name} el {birthday_date}.\n\n¿Qué tipo de mensaje prefieres?",
+        "buttons": [
+          {
+            "id": "family_birthday_message",
+            "title": "👨‍👩‍👧‍👦 Familiar",
+            "action": "setup_family_birthday_message"
+          },
+          {
+            "id": "friend_birthday_message",
+            "title": "👫 Amigo/a",
+            "action": "setup_friend_birthday_message"
+          },
+          {
+            "id": "colleague_birthday_message", 
+            "title": "💼 Colega",
+            "action": "setup_colleague_birthday_message"
+          }
+        ],
+        "variables": ["contact_name", "birthday_date"]
+      }
+    },
+
+    "general_assistance_templates": {
+      "welcome_options": {
+        "template_id": "welcome_001",
+        "use_case": "Opciones de bienvenida para nuevos usuarios",
+        "header": "¡Hola! 👋 Soy Robert",
+        "body": "Tu asistente personal inteligente. ¿En qué te puedo ayudar hoy?",
+        "buttons": [
+          {
+            "id": "create_first_reminder",
+            "title": "⏰ Crear recordatorio",
+            "action": "start_first_reminder_flow"
+          },
+          {
+            "id": "schedule_appointment",
+            "title": "📅 Agendar cita",
+            "action": "start_first_scheduling_flow"
+          },
+          {
+            "id": "learn_more",
+            "title": "❓ Conocer funciones",
+            "action": "show_capabilities_overview"
+          }
+        ]
+      },
+
+      "help_menu": {
+        "template_id": "help_menu_001",
+        "use_case": "Menú principal de ayuda",
+        "header": "🆘 ¿En qué te ayudo?",
+        "body": "Selecciona el tipo de ayuda que necesitas:",
+        "buttons": [
+          {
+            "id": "how_to_use",
+            "title": "📚 Cómo usar RobertAI",
+            "action": "show_usage_tutorial"
+          },
+          {
+            "id": "troubleshooting",
+            "title": "🔧 Resolver problema",
+            "action": "start_troubleshooting_flow"
+          },
+          {
+            "id": "contact_support",
+            "title": "💬 Contactar soporte",
+            "action": "initiate_support_contact"
+          }
+        ]
+      },
+
+      "confirmation_dialogs": {
+        "template_id": "confirmation_001",
+        "use_case": "Diálogos de confirmación genéricos",
+        "header": "⚠️ Confirmación",
+        "body": "{confirmation_message}",
+        "buttons": [
+          {
+            "id": "confirm_action",
+            "title": "✅ Sí, continuar",
+            "action": "execute_confirmed_action"
+          },
+          {
+            "id": "cancel_action",
+            "title": "❌ No, cancelar", 
+            "action": "cancel_pending_action"
+          },
+          {
+            "id": "more_info",
+            "title": "ℹ️ Más información",
+            "action": "show_additional_details"
+          }
+        ],
+        "variables": ["confirmation_message"]
+      }
+    },
+
+    "error_handling_templates": {
+      "processing_error": {
+        "template_id": "error_processing_001",
+        "use_case": "Error en procesamiento de solicitud",
+        "header": "😅 Ups, algo falló",
+        "body": "No pude procesar tu solicitud: {error_description}\n\n¿Qué prefieres hacer?",
+        "buttons": [
+          {
+            "id": "retry_request",
+            "title": "🔄 Intentar de nuevo",
+            "action": "retry_failed_operation"
+          },
+          {
+            "id": "manual_input",
+            "title": "✍️ Escribir manual",
+            "action": "switch_to_manual_input"
+          },
+          {
+            "id": "contact_support",
+            "title": "🆘 Reportar problema",
+            "action": "report_error_to_support"
+          }
+        ],
+        "variables": ["error_description"]
+      },
+
+      "unclear_request": {
+        "template_id": "unclear_request_001",
+        "use_case": "Solicitud ambigua del usuario",
+        "header": "🤔 Necesito más detalles",
+        "body": "No estoy seguro de entender exactamente qué necesitas. ¿Te refieres a:",
+        "buttons": [
+          {
+            "id": "option_a",
+            "title": "{interpretation_a}",
+            "action": "proceed_with_interpretation_a"
+          },
+          {
+            "id": "option_b", 
+            "title": "{interpretation_b}",
+            "action": "proceed_with_interpretation_b"
+          },
+          {
+            "id": "clarify_manually",
+            "title": "📝 Explicar mejor",
+            "action": "request_manual_clarification"
+          }
+        ],
+        "variables": ["interpretation_a", "interpretation_b"]
+      }
+    },
+
+    "calendar_integration_templates": {
+      "calendar_conflict": {
+        "template_id": "calendar_conflict_001",
+        "use_case": "Resolver conflicto de calendario",
+        "header": "⚠️ Conflicto de Horarios",
+        "body": "Detecté un conflicto:\n\n🆕 **Nuevo:** {new_event}\n📅 **Existente:** {existing_event}\n\n¿Cómo lo resolvemos?",
+        "buttons": [
+          {
+            "id": "reschedule_new",
+            "title": "📅 Cambiar nuevo",
+            "action": "reschedule_new_event"
+          },
+          {
+            "id": "move_existing",
+            "title": "🔄 Mover existente",
+            "action": "reschedule_existing_event"
+          },
+          {
+            "id": "keep_both",
+            "title": "✅ Mantener ambos",
+            "action": "accept_calendar_overlap"
+          }
+        ],
+        "variables": ["new_event", "existing_event"]
+      },
+
+      "calendar_sync": {
+        "template_id": "calendar_sync_001",
+        "use_case": "Opciones de sincronización con calendario",
+        "header": "📅 Sincronizar Calendario",
+        "body": "¿Quieres que agregue este evento a tu Google Calendar?",
+        "buttons": [
+          {
+            "id": "sync_to_calendar",
+            "title": "✅ Sí, agregar",
+            "action": "sync_event_to_google_calendar"
+          },
+          {
+            "id": "whatsapp_only",
+            "title": "📱 Solo WhatsApp",
+            "action": "keep_event_whatsapp_only"
+          },
+          {
+            "id": "setup_calendar_integration",
+            "title": "⚙️ Configurar sync",
+            "action": "setup_calendar_integration"
+          }
+        ]
+      }
+    },
+
+    "feedback_templates": {
+      "satisfaction_survey": {
+        "template_id": "satisfaction_001",
+        "use_case": "Encuesta de satisfacción post-tarea",
+        "header": "😊 ¿Cómo lo hice?",
+        "body": "¿Quedaste satisfecho con la ayuda que te di?",
+        "buttons": [
+          {
+            "id": "very_satisfied",
+            "title": "😍 Excelente",
+            "action": "log_positive_feedback"
+          },
+          {
+            "id": "satisfied",
+            "title": "😊 Bien",
+            "action": "log_neutral_feedback"
+          },
+          {
+            "id": "needs_improvement",
+            "title": "😐 Puede mejorar",
+            "action": "collect_improvement_feedback"
+          }
+        ]
+      },
+
+      "feature_request": {
+        "template_id": "feature_request_001",
+        "use_case": "Solicitud de nueva funcionalidad",
+        "header": "💡 ¡Buena idea!",
+        "body": "Tu sugerencia \"{feature_suggestion}\" es muy interesante.\n\n¿Te gustaría:",
+        "buttons": [
+          {
+            "id": "submit_feature_request",
+            "title": "📝 Enviar sugerencia",
+            "action": "submit_feature_to_development"
+          },
+          {
+            "id": "workaround_solution",
+            "title": "🔧 Solución temporal",
+            "action": "suggest_current_workaround"
+          },
+          {
+            "id": "join_beta",
+            "title": "🧪 Probar funciones beta",
+            "action": "invite_to_beta_program"
+          }
+        ],
+        "variables": ["feature_suggestion"]
+      }
+    }
+  }
+}

@@ -1,0 +1,517 @@
+# ⏰ AI Actions para Recordatorios - RobertAI
+# Definición de acciones inteligentes para gestión de recordatorios
+# Versión: 1.0.0 | Fecha: 2025-09-04
+
+ai_actions_category: "reminder_management"
+priority: "core_functionality"
+integration_level: "deep_whatsapp_integration"
+
+# ========================================
+# ACCIONES PRINCIPALES DE RECORDATORIOS
+# ========================================
+
+# ACCIÓN 1: CREAR RECORDATORIO ÚNICO
+create_single_reminder:
+  action_id: "create_single_reminder"
+  action_name: "Crear Recordatorio Único"
+  description: "Programa un recordatorio para una fecha y hora específica"
+  
+  trigger_patterns:
+    natural_language:
+      - "recuérdame {task} {time_expression}"
+      - "en {time_duration} recordar {task}"
+      - "el {date} a las {time} {task}"
+      - "no olvides {task} {when}"
+    
+  parameters:
+    required:
+      - task_description: 
+          type: "string"
+          description: "Descripción clara de lo que hay que recordar"
+          max_length: 200
+      - scheduled_datetime:
+          type: "datetime"
+          description: "Fecha y hora exacta del recordatorio"
+          validation: "must_be_future_time"
+          
+    optional:
+      - priority_level:
+          type: "enum"
+          values: ["low", "medium", "high", "urgent"]
+          default: "medium"
+      - location_context:
+          type: "string"
+          description: "Ubicación relevante para el recordatorio"
+      - additional_notes:
+          type: "string"
+          description: "Notas adicionales o contexto"
+          max_length: 500
+      - notification_advance:
+          type: "integer"
+          description: "Minutos de anticipación para notificar"
+          default: 0
+          
+  execution_flow:
+    step_1_validation:
+      validate_datetime: "Ensure datetime is in future"
+      validate_task: "Ensure task description is clear and actionable"
+      
+    step_2_scheduling:
+      create_reminder_entry: "Store in persistent reminder database"
+      set_notification_trigger: "Configure WhatsApp notification delivery"
+      
+    step_3_confirmation:
+      success_message: |
+        ✅ **Recordatorio programado:**
+        
+        📝 **Tarea:** {task_description}
+        🕐 **Fecha/Hora:** {formatted_datetime}
+        {priority_indicator}
+        {location_indicator}
+        
+        ¡Te avisaré puntualmente! 
+        
+      failure_handling:
+        error_message: "No pude programar el recordatorio. ¿Puedes verificar la fecha y hora?"
+        retry_prompt: "¿Quieres intentar con otra fecha/hora?"
+
+# ACCIÓN 2: CREAR RECORDATORIO RECURRENTE
+create_recurring_reminder:
+  action_id: "create_recurring_reminder"
+  action_name: "Crear Recordatorio Recurrente"
+  description: "Programa recordatorios que se repiten en intervalos regulares"
+  
+  trigger_patterns:
+    natural_language:
+      - "todos los {frequency} {task}"
+      - "cada {interval} recordar {task}"
+      - "{task} {recurring_pattern}"
+      - "diariamente {task}"
+      - "semanalmente {task}"
+    
+  parameters:
+    required:
+      - task_description:
+          type: "string"
+          description: "Actividad recurrente a recordar"
+          max_length: 200
+      - recurrence_pattern:
+          type: "object"
+          properties:
+            frequency: 
+              type: "enum"
+              values: ["daily", "weekly", "monthly", "yearly", "custom"]
+            interval:
+              type: "integer"
+              description: "Cada cuántas unidades (ej: cada 2 semanas)"
+              default: 1
+            days_of_week:
+              type: "array"
+              items: ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+            time_of_day:
+              type: "time"
+              description: "Hora específica para el recordatorio"
+              
+    optional:
+      - start_date:
+          type: "date"
+          description: "Cuándo empezar los recordatorios"
+          default: "today"
+      - end_date:
+          type: "date"
+          description: "Cuándo terminar (opcional)"
+      - skip_holidays:
+          type: "boolean"
+          description: "Saltar días feriados"
+          default: false
+      - max_occurrences:
+          type: "integer"
+          description: "Número máximo de repeticiones"
+          
+  execution_flow:
+    step_1_pattern_analysis:
+      parse_frequency: "Interpret natural language frequency expressions"
+      validate_pattern: "Ensure recurrence pattern makes sense"
+      
+    step_2_schedule_creation:
+      calculate_occurrences: "Generate series of reminder dates"
+      create_recurring_job: "Set up automated scheduling system"
+      
+    step_3_confirmation:
+      success_message: |
+        🔄 **Recordatorio recurrente configurado:**
+        
+        📝 **Actividad:** {task_description}
+        ⏰ **Frecuencia:** {human_readable_frequency}
+        📅 **Próximo recordatorio:** {next_occurrence}
+        🏁 **Hasta:** {end_condition}
+        
+        ¡Sistema activado! 
+        
+  management_features:
+    pause_recurring: "Pausar temporalmente la serie"
+    resume_recurring: "Reanudar serie pausada"
+    modify_frequency: "Cambiar frecuencia sin perder historial"
+    end_series: "Terminar serie antes de tiempo"
+
+# ACCIÓN 3: RECORDATORIO CONTEXTUAL POR UBICACIÓN
+create_location_reminder:
+  action_id: "create_location_reminder"
+  action_name: "Recordatorio por Ubicación"
+  description: "Activa recordatorio cuando el usuario esté cerca de un lugar específico"
+  
+  trigger_patterns:
+    natural_language:
+      - "cuando esté cerca de {location} recordar {task}"
+      - "en {place} no olvides {task}"
+      - "llegando a {location} {task}"
+    
+  parameters:
+    required:
+      - task_description:
+          type: "string"
+          description: "Qué recordar al llegar al lugar"
+      - location:
+          type: "object"
+          properties:
+            name:
+              type: "string"
+              description: "Nombre del lugar"
+            coordinates:
+              type: "object"
+              properties:
+                latitude: {"type": "number"}
+                longitude: {"type": "number"}
+            address:
+              type: "string"
+              description: "Dirección del lugar"
+              
+    optional:
+      - radius:
+          type: "integer"
+          description: "Radio en metros para activar"
+          default: 200
+      - activation_times:
+          type: "array"
+          description: "Horarios en que puede activarse"
+      - expiration_date:
+          type: "date"
+          description: "Cuándo expira este recordatorio"
+          
+  execution_flow:
+    step_1_location_setup:
+      geocode_location: "Convert address to coordinates if needed"
+      validate_coordinates: "Ensure location is valid and accessible"
+      
+    step_2_geofence_creation:
+      create_geofence: "Set up location monitoring"
+      configure_triggers: "Define activation conditions"
+      
+    step_3_activation_ready:
+      success_message: |
+        📍 **Recordatorio por ubicación configurado:**
+        
+        📝 **Te recordaré:** {task_description}
+        🗺️ **Cuando estés cerca de:** {location_name}
+        📐 **Radio de activación:** {radius}m
+        
+        ¡Listo para activarse! 
+        
+  location_features:
+    smart_activation: "Only trigger during reasonable hours unless urgent"
+    duplicate_prevention: "Don't repeat same reminder within 24h at same location"
+    battery_optimization: "Efficient location monitoring"
+
+# ACCIÓN 4: MODIFICAR RECORDATORIO EXISTENTE
+modify_existing_reminder:
+  action_id: "modify_existing_reminder"
+  action_name: "Modificar Recordatorio"
+  description: "Cambia fecha, hora o descripción de recordatorio programado"
+  
+  trigger_patterns:
+    natural_language:
+      - "cambiar recordatorio de {task}"
+      - "mover mi recordatorio"
+      - "modificar {task} para {new_time}"
+    
+  parameters:
+    required:
+      - reminder_identifier:
+          type: "string"
+          description: "ID o descripción única del recordatorio"
+      - modification_type:
+          type: "enum"
+          values: ["change_time", "change_task", "change_priority", "change_all"]
+          
+    conditional:
+      - new_datetime:
+          required_when: "modification_type includes time changes"
+          type: "datetime"
+      - new_task_description:
+          required_when: "modification_type includes task changes"
+          type: "string"
+      - new_priority:
+          required_when: "modification_type includes priority changes"
+          type: "enum"
+          values: ["low", "medium", "high", "urgent"]
+          
+  execution_flow:
+    step_1_identification:
+      find_reminder: "Search for matching reminder in database"
+      confirm_identification: |
+        🔍 **¿Te refieres a este recordatorio?**
+        
+        📝 **Actual:** {current_reminder_details}
+        
+        ¿Es correcto?
+        
+    step_2_modification:
+      apply_changes: "Update reminder with new parameters"
+      reschedule_notifications: "Adjust notification timing"
+      
+    step_3_confirmation:
+      success_message: |
+        ✅ **Recordatorio modificado:**
+        
+        🔄 **Cambios aplicados:**
+        {change_summary}
+        
+        **🆕 Nuevo recordatorio:**
+        {updated_reminder_details}
+
+# ACCIÓN 5: ELIMINAR RECORDATORIO
+delete_reminder:
+  action_id: "delete_reminder"
+  action_name: "Eliminar Recordatorio"
+  description: "Cancela un recordatorio programado"
+  
+  trigger_patterns:
+    natural_language:
+      - "cancelar recordatorio de {task}"
+      - "eliminar {task}"
+      - "ya no necesito recordatorio"
+    
+  parameters:
+    required:
+      - reminder_identifier:
+          type: "string"
+          description: "Identificador del recordatorio a eliminar"
+          
+  execution_flow:
+    step_1_identification:
+      search_reminder: "Find matching reminder"
+      
+    step_2_confirmation:
+      confirmation_request: |
+        ⚠️ **¿Eliminar este recordatorio?**
+        
+        📝 **{reminder_details}**
+        
+        Esta acción no se puede deshacer.
+        
+      options:
+        - text: "❌ Sí, eliminar"
+          action: "confirm_deletion"
+        - text: "🔄 No, cancelar"
+          action: "cancel_deletion"
+          
+    step_3_execution:
+      delete_from_database: "Remove reminder from system"
+      cancel_notifications: "Stop scheduled notifications"
+      
+      success_message: |
+        ✅ **Recordatorio eliminado:**
+        
+        📝 **{deleted_reminder}** ha sido cancelado.
+
+# ACCIÓN 6: LISTAR RECORDATORIOS ACTIVOS
+list_active_reminders:
+  action_id: "list_active_reminders"
+  action_name: "Ver Recordatorios Activos"
+  description: "Muestra todos los recordatorios programados del usuario"
+  
+  trigger_patterns:
+    natural_language:
+      - "mis recordatorios"
+      - "qué tengo programado"
+      - "lista de recordatorios"
+      - "agenda de recordatorios"
+    
+  parameters:
+    optional:
+      - filter_type:
+          type: "enum"
+          values: ["all", "today", "this_week", "urgent_only", "by_category"]
+          default: "all"
+      - sort_by:
+          type: "enum"
+          values: ["date_time", "priority", "creation_date", "category"]
+          default: "date_time"
+          
+  execution_flow:
+    step_1_retrieval:
+      fetch_reminders: "Get user's active reminders from database"
+      apply_filters: "Filter based on parameters"
+      
+    step_2_formatting:
+      categorize_reminders: "Group by type (single, recurring, location)"
+      format_display: |
+        📋 **Tus recordatorios activos:**
+        
+        **🔜 Próximos (hoy/mañana):**
+        {upcoming_reminders}
+        
+        **📅 Esta semana:**
+        {weekly_reminders}
+        
+        **🔄 Recurrentes:**
+        {recurring_reminders}
+        
+        **📍 Por ubicación:**
+        {location_reminders}
+        
+        ¿Quieres modificar alguno?
+
+# ACCIÓN 7: RECORDATORIO INTELIGENTE CON SUGERENCIAS
+smart_reminder_with_suggestions:
+  action_id: "smart_reminder_suggestions"
+  action_name: "Recordatorio Inteligente"
+  description: "Crea recordatorio con sugerencias contextuales automáticas"
+  
+  trigger_patterns:
+    natural_language:
+      - "recordatorio inteligente para {task}"
+      - "ayúdame a recordar {task} de la mejor manera"
+    
+  intelligence_features:
+    optimal_timing_suggestion:
+      medical_appointments: "Suggest 1-2 hour advance notice"
+      payment_deadlines: "Suggest 3-day advance warning"
+      social_events: "Suggest day-before and 2-hour-before reminders"
+      
+    related_task_detection:
+      preparation_suggestions: "Suggest preparation reminders"
+      follow_up_suggestions: "Suggest post-task follow-up"
+      
+    context_enrichment:
+      weather_consideration: "Factor weather for outdoor activities"
+      traffic_consideration: "Suggest earlier departure for appointments"
+      calendar_integration: "Check for conflicts and suggest adjustments"
+      
+  execution_flow:
+    step_1_analysis:
+      analyze_task_type: "Categorize the task and its requirements"
+      generate_suggestions: "Create intelligent recommendations"
+      
+    step_2_presentation:
+      suggestion_message: |
+        🧠 **Recordatorio inteligente configurado:**
+        
+        📝 **Tarea principal:** {main_task}
+        🕐 **Programado para:** {main_time}
+        
+        💡 **Sugerencias adicionales:**
+        {intelligent_suggestions_list}
+        
+        ¿Quieres que agregue alguna de estas sugerencias?
+        
+    step_3_implementation:
+      apply_selected_suggestions: "Add user-approved suggestions"
+      create_comprehensive_plan: "Set up complete reminder system"
+
+# ========================================
+# CONFIGURACIÓN DE NOTIFICACIONES
+# ========================================
+notification_system:
+  
+  # CONFIGURACIÓN DE ENTREGA
+  delivery_configuration:
+    primary_channel: "whatsapp_business_api"
+    fallback_channels: ["sms", "email"]
+    
+    message_templates:
+      standard_reminder:
+        format: |
+          🔔 **RECORDATORIO**
+          
+          ⏰ **Es hora de:** {task_description}
+          📅 **Programado para:** {scheduled_time}
+          
+          {additional_context}
+          
+          ¿Ya está listo?
+          
+        interactive_options:
+          - text: "✅ Listo"
+            action: "mark_completed"
+          - text: "⏰ 10 min más"
+            action: "snooze_10_minutes"
+          - text: "📅 Reagendar"
+            action: "reschedule_reminder"
+            
+      urgent_reminder:
+        format: |
+          🚨 **RECORDATORIO URGENTE**
+          
+          ⚠️ **IMPORTANTE:** {task_description}
+          ⏰ **Era para:** {scheduled_time}
+          
+          {urgency_context}
+          
+        escalation_enabled: true
+        repeat_until_acknowledged: true
+
+  # SISTEMA DE PERSISTENCIA
+  persistence_configuration:
+    missed_reminder_handling:
+      first_attempt: "Standard notification"
+      after_15_minutes: "Gentle follow-up"
+      after_30_minutes: "More insistent reminder"
+      after_1_hour: "Urgent escalation"
+      
+    acknowledgment_tracking:
+      completion_confirmation: "User confirms task completion"
+      snooze_handling: "Temporary postponement with new trigger"
+      reschedule_request: "Full rescheduling workflow activation"
+
+# ========================================
+# INTEGRACIÓN CON OTRAS FUNCIONALIDADES
+# ========================================
+integration_points:
+  
+  # INTEGRACIÓN CON CALENDARIO
+  calendar_integration:
+    google_calendar_sync:
+      create_calendar_event: "Add reminder as calendar entry"
+      check_conflicts: "Detect scheduling conflicts"
+      suggest_optimal_times: "Recommend better timing"
+      
+  # INTEGRACIÓN CON MULTIMODAL
+  multimodal_integration:
+    image_based_reminders:
+      trigger: "User sends image with time-sensitive content"
+      process: "Extract dates and create automatic reminders"
+      
+    audio_based_reminders:
+      trigger: "Voice message with reminder requests"
+      process: "Transcribe and create reminders from speech"
+
+# ========================================
+# MÉTRICAS Y ANÁLISIS
+# ========================================
+analytics_configuration:
+  
+  # MÉTRICAS DE EFECTIVIDAD
+  effectiveness_metrics:
+    - reminder_completion_rate
+    - average_snooze_frequency
+    - optimal_reminder_timing_by_task_type
+    - user_satisfaction_with_reminder_timing
+    
+  # OPTIMIZACIÓN AUTOMÁTICA
+  automatic_optimization:
+    learning_patterns: "Learn user's response patterns to optimize timing"
+    personalized_suggestions: "Improve suggestion relevance based on acceptance rate"
+    timing_optimization: "Adjust default timing based on user behavior"
+
+# Fin de las AI Actions para recordatorios

@@ -1,0 +1,637 @@
+# 📅 AI Actions para Calendario - RobertAI
+# Definición de acciones inteligentes para gestión de calendario y agendamiento
+# Versión: 1.0.0 | Fecha: 2025-09-04
+
+ai_actions_category: "calendar_management"
+priority: "core_functionality"
+integration_level: "google_calendar_api"
+
+# ========================================
+# ACCIONES PRINCIPALES DE CALENDARIO
+# ========================================
+
+# ACCIÓN 1: CREAR EVENTO EN CALENDARIO
+create_calendar_event:
+  action_id: "create_calendar_event"
+  action_name: "Crear Evento en Calendario"
+  description: "Crea un evento en Google Calendar con detalles completos"
+  
+  trigger_patterns:
+    natural_language:
+      - "agendar {event} para {datetime}"
+      - "crear evento {title} el {date}"
+      - "programar {activity} {when}"
+      - "cita con {person} {datetime}"
+    
+  parameters:
+    required:
+      - event_title:
+          type: "string"
+          description: "Título del evento"
+          max_length: 100
+      - start_datetime:
+          type: "datetime"
+          description: "Fecha y hora de inicio"
+          validation: "must_be_future_time"
+      - duration:
+          type: "duration"
+          description: "Duración del evento"
+          default: "1 hour"
+          format: "minutes or hours"
+          
+    optional:
+      - event_description:
+          type: "string"
+          description: "Descripción detallada del evento"
+          max_length: 1000
+      - location:
+          type: "string"
+          description: "Ubicación del evento"
+      - attendees:
+          type: "array"
+          items: "email_address"
+          description: "Lista de invitados"
+      - reminder_settings:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              method: {type: "enum", values: ["popup", "email", "sms"]}
+              minutes_before: {type: "integer"}
+          default: [{"method": "popup", "minutes_before": 15}]
+      - recurrence_rule:
+          type: "object"
+          description: "Reglas de recurrencia si aplica"
+      - calendar_id:
+          type: "string"
+          description: "ID del calendario específico"
+          default: "primary"
+          
+  execution_flow:
+    step_1_validation:
+      validate_datetime: "Ensure datetime is in future and reasonable"
+      check_conflicts: "Scan for existing events at same time"
+      validate_attendees: "Check email format if attendees provided"
+      
+    step_2_conflict_resolution:
+      conflict_detection:
+        overlapping_events: |
+          ⚠️ **Conflicto detectado:**
+          
+          🆕 **Nuevo evento:** {new_event_title}
+          ⏰ **Horario:** {requested_time}
+          
+          📅 **Conflicto con:** {existing_event}
+          
+          ¿Cómo lo resolvemos?
+          
+        resolution_options:
+          - text: "📅 Cambiar nuevo evento"
+            action: "reschedule_new_event"
+          - text: "🔄 Mover evento existente"
+            action: "reschedule_existing_event"
+          - text: "⏰ Buscar mejor horario"
+            action: "suggest_alternative_times"
+          - text: "✅ Mantener ambos"
+            action: "accept_overlap"
+            
+    step_3_creation:
+      create_google_calendar_event: "Use Google Calendar API"
+      generate_event_id: "Store internal reference"
+      
+    step_4_confirmation:
+      success_message: |
+        ✅ **Evento creado en tu calendario:**
+        
+        📝 **Título:** {event_title}
+        📅 **Fecha:** {formatted_date}
+        🕐 **Hora:** {start_time} - {end_time}
+        📍 **Lugar:** {location_if_provided}
+        👥 **Invitados:** {attendees_if_provided}
+        
+        🔔 **Recordatorios:** {reminder_summary}
+        
+        ¡Todo listo! 
+        
+      failure_handling:
+        error_message: "No pude crear el evento. ¿Verificamos los permisos de calendario?"
+        troubleshooting_steps:
+          - "Check Google Calendar API authorization"
+          - "Verify calendar access permissions"
+          - "Suggest manual calendar entry as backup"
+
+# ACCIÓN 2: BUSCAR HORARIOS DISPONIBLES
+find_available_times:
+  action_id: "find_available_times"
+  action_name: "Buscar Horarios Disponibles"
+  description: "Encuentra espacios libres en el calendario para programar eventos"
+  
+  trigger_patterns:
+    natural_language:
+      - "cuándo estoy libre"
+      - "horarios disponibles para {duration}"
+      - "espacios libres {timeframe}"
+      - "cuándo puedo agendar"
+    
+  parameters:
+    required:
+      - search_timeframe:
+          type: "object"
+          properties:
+            start_date: {type: "date"}
+            end_date: {type: "date"}
+          description: "Rango de fechas para buscar"
+      - required_duration:
+          type: "duration"
+          description: "Duración necesaria para el evento"
+          
+    optional:
+      - preferred_times:
+          type: "object"
+          properties:
+            preferred_days: {type: "array", items: "day_of_week"}
+            preferred_hours: {type: "object", properties: {"start": "time", "end": "time"}}
+          description: "Preferencias de horarios"
+      - minimum_gap:
+          type: "duration"
+          description: "Tiempo mínimo entre eventos"
+          default: "15 minutes"
+      - include_weekends:
+          type: "boolean"
+          description: "Incluir fines de semana"
+          default: false
+      - attendee_calendars:
+          type: "array"
+          items: "email_address"
+          description: "Calendarios de otras personas a considerar"
+          
+  execution_flow:
+    step_1_calendar_analysis:
+      fetch_existing_events: "Retrieve events from specified timeframe"
+      identify_busy_periods: "Mark occupied time slots"
+      
+    step_2_availability_calculation:
+      find_free_slots: "Calculate available time periods"
+      apply_preferences: "Filter based on user preferences"
+      rank_suggestions: "Prioritize best options"
+      
+    step_3_presentation:
+      availability_response: |
+        📅 **Horarios disponibles encontrados:**
+        
+        **🔥 Mejores opciones:**
+        {top_suggested_times}
+        
+        **📋 Otras opciones:**
+        {additional_available_times}
+        
+        ¿Cuál prefieres para tu {event_purpose}?
+        
+      interactive_selection:
+        - display_as_buttons: "Each time slot as selectable option"
+        - allow_custom_time: "Option for user to specify different time"
+        
+    step_4_booking_integration:
+      quick_booking: "Directly create event from selected time"
+      hold_time_slot: "Temporarily reserve selected time"
+
+# ACCIÓN 3: MODIFICAR EVENTO EXISTENTE
+modify_calendar_event:
+  action_id: "modify_calendar_event"
+  action_name: "Modificar Evento de Calendario"
+  description: "Cambia detalles de un evento ya programado"
+  
+  trigger_patterns:
+    natural_language:
+      - "cambiar {event} para {new_time}"
+      - "mover mi cita"
+      - "modificar evento {identifier}"
+      - "reagendar {event_description}"
+    
+  parameters:
+    required:
+      - event_identifier:
+          type: "string"
+          description: "Título, fecha o ID del evento a modificar"
+      - modification_type:
+          type: "enum"
+          values: ["change_time", "change_location", "change_title", "change_description", "add_attendees", "change_duration"]
+          
+    conditional:
+      - new_datetime:
+          required_when: "modification_type == change_time"
+          type: "datetime"
+      - new_location:
+          required_when: "modification_type == change_location"
+          type: "string"
+      - new_title:
+          required_when: "modification_type == change_title"
+          type: "string"
+      - new_description:
+          required_when: "modification_type == change_description"
+          type: "string"
+      - additional_attendees:
+          required_when: "modification_type == add_attendees"
+          type: "array"
+          items: "email_address"
+      - new_duration:
+          required_when: "modification_type == change_duration"
+          type: "duration"
+          
+  execution_flow:
+    step_1_identification:
+      search_events: "Find matching events in calendar"
+      
+      multiple_matches_handling: |
+        🔍 **Encontré varios eventos similares:**
+        
+        {matching_events_list}
+        
+        ¿A cuál te refieres?
+        
+    step_2_modification_preview:
+      show_current_details: |
+        📅 **Evento actual:**
+        {current_event_details}
+        
+        🔄 **Cambios propuestos:**
+        {proposed_changes}
+        
+        ¿Confirmas los cambios?
+        
+    step_3_execution:
+      update_google_calendar: "Apply changes via Google Calendar API"
+      notify_attendees: "Send update notifications if attendees affected"
+      
+    step_4_confirmation:
+      success_message: |
+        ✅ **Evento actualizado:**
+        
+        📝 **{event_title}**
+        {updated_details}
+        
+        {attendee_notification_status}
+
+# ACCIÓN 4: CANCELAR EVENTO
+cancel_calendar_event:
+  action_id: "cancel_calendar_event"
+  action_name: "Cancelar Evento"
+  description: "Cancela un evento programado en el calendario"
+  
+  trigger_patterns:
+    natural_language:
+      - "cancelar {event}"
+      - "eliminar cita de {date}"
+      - "no voy a {event_description}"
+    
+  parameters:
+    required:
+      - event_identifier:
+          type: "string"
+          description: "Identificador del evento a cancelar"
+          
+    optional:
+      - cancellation_reason:
+          type: "string"
+          description: "Motivo de la cancelación"
+      - notify_attendees:
+          type: "boolean"
+          description: "Notificar a los invitados"
+          default: true
+      - reschedule_request:
+          type: "boolean"
+          description: "Si se quiere reagendar inmediatamente"
+          default: false
+          
+  execution_flow:
+    step_1_identification:
+      find_event: "Locate event in calendar"
+      
+    step_2_confirmation:
+      cancellation_confirmation: |
+        ⚠️ **¿Cancelar este evento?**
+        
+        📅 **{event_details}**
+        
+        {attendee_impact_warning}
+        
+        Esta acción se puede deshacer.
+        
+      options:
+        - text: "❌ Sí, cancelar"
+          action: "confirm_cancellation"
+        - text: "📅 Mejor reagendar"
+          action: "initiate_rescheduling"
+        - text: "🔄 No, mantener"
+          action: "cancel_cancellation"
+          
+    step_3_execution:
+      delete_from_calendar: "Remove from Google Calendar"
+      send_cancellation_notices: "Notify attendees with cancellation reason"
+      
+    step_4_follow_up:
+      success_message: |
+        ✅ **Evento cancelado:**
+        
+        📝 **{cancelled_event}**
+        {notification_summary}
+        
+      reschedule_offer: "¿Quieres reagendarlo para otra fecha?"
+
+# ACCIÓN 5: VISTA DIARIA DE AGENDA
+daily_agenda_view:
+  action_id: "daily_agenda_view"
+  action_name: "Vista Diaria de Agenda"
+  description: "Muestra la agenda completa de un día específico"
+  
+  trigger_patterns:
+    natural_language:
+      - "mi agenda de hoy"
+      - "qué tengo mañana"
+      - "agenda del {date}"
+      - "horarios de {day}"
+    
+  parameters:
+    required:
+      - target_date:
+          type: "date"
+          description: "Fecha para mostrar agenda"
+          default: "today"
+          
+    optional:
+      - include_details:
+          type: "boolean"
+          description: "Incluir detalles completos de eventos"
+          default: true
+      - show_travel_time:
+          type: "boolean"
+          description: "Mostrar tiempo de traslado entre eventos"
+          default: true
+      - include_reminders:
+          type: "boolean"
+          description: "Incluir recordatorios del día"
+          default: true
+          
+  execution_flow:
+    step_1_data_collection:
+      fetch_calendar_events: "Get events for specified date"
+      fetch_related_reminders: "Get non-calendar reminders"
+      calculate_travel_times: "Estimate travel between locations"
+      
+    step_2_agenda_compilation:
+      chronological_sorting: "Order events by time"
+      gap_analysis: "Identify free time periods"
+      conflict_detection: "Flag overlapping events"
+      
+    step_3_presentation:
+      agenda_format: |
+        📅 **Tu agenda para {formatted_date}:**
+        
+        {morning_events}
+        
+        {afternoon_events}
+        
+        {evening_events}
+        
+        **🚗 Consideraciones de traslado:**
+        {travel_recommendations}
+        
+        **⚠️ Conflictos detectados:**
+        {conflicts_if_any}
+        
+        **⏱️ Tiempo libre:**
+        {free_time_blocks}
+        
+      interactive_options:
+        - text: "📝 Modificar evento"
+          action: "select_event_to_modify"
+        - text: "➕ Agregar evento"
+          action: "add_new_event_to_day"
+        - text: "🔄 Ver otro día"
+          action: "change_target_date"
+
+# ACCIÓN 6: VISTA SEMANAL DE CALENDARIO
+weekly_calendar_view:
+  action_id: "weekly_calendar_view"
+  action_name: "Vista Semanal de Calendario"
+  description: "Muestra la agenda completa de una semana"
+  
+  trigger_patterns:
+    natural_language:
+      - "mi semana"
+      - "agenda semanal"
+      - "eventos de esta semana"
+      - "calendario semanal"
+    
+  parameters:
+    optional:
+      - week_offset:
+          type: "integer"
+          description: "Semanas desde hoy (0=esta semana, 1=próxima, -1=pasada)"
+          default: 0
+      - summary_level:
+          type: "enum"
+          values: ["brief", "detailed", "minimal"]
+          default: "brief"
+          
+  execution_flow:
+    step_1_week_calculation:
+      determine_week_range: "Calculate start and end dates"
+      fetch_week_events: "Get all events in timeframe"
+      
+    step_2_weekly_analysis:
+      daily_breakdowns: "Organize events by day"
+      workload_analysis: "Assess busy vs free periods"
+      pattern_recognition: "Identify recurring commitments"
+      
+    step_3_presentation:
+      weekly_summary: |
+        📊 **Tu semana del {week_start} al {week_end}:**
+        
+        **📈 Resumen:**
+        • Total de eventos: {total_events}
+        • Días más ocupados: {busiest_days}
+        • Tiempo libre total: {free_time_total}
+        
+        **📅 Día por día:**
+        {daily_summaries}
+        
+        **💡 Sugerencias:**
+        {optimization_suggestions}
+
+# ACCIÓN 7: COORDINACIÓN DE REUNIONES GRUPALES
+coordinate_group_meeting:
+  action_id: "coordinate_group_meeting"
+  action_name: "Coordinar Reunión Grupal"
+  description: "Encuentra horario óptimo para múltiples personas"
+  
+  trigger_patterns:
+    natural_language:
+      - "reunión con {attendees}"
+      - "coordinar junta grupal"
+      - "encontrar horario para todos"
+    
+  parameters:
+    required:
+      - attendees:
+          type: "array"
+          items: "email_address"
+          description: "Lista de participantes requeridos"
+      - meeting_duration:
+          type: "duration"
+          description: "Duración esperada de la reunión"
+      - timeframe:
+          type: "object"
+          properties:
+            start_date: {type: "date"}
+            end_date: {type: "date"}
+          description: "Rango de fechas para buscar"
+          
+    optional:
+      - meeting_title:
+          type: "string"
+          description: "Título de la reunión"
+      - location_preference:
+          type: "string"
+          description: "Ubicación preferida"
+      - priority_level:
+          type: "enum"
+          values: ["low", "medium", "high", "urgent"]
+          default: "medium"
+      - required_attendees:
+          type: "array"
+          items: "email_address"
+          description: "Subset of attendees that must be present"
+          
+  execution_flow:
+    step_1_availability_analysis:
+      fetch_all_calendars: "Get availability for all attendees"
+      find_common_slots: "Identify mutually free time periods"
+      
+    step_2_optimization:
+      rank_options: "Score options based on convenience"
+      consider_time_zones: "Handle different time zones if applicable"
+      factor_preferences: "Apply meeting time preferences"
+      
+    step_3_proposal:
+      meeting_options: |
+        👥 **Opciones para reunión grupal:**
+        
+        **🥇 Mejor opción:**
+        📅 {best_option_details}
+        ✅ **Disponible:** {available_attendees}
+        ⚠️ **Conflictos:** {conflicted_attendees}
+        
+        **🥈 Alternativas:**
+        {alternative_options}
+        
+        ¿Cuál prefieres?
+        
+    step_4_booking:
+      create_group_event: "Create calendar event for all attendees"
+      send_invitations: "Send calendar invitations"
+      
+      confirmation_message: |
+        ✅ **Reunión coordinada exitosamente:**
+        
+        📝 **{meeting_title}**
+        📅 **{selected_datetime}**
+        👥 **Participantes:** {attendee_list}
+        📍 **Ubicación:** {location}
+        
+        📧 **Invitaciones enviadas a todos los participantes**
+
+# ========================================
+# CONFIGURACIÓN DE INTEGRACIÓN
+# ========================================
+google_calendar_integration:
+  
+  # CONFIGURACIÓN DE API
+  api_configuration:
+    scopes_required:
+      - "https://www.googleapis.com/auth/calendar"
+      - "https://www.googleapis.com/auth/calendar.events"
+    
+    rate_limiting:
+      requests_per_second: 10
+      requests_per_day: 1000000
+      
+    error_handling:
+      quota_exceeded: "Implement exponential backoff"
+      authentication_failed: "Re-request user authorization"
+      calendar_not_found: "Fall back to primary calendar"
+      
+  # SINCRONIZACIÓN BIDIRECCIONAL
+  sync_configuration:
+    real_time_updates:
+      webhook_notifications: "Receive calendar change notifications"
+      conflict_detection: "Monitor for scheduling conflicts"
+      
+    data_consistency:
+      sync_frequency: "every_15_minutes"
+      conflict_resolution: "user_calendar_takes_precedence"
+      backup_strategy: "local_cache_with_periodic_full_sync"
+
+# ========================================
+# FUNCIONALIDADES AVANZADAS
+# ========================================
+advanced_features:
+  
+  # ANÁLISIS PREDICTIVO
+  predictive_analytics:
+    meeting_pattern_analysis:
+      optimal_meeting_times: "Learn user's productive hours"
+      duration_estimation: "Suggest realistic meeting durations"
+      location_optimization: "Recommend convenient meeting locations"
+      
+    scheduling_intelligence:
+      buffer_time_suggestions: "Automatically add travel time"
+      preparation_reminders: "Suggest pre-meeting preparation"
+      follow_up_tracking: "Remind about post-meeting actions"
+      
+  # INTEGRACIÓN CON RECORDATORIOS
+  reminder_integration:
+    automatic_reminder_creation:
+      pre_event_reminders: "Create preparation reminders"
+      travel_time_alerts: "Alert for departure time"
+      post_event_follow_ups: "Schedule follow-up actions"
+      
+  # ANÁLISIS DE PRODUCTIVIDAD
+  productivity_insights:
+    time_analysis:
+      meeting_time_percentage: "Track time spent in meetings"
+      focus_time_blocks: "Identify longest uninterrupted periods"
+      optimal_scheduling_patterns: "Recommend ideal daily structure"
+      
+    reporting:
+      weekly_summary: "Provide weekly productivity summary"
+      month_overview: "Monthly calendar utilization report"
+      improvement_suggestions: "Recommend schedule optimizations"
+
+# ========================================
+# MÉTRICAS Y OPTIMIZACIÓN
+# ========================================
+performance_metrics:
+  
+  # MÉTRICAS DE USO
+  usage_analytics:
+    - events_created_per_week
+    - modification_frequency
+    - cancellation_rate
+    - group_meeting_success_rate
+    
+  # MÉTRICAS DE SATISFACCIÓN
+  satisfaction_indicators:
+    - conflict_resolution_success
+    - optimal_timing_acceptance_rate
+    - feature_adoption_rate
+    - user_productivity_improvement
+    
+  # OPTIMIZACIÓN CONTINUA
+  optimization_targets:
+    - reduce_scheduling_conflicts
+    - improve_meeting_time_suggestions
+    - enhance_travel_time_accuracy
+    - increase_calendar_utilization_efficiency
+
+# Fin de las AI Actions para calendario

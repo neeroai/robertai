@@ -1,0 +1,576 @@
+{
+  "quick_reply_templates": {
+    "metadata": {
+      "version": "1.0.0",
+      "last_updated": "2025-09-04",
+      "platform": "whatsapp_business_api",
+      "language": "es-LATAM",
+      "total_templates": 22,
+      "note": "Quick replies aparecen como opciones de respuesta rápida sobre el teclado"
+    },
+
+    "confirmation_responses": {
+      "basic_confirmation": {
+        "template_id": "confirmation_quick_001",
+        "use_case": "Confirmaciones básicas para cualquier acción",
+        "trigger_contexts": ["task_completion", "appointment_confirmation", "reminder_setup"],
+        "options": [
+          {
+            "text": "✅ Sí",
+            "payload": "confirm_yes",
+            "description": "Confirmación positiva"
+          },
+          {
+            "text": "❌ No", 
+            "payload": "confirm_no",
+            "description": "Negación"
+          },
+          {
+            "text": "🤔 Tal vez",
+            "payload": "confirm_maybe",
+            "description": "Respuesta no definitiva"
+          }
+        ]
+      },
+
+      "task_completion": {
+        "template_id": "task_completion_quick_001",
+        "use_case": "Confirmar si se completó una tarea recordada",
+        "trigger_contexts": ["reminder_notification", "task_followup"],
+        "options": [
+          {
+            "text": "✅ Listo",
+            "payload": "task_completed",
+            "description": "Tarea completada exitosamente"
+          },
+          {
+            "text": "⏰ En proceso",
+            "payload": "task_in_progress", 
+            "description": "Trabajando en la tarea"
+          },
+          {
+            "text": "📅 Reagendar",
+            "payload": "reschedule_task",
+            "description": "Necesita mover para otro momento"
+          },
+          {
+            "text": "❌ Cancelar",
+            "payload": "cancel_task",
+            "description": "Ya no es necesaria la tarea"
+          }
+        ]
+      },
+
+      "satisfaction_rating": {
+        "template_id": "satisfaction_quick_001",
+        "use_case": "Rating rápido de satisfacción",
+        "trigger_contexts": ["post_assistance", "service_evaluation"],
+        "options": [
+          {
+            "text": "😍 Excelente",
+            "payload": "rating_excellent",
+            "description": "Muy satisfecho"
+          },
+          {
+            "text": "😊 Bien",
+            "payload": "rating_good",
+            "description": "Satisfecho"
+          },
+          {
+            "text": "😐 Regular",
+            "payload": "rating_okay",
+            "description": "Neutral"
+          },
+          {
+            "text": "😞 Mal",
+            "payload": "rating_poor", 
+            "description": "Insatisfecho"
+          }
+        ]
+      }
+    },
+
+    "time_related_responses": {
+      "snooze_options": {
+        "template_id": "snooze_quick_001",
+        "use_case": "Opciones rápidas para posponer recordatorios",
+        "trigger_contexts": ["reminder_notification", "task_delay"],
+        "options": [
+          {
+            "text": "⏰ 5 min",
+            "payload": "snooze_5min",
+            "description": "Posponer 5 minutos"
+          },
+          {
+            "text": "⏰ 15 min",
+            "payload": "snooze_15min", 
+            "description": "Posponer 15 minutos"
+          },
+          {
+            "text": "⏰ 30 min",
+            "payload": "snooze_30min",
+            "description": "Posponer 30 minutos"
+          },
+          {
+            "text": "⏰ 1 hora",
+            "payload": "snooze_1hour",
+            "description": "Posponer 1 hora"
+          }
+        ]
+      },
+
+      "time_preferences": {
+        "template_id": "time_preference_quick_001",
+        "use_case": "Selección rápida de horarios preferenciales",
+        "trigger_contexts": ["appointment_scheduling", "reminder_timing"],
+        "options": [
+          {
+            "text": "🌅 Mañana",
+            "payload": "prefer_morning",
+            "description": "Prefiere horarios matutinos"
+          },
+          {
+            "text": "🌞 Tarde",
+            "payload": "prefer_afternoon",
+            "description": "Prefiere horarios vespertinos"
+          },
+          {
+            "text": "🌙 Noche",
+            "payload": "prefer_evening",
+            "description": "Prefiere horarios nocturnos"
+          },
+          {
+            "text": "🤷 Flexible",
+            "payload": "prefer_flexible",
+            "description": "Sin preferencia específica"
+          }
+        ]
+      },
+
+      "urgency_levels": {
+        "template_id": "urgency_quick_001",
+        "use_case": "Indicar nivel de urgencia rápidamente",
+        "trigger_contexts": ["task_creation", "appointment_request"],
+        "options": [
+          {
+            "text": "🚨 Urgente",
+            "payload": "urgent_high",
+            "description": "Máxima prioridad"
+          },
+          {
+            "text": "⚡ Importante",
+            "payload": "urgent_medium",
+            "description": "Prioridad alta"
+          },
+          {
+            "text": "📝 Normal",
+            "payload": "urgent_normal",
+            "description": "Prioridad estándar"
+          },
+          {
+            "text": "🕒 Cuando puedas",
+            "payload": "urgent_low",
+            "description": "Sin prisa"
+          }
+        ]
+      }
+    },
+
+    "multimedia_responses": {
+      "media_processing_actions": {
+        "template_id": "media_actions_quick_001",
+        "use_case": "Acciones rápidas después de procesar multimedia",
+        "trigger_contexts": ["image_analyzed", "audio_transcribed", "document_processed"],
+        "options": [
+          {
+            "text": "⏰ Crear recordatorio",
+            "payload": "create_reminder_from_media",
+            "description": "Generar recordatorio basado en contenido"
+          },
+          {
+            "text": "📅 Agendar",
+            "payload": "schedule_from_media",
+            "description": "Programar cita basada en información"
+          },
+          {
+            "text": "💾 Guardar info",
+            "payload": "save_media_info",
+            "description": "Almacenar información extraída"
+          },
+          {
+            "text": "📤 Compartir",
+            "payload": "share_media_analysis",
+            "description": "Enviar análisis a contacto"
+          }
+        ]
+      },
+
+      "media_quality_feedback": {
+        "template_id": "media_quality_quick_001", 
+        "use_case": "Feedback rápido sobre calidad de procesamiento multimedia",
+        "trigger_contexts": ["ocr_result", "transcription_result", "image_analysis"],
+        "options": [
+          {
+            "text": "👍 Perfecto",
+            "payload": "media_quality_perfect",
+            "description": "Procesamiento correcto"
+          },
+          {
+            "text": "👌 Casi bien",
+            "payload": "media_quality_mostly_good",
+            "description": "Mayormente correcto con errores menores"
+          },
+          {
+            "text": "🔄 Reintentar",
+            "payload": "media_quality_retry",
+            "description": "Necesita reprocesamiento"
+          },
+          {
+            "text": "✏️ Corregir",
+            "payload": "media_quality_manual_correct",
+            "description": "Requiere corrección manual"
+          }
+        ]
+      }
+    },
+
+    "communication_responses": {
+      "conversation_flow_control": {
+        "template_id": "conversation_control_quick_001",
+        "use_case": "Control rápido del flujo conversacional",
+        "trigger_contexts": ["any_conversation", "user_guidance"],
+        "options": [
+          {
+            "text": "✅ Continuar",
+            "payload": "conversation_continue",
+            "description": "Seguir con el flujo actual"
+          },
+          {
+            "text": "⏸️ Pausar",
+            "payload": "conversation_pause",
+            "description": "Pausar interacción actual"
+          },
+          {
+            "text": "🔄 Empezar de nuevo",
+            "payload": "conversation_restart",
+            "description": "Reiniciar conversación"
+          },
+          {
+            "text": "🆘 Ayuda",
+            "payload": "conversation_help",
+            "description": "Solicitar ayuda"
+          }
+        ]
+      },
+
+      "politeness_responses": {
+        "template_id": "politeness_quick_001",
+        "use_case": "Respuestas corteses comunes",
+        "trigger_contexts": ["gratitude_expression", "social_interaction"],
+        "options": [
+          {
+            "text": "🙏 Gracias",
+            "payload": "polite_thanks",
+            "description": "Expresar agradecimiento"
+          },
+          {
+            "text": "👍 De nada",
+            "payload": "polite_welcome",
+            "description": "Responder a agradecimientos"
+          },
+          {
+            "text": "😊 Perfecto",
+            "payload": "polite_agreement",
+            "description": "Mostrar acuerdo"
+          },
+          {
+            "text": "🤝 Entendido",
+            "payload": "polite_understood",
+            "description": "Confirmar comprensión"
+          }
+        ]
+      },
+
+      "relationship_context": {
+        "template_id": "relationship_quick_001",
+        "use_case": "Contexto rápido de relación para personalización",
+        "trigger_contexts": ["contact_setup", "message_personalization"],
+        "options": [
+          {
+            "text": "👨‍👩‍👧‍👦 Familia",
+            "payload": "relationship_family",
+            "description": "Familiar cercano"
+          },
+          {
+            "text": "👫 Amigo/a",
+            "payload": "relationship_friend",
+            "description": "Amistad personal"
+          },
+          {
+            "text": "💼 Colega",
+            "payload": "relationship_colleague",
+            "description": "Relación profesional"
+          },
+          {
+            "text": "🤝 Conocido/a",
+            "payload": "relationship_acquaintance",
+            "description": "Conocido casual"
+          }
+        ]
+      }
+    },
+
+    "service_type_responses": {
+      "quick_service_selection": {
+        "template_id": "service_selection_quick_001",
+        "use_case": "Selección rápida de tipos de servicio comunes",
+        "trigger_contexts": ["service_booking", "appointment_type"],
+        "options": [
+          {
+            "text": "🏥 Doctor",
+            "payload": "service_medical",
+            "description": "Servicios médicos"
+          },
+          {
+            "text": "✂️ Peluquería",
+            "payload": "service_beauty",
+            "description": "Servicios de belleza"
+          },
+          {
+            "text": "🍽️ Restaurante",
+            "payload": "service_restaurant",
+            "description": "Reservas gastronómicas"
+          },
+          {
+            "text": "🏠 Casa",
+            "payload": "service_home",
+            "description": "Servicios domésticos"
+          }
+        ]
+      },
+
+      "frequency_selection": {
+        "template_id": "frequency_quick_001",
+        "use_case": "Selección rápida de frecuencias para recordatorios",
+        "trigger_contexts": ["recurring_reminder_setup", "habit_formation"],
+        "options": [
+          {
+            "text": "📅 Diario",
+            "payload": "frequency_daily",
+            "description": "Cada día"
+          },
+          {
+            "text": "📆 Semanal",
+            "payload": "frequency_weekly",
+            "description": "Una vez por semana"
+          },
+          {
+            "text": "🗓️ Mensual",
+            "payload": "frequency_monthly",
+            "description": "Una vez por mes"
+          },
+          {
+            "text": "⚙️ Personalizado",
+            "payload": "frequency_custom",
+            "description": "Configuración específica"
+          }
+        ]
+      }
+    },
+
+    "error_handling_responses": {
+      "error_recovery": {
+        "template_id": "error_recovery_quick_001",
+        "use_case": "Recuperación rápida de errores",
+        "trigger_contexts": ["processing_error", "misunderstanding"],
+        "options": [
+          {
+            "text": "🔄 Reintentar",
+            "payload": "error_retry",
+            "description": "Intentar la operación nuevamente"
+          },
+          {
+            "text": "✍️ Escribir manual",
+            "payload": "error_manual_input",
+            "description": "Proporcionar información manualmente"
+          },
+          {
+            "text": "🆘 Reportar",
+            "payload": "error_report",
+            "description": "Reportar el problema"
+          },
+          {
+            "text": "❌ Cancelar",
+            "payload": "error_cancel",
+            "description": "Abandonar la operación"
+          }
+        ]
+      },
+
+      "clarification_requests": {
+        "template_id": "clarification_quick_001",
+        "use_case": "Solicitar clarificación rápidamente", 
+        "trigger_contexts": ["ambiguous_request", "multiple_interpretations"],
+        "options": [
+          {
+            "text": "📝 Explicar mejor",
+            "payload": "clarify_explain",
+            "description": "Proporcionar más detalles"
+          },
+          {
+            "text": "🎯 Dar ejemplo",
+            "payload": "clarify_example",
+            "description": "Mostrar con ejemplo"
+          },
+          {
+            "text": "🔍 Ser específico",
+            "payload": "clarify_specific",
+            "description": "Detalles más precisos"
+          },
+          {
+            "text": "🤷 Ayúdame a elegir",
+            "payload": "clarify_help_choose",
+            "description": "Asistencia en la selección"
+          }
+        ]
+      }
+    },
+
+    "contextual_responses": {
+      "weather_dependent": {
+        "template_id": "weather_context_quick_001",
+        "use_case": "Respuestas que consideran el clima",
+        "trigger_contexts": ["outdoor_activity_planning", "travel_scheduling"],
+        "options": [
+          {
+            "text": "☀️ Si está soleado",
+            "payload": "weather_sunny",
+            "description": "Condición climática soleada"
+          },
+          {
+            "text": "🌧️ Si llueve",
+            "payload": "weather_rainy",
+            "description": "Condición climática lluviosa"
+          },
+          {
+            "text": "🌤️ Sin importar clima",
+            "payload": "weather_any",
+            "description": "Independiente del clima"
+          },
+          {
+            "text": "🔮 Revisar pronóstico",
+            "payload": "weather_check",
+            "description": "Consultar clima primero"
+          }
+        ]
+      },
+
+      "location_dependent": {
+        "template_id": "location_context_quick_001",
+        "use_case": "Respuestas que consideran ubicación",
+        "trigger_contexts": ["location_based_reminders", "travel_planning"],
+        "options": [
+          {
+            "text": "🏠 En casa",
+            "payload": "location_home",
+            "description": "Cuando esté en casa"
+          },
+          {
+            "text": "💼 En la oficina", 
+            "payload": "location_office",
+            "description": "Cuando esté en el trabajo"
+          },
+          {
+            "text": "🚗 En el camino",
+            "payload": "location_traveling",
+            "description": "Mientras me desplazo"
+          },
+          {
+            "text": "📍 En ubicación específica",
+            "payload": "location_specific",
+            "description": "En lugar particular"
+          }
+        ]
+      }
+    },
+
+    "preference_learning": {
+      "communication_style": {
+        "template_id": "communication_style_quick_001",
+        "use_case": "Aprender preferencias de comunicación",
+        "trigger_contexts": ["personalization_setup", "user_onboarding"],
+        "options": [
+          {
+            "text": "📝 Conciso",
+            "payload": "style_concise",
+            "description": "Respuestas breves y directas"
+          },
+          {
+            "text": "📖 Detallado",
+            "payload": "style_detailed",
+            "description": "Explicaciones completas"
+          },
+          {
+            "text": "😊 Casual",
+            "payload": "style_casual",
+            "description": "Tono informal y amigable"
+          },
+          {
+            "text": "💼 Formal",
+            "payload": "style_formal",
+            "description": "Comunicación profesional"
+          }
+        ]
+      },
+
+      "assistance_level": {
+        "template_id": "assistance_level_quick_001",
+        "use_case": "Nivel de asistencia preferido",
+        "trigger_contexts": ["user_preferences", "task_guidance"],
+        "options": [
+          {
+            "text": "🤖 Automático",
+            "payload": "assistance_auto",
+            "description": "Máxima automatización"
+          },
+          {
+            "text": "🤝 Colaborativo",
+            "payload": "assistance_collaborative", 
+            "description": "Trabajar juntos"
+          },
+          {
+            "text": "💭 Solo sugerencias",
+            "payload": "assistance_suggestions",
+            "description": "Propuestas sin ejecutar"
+          },
+          {
+            "text": "🎯 Bajo demanda",
+            "payload": "assistance_on_demand",
+            "description": "Solo cuando se solicite"
+          }
+        ]
+      }
+    }
+  },
+
+  "implementation_notes": {
+    "whatsapp_limitations": {
+      "max_options": 13,
+      "character_limit_per_option": 20,
+      "display_behavior": "Appears above keyboard as quick response options"
+    },
+    
+    "best_practices": {
+      "option_ordering": "Most likely responses first",
+      "emoji_usage": "One emoji per option for visual clarity",
+      "text_length": "Keep concise for mobile display",
+      "payload_naming": "Use clear, actionable payload names"
+    },
+    
+    "personalization": {
+      "adaptive_options": "Options can be personalized based on user history",
+      "context_awareness": "Show relevant options based on conversation context",
+      "learning_system": "Track most used options for optimization"
+    }
+  }
+}

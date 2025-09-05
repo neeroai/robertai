@@ -1,0 +1,542 @@
+# ⏰ Flujo Conversacional de Recordatorios - RobertAI
+# Sistema Inteligente de Recordatorios para WhatsApp Business API
+# Versión: 1.0.0 | Fecha: 2025-09-04
+
+flow_name: "intelligent_reminder_system"
+flow_type: "core_functionality"
+priority: "highest"
+language: "es-LATAM"
+
+# ========================================
+# TRIGGERS DE ACTIVACIÓN
+# ========================================
+activation_triggers:
+  primary_keywords: ["recordar", "recuérdame", "recordatorio", "alarma", "avísame"]
+  secondary_keywords: ["no olvides", "tengo que", "debo", "importante"]
+  intent_patterns:
+    - "time_based_task_request"
+    - "recurring_activity_setup"
+    - "deadline_management"
+    - "habit_formation_request"
+
+# ========================================
+# ANÁLISIS INTELIGENTE DE SOLICITUDES
+# ========================================
+request_analysis:
+  
+  # EXTRACCIÓN DE COMPONENTES
+  component_extraction:
+    task_identification:
+      patterns: ["llamar a", "comprar", "pagar", "ir a", "tomar", "hacer"]
+      context_analysis: "identify_action_verb_and_object"
+      
+    time_extraction:
+      absolute_time: ["3pm", "15:30", "a las 9", "9 de la mañana"]
+      relative_time: ["en 30 minutos", "mañana", "la próxima semana", "en 2 horas"] 
+      recurring_patterns: ["todos los días", "cada semana", "los lunes", "mensual"]
+      contextual_time: ["cuando salga", "antes de dormir", "después del trabajo"]
+      
+    priority_indicators:
+      high_priority: ["urgente", "importante", "crítico", "no puedo olvidar"]
+      medium_priority: ["recordar", "aviso", "tengo que"]
+      low_priority: ["si puedes", "cuando tengas chance"]
+
+  # CLASIFICACIÓN DE TIPOS DE RECORDATORIO
+  reminder_types:
+    
+    simple_one_time:
+      pattern: "accion + tiempo_específico"
+      examples: 
+        - "Recuérdame llamar al doctor mañana a las 3pm"
+        - "En 2 horas revisar el horno"
+      processing_priority: "immediate_scheduling"
+      
+    recurring_routine:
+      pattern: "acción + frecuencia_regular"
+      examples:
+        - "Todos los lunes hacer ejercicio"
+        - "Cada día tomar mis pastillas a las 8am"
+      processing_priority: "pattern_establishment"
+      
+    conditional_contextual:
+      pattern: "acción + condición_situacional"
+      examples:
+        - "Cuando esté cerca del super, comprar leche"
+        - "Antes de dormir, poner alarma para mañana"
+      processing_priority: "context_monitoring"
+      
+    deadline_critical:
+      pattern: "tarea + fecha_límite_específica"
+      examples:
+        - "Pagar la renta antes del 30"
+        - "Entregar proyecto el viernes"
+      processing_priority: "deadline_management"
+
+# ========================================
+# FLUJOS DE PROCESAMIENTO POR TIPO
+# ========================================
+processing_flows:
+  
+  # FLUJO RECORDATORIO SIMPLE
+  simple_reminder_flow:
+    
+    step_1_confirmation:
+      message_template: |
+        ¡Perfecto! ⏰ Entiendo que quieres que te recuerde:
+        
+        **📋 {extracted_task}**
+        **🕐 {extracted_time}**
+        
+        ¿Todo correcto así?
+        
+      interactive_options:
+        - text: "✅ Perfecto"
+          action: "confirm_and_schedule"
+        - text: "🔄 Cambiar hora"
+          action: "modify_time"  
+        - text: "📝 Cambiar tarea"
+          action: "modify_task"
+
+    step_2_scheduling_confirmation:
+      success_message: |
+        ✅ **¡Listo!** Tu recordatorio está programado:
+        
+        📝 **{task_description}**
+        🕐 **{scheduled_datetime}**
+        
+        {additional_context_message}
+        
+        ¿Necesitas agregar algo más al recordatorio?
+
+      additional_context_options:
+        - text: "📍 Agregar ubicación"
+          action: "add_location_context"
+        - text: "👥 Involucrar a alguien más"
+          action: "add_person_context"
+        - text: "✅ Está perfecto así"
+          action: "finalize_reminder"
+
+  # FLUJO RECORDATORIO RECURRENTE
+  recurring_reminder_flow:
+    
+    step_1_pattern_confirmation:
+      message_template: |
+        🔄 **Recordatorio recurrente detectado:**
+        
+        **📋 Actividad:** {activity}
+        **⏰ Frecuencia:** {frequency_pattern}
+        **🕐 Horario:** {time_pattern}
+        
+        ¿Es así como lo quieres programado?
+
+      pattern_options:
+        - text: "✅ Perfecto así"
+          action: "setup_recurring_pattern"
+        - text: "📅 Cambiar días"
+          action: "modify_frequency"
+        - text: "🕐 Cambiar horario" 
+          action: "modify_recurring_time"
+
+    step_2_recurrence_details:
+      detail_gathering:
+        start_date: "¿Desde cuándo empezamos con este recordatorio?"
+        end_condition: "¿Hasta cuándo o indefinidamente?"
+        skip_options: "¿Qué hago si hay feriados o fines de semana?"
+        
+      confirmation_message: |
+        🎯 **Recordatorio recurrente configurado:**
+        
+        🔄 **{activity}** cada **{frequency}** a las **{time}**
+        📅 Desde: **{start_date}**
+        🏁 Hasta: **{end_condition}**
+        
+        **Primera activación:** {next_reminder_date}
+        
+        ¡Todo programado! 💪
+
+  # FLUJO RECORDATORIO CONTEXTUAL
+  contextual_reminder_flow:
+    
+    step_1_context_analysis:
+      context_types:
+        location_based:
+          trigger_example: "cuando esté cerca del super"
+          setup_message: |
+            📍 **Recordatorio por ubicación:**
+            
+            Te voy a avisar sobre **{task}** cuando estés cerca de **{location}**.
+            
+            ¿Necesitas que sea más específico sobre la distancia?
+            
+          location_options:
+            - text: "📍 Ubicación exacta"
+              action: "set_precise_location"
+            - text: "🌐 Área general"
+              action: "set_general_area"
+              
+        time_context_based:
+          trigger_example: "antes de dormir"
+          setup_message: |
+            🌙 **Recordatorio contextual:**
+            
+            Te recordaré **{task}** **{time_context}**.
+            
+            ¿A qué hora suele ser eso para ti?
+
+    step_2_context_setup:
+      location_setup:
+        precise_location: "Comparte tu ubicación o dime la dirección exacta"
+        general_area: "¿En qué zona o cerca de qué lugar?"
+        
+      time_context_setup:
+        routine_mapping: "¿A qué hora sueles {context_activity}?"
+        flexibility_options: "¿Rango de tiempo flexible o hora específica?"
+
+# ========================================
+# GESTIÓN INTELIGENTE DE RECORDATORIOS
+# ========================================
+intelligent_management:
+  
+  # SUGERENCIAS PROACTIVAS
+  proactive_suggestions:
+    
+    buffer_time_suggestions:
+      medical_appointments: "Te sugiero recordarte 1 hora antes para llegar con tiempo y evitar tráfico"
+      payment_deadlines: "¿Programo recordatorio 3 días antes para que verifiques tu saldo?"
+      social_events: "¿También te recuerdo comprar regalo/confirmar asistencia?"
+      
+    related_task_suggestions:
+      medication_reminders: "¿También te recuerdo renovar la receta cuando se esté acabando?"
+      exercise_reminders: "¿Quieres que considere el clima para sugerir alternativas?"
+      meeting_reminders: "¿Te ayudo a recordar preparar la presentación/documentos?"
+
+  # OPTIMIZACIÓN CONTEXTUAL
+  context_optimization:
+    
+    timing_intelligence:
+      avoid_sleep_hours: "Detecté que es muy tarde/temprano. ¿Ajusto el horario?"
+      respect_work_schedule: "Es horario laboral, ¿prefieres antes o después del trabajo?"
+      consider_meal_times: "Es hora de comida, ¿movemos 30min después?"
+      
+    priority_management:
+      conflict_detection: "Tienes otra cita/recordatorio similar. ¿Cuál es más importante?"
+      urgency_escalation: "Este recordatorio es urgente, ¿programo recordatorios adicionales?"
+      batch_similar_tasks: "Tienes varias tareas similares, ¿las agrupo para ser más eficiente?"
+
+# ========================================
+# EJECUCIÓN DE RECORDATORIOS
+# ========================================
+reminder_execution:
+  
+  # ENTREGA DE RECORDATORIOS
+  delivery_system:
+    
+    standard_reminder:
+      format: |
+        🔔 **RECORDATORIO**
+        
+        ⏰ **Es hora de:** {task_description}
+        📅 **Programado para:** {scheduled_time}
+        
+        {additional_context}
+        
+        ¿Ya está listo o necesitas más tiempo?
+        
+      response_options:
+        - text: "✅ Listo"
+          action: "mark_completed"
+        - text: "⏰ 10 min más"
+          action: "snooze_10_minutes"
+        - text: "📅 Reagendar"
+          action: "reschedule_reminder"
+
+    urgent_reminder:
+      format: |
+        🚨 **RECORDATORIO URGENTE**
+        
+        ⚠️ **IMPORTANTE:** {task_description}
+        ⏰ **Era para:** {scheduled_time}
+        
+        {urgency_context}
+        
+        ¿Qué quieres hacer?
+        
+      escalation_options:
+        - text: "✅ Hacerlo ahora"
+          action: "mark_in_progress"
+        - text: "📞 Llamar/contactar ya"
+          action: "immediate_action_help"
+        - text: "⏰ Reagendar urgente"
+          action: "urgent_reschedule"
+
+  # SEGUIMIENTO POST-RECORDATORIO
+  follow_up_system:
+    
+    completion_confirmation:
+      success_message: "¡Genial! ✅ Marcé como completado: {task}. ¿Todo salió bien?"
+      
+    failure_support:
+      reschedule_offer: "Sin problema 🔄 ¿Para cuándo lo reagendamos?"
+      alternative_solutions: "¿Te puedo ayudar de otra manera con {task}?"
+      
+    learning_feedback:
+      timing_optimization: "¿El horario estuvo bien o prefieres otro para la próxima?"
+      context_improvement: "¿Algo que agregar para futuros recordatorios similares?"
+
+# ========================================
+# GESTIÓN DE RECORDATORIOS EXISTENTES
+# ========================================
+reminder_management:
+  
+  # VISUALIZACIÓN DE RECORDATORIOS
+  view_reminders:
+    
+    list_all_reminders:
+      command_triggers: ["mis recordatorios", "qué tengo", "lista", "agenda"]
+      
+      display_format: |
+        📋 **TUS RECORDATORIOS ACTIVOS:**
+        
+        **🔜 Próximos:**
+        {upcoming_reminders_list}
+        
+        **🔄 Recurrentes:**
+        {recurring_reminders_list}
+        
+        **📍 Contextuales:**
+        {contextual_reminders_list}
+        
+        ¿Quieres modificar alguno?
+        
+    filter_options:
+      - text: "📅 Solo hoy"
+        filter: "today_only"
+      - text: "📆 Esta semana"
+        filter: "this_week"
+      - text: "🔄 Solo recurrentes"
+        filter: "recurring_only"
+
+  # MODIFICACIÓN DE RECORDATORIOS
+  modify_reminders:
+    
+    edit_existing:
+      selection_method: "interactive_list_with_ids"
+      
+      modification_options:
+        change_time:
+          message: "¿Cuál es el nuevo horario para: {reminder_task}?"
+          input_type: "natural_time_expression"
+          
+        change_task:
+          message: "¿Cómo quieres que cambie la descripción?"
+          input_type: "free_text_with_confirmation"
+          
+        change_frequency:
+          message: "¿Nueva frecuencia para: {reminder_task}?"
+          options: ["Diario", "Semanal", "Mensual", "Personalizar"]
+
+    delete_reminders:
+      confirmation_required: true
+      
+      confirmation_message: |
+        ⚠️ **¿Seguro que quieres eliminar?**
+        
+        📝 **{reminder_to_delete}**
+        ⏰ **{scheduled_info}**
+        
+        Esta acción no se puede deshacer.
+        
+      options:
+        - text: "❌ Sí, eliminar"
+          action: "confirm_delete"
+        - text: "🔄 No, cancelar"
+          action: "cancel_delete"
+
+# ========================================
+# CASOS ESPECIALES Y MANEJO DE ERRORES
+# ========================================
+special_cases:
+  
+  # RECORDATORIOS PERDIDOS
+  missed_reminders:
+    
+    detection_system:
+      trigger: "reminder_not_acknowledged_30min"
+      
+    recovery_flow:
+      escalation_message: |
+        ⚠️ **Recordatorio perdido:**
+        
+        🔔 **Te recordé:** {missed_task}  
+        ⏰ **Era para:** {original_time}
+        
+        ¿Qué quieres hacer?
+        
+      recovery_options:
+        - text: "✅ Ya lo hice"
+          action: "mark_late_completion"
+        - text: "⏰ Hacer ahora"
+          action: "immediate_execution"
+        - text: "📅 Reprogramar"
+          action: "reschedule_missed"
+        - text: "❌ Cancelar"
+          action: "cancel_missed"
+
+  # RECORDATORIOS CONFLICTIVOS
+  conflict_resolution:
+    
+    overlap_detection:
+      trigger: "two_reminders_within_15min"
+      
+    resolution_message: |
+      ⚠️ **Conflicto de horarios detectado:**
+      
+      🔔 **{reminder_1}** - {time_1}
+      🔔 **{reminder_2}** - {time_2}
+      
+      ¿Cómo lo resolvemos?
+      
+    resolution_options:
+      - text: "⏰ Espaciar más tiempo"
+        action: "auto_space_reminders"
+      - text: "🎯 Priorizar uno"
+        action: "prioritize_reminder"
+      - text: "✅ Está bien así"
+        action: "keep_both_close"
+
+  # ERRORES DE INTERPRETACIÓN
+  interpretation_errors:
+    
+    ambiguous_time:
+      clarification_request: |
+        🤔 **No estoy seguro del horario:**
+        
+        📝 Entendí: "{user_input}"
+        
+        ¿Te refieres a:
+        
+      time_options_template:
+        - text: "🌅 {morning_option}"
+        - text: "🌞 {afternoon_option}"
+        - text: "🌙 {evening_option}"
+        - text: "📝 Ser más específico"
+          action: "request_exact_time"
+
+    unclear_task:
+      clarification_request: |
+        📝 **Quiero asegurarme de entender bien:**
+        
+        ¿La tarea es exactamente "{interpreted_task}"?
+        
+        O necesitas que sea más específico sobre algo?
+
+# ========================================
+# INTEGRACIÓN CON CALENDARIO
+# ========================================
+calendar_integration:
+  
+  # SINCRONIZACIÓN AUTOMÁTICA
+  auto_sync:
+    
+    calendar_events_consideration:
+      before_scheduling: "check_calendar_conflicts"
+      suggest_buffer: "recommend_travel_time"
+      avoid_overlap: "prevent_double_booking"
+      
+    sync_confirmation:
+      message: |
+        📅 **Integración con tu calendario:**
+        
+        ¿Quieres que también agregue este recordatorio a tu Google Calendar?
+        
+        Así tienes toda tu agenda sincronizada perfectamente.
+        
+      sync_options:
+        - text: "✅ Sí, agregar"
+          action: "sync_to_calendar"
+        - text: "📱 Solo WhatsApp"
+          action: "whatsapp_only"
+
+  # DETECCIÓN DE CONFLICTOS
+  conflict_detection:
+    
+    calendar_clash_warning:
+      message: |
+        ⚠️ **Posible conflicto detectado:**
+        
+        🔔 **Tu recordatorio:** {reminder_task}
+        📅 **Tu calendario muestra:** {calendar_event}
+        ⏰ **Mismo horario:** {conflict_time}
+        
+        ¿Qué prefieres hacer?
+        
+      resolution_options:
+        - text: "📅 Mover recordatorio"
+          action: "adjust_reminder_time"
+        - text: "🔄 Mover evento calendario"
+          action: "suggest_calendar_change"
+        - text: "✅ Mantener ambos"
+          action: "keep_both_scheduled"
+
+# ========================================
+# MÉTRICAS Y OPTIMIZACIÓN
+# ========================================
+analytics_tracking:
+  
+  # MÉTRICAS DE EFECTIVIDAD
+  effectiveness_metrics:
+    - reminder_completion_rate
+    - average_response_time_to_reminders
+    - reschedule_frequency_by_type
+    - user_satisfaction_with_timing
+    
+  # ANÁLISIS DE PATRONES
+  pattern_analysis:
+    - most_common_reminder_types
+    - optimal_timing_by_user_behavior
+    - context_success_rates
+    - proactive_suggestion_acceptance
+    
+  # OPTIMIZACIÓN CONTINUA
+  continuous_improvement:
+    - timing_accuracy_improvement
+    - context_understanding_enhancement
+    - personalization_effectiveness
+    - integration_usage_patterns
+
+# ========================================
+# CONFIGURACIÓN DE PERSONALIZACIÓN
+# ========================================
+personalization_config:
+  
+  # ADAPTACIÓN POR USUARIO
+  user_adaptation:
+    
+    learning_patterns:
+      time_preferences: "detect_preferred_reminder_times"
+      communication_style: "adapt_formality_and_emoji_use"  
+      task_categories: "identify_most_frequent_reminder_types"
+      context_importance: "learn_which_contexts_matter_most"
+      
+    adaptation_examples:
+      morning_person: "Suggest earlier reminders, more energetic tone"
+      night_owl: "Avoid early morning, use relaxed evening timing"
+      formal_preference: "Reduce emojis, increase professional tone"
+      casual_preference: "More emojis, informal language"
+
+  # CONFIGURACIÓN AVANZADA
+  advanced_settings:
+    
+    user_configurable_options:
+      default_snooze_time: "5min | 10min | 15min | 30min"
+      reminder_persistence: "1 reminder | 3 reminders | Until acknowledged"
+      context_sensitivity: "High | Medium | Low"
+      proactive_suggestions: "Enabled | Disabled"
+      
+    expert_user_features:
+      batch_reminder_creation: "Create multiple reminders from single message"
+      template_creation: "Save common reminder patterns"
+      advanced_recurrence: "Complex patterns like 'every 2nd Tuesday'"
+      integration_preferences: "Auto-sync vs manual approval"
+
+# Fin del flujo de recordatorios

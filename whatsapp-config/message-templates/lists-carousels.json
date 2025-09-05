@@ -1,0 +1,693 @@
+{
+  "interactive_list_templates": {
+    "metadata": {
+      "version": "1.0.0",
+      "last_updated": "2025-09-04",
+      "platform": "whatsapp_business_api",
+      "language": "es-LATAM",
+      "total_templates": 18
+    },
+
+    "reminder_lists": {
+      "reminder_frequency_selection": {
+        "template_id": "reminder_frequency_list_001",
+        "use_case": "Seleccionar frecuencia para recordatorio recurrente",
+        "header": "🔄 Frecuencia del Recordatorio",
+        "body": "¿Con qué frecuencia quieres que te recuerde \"{task}\"?",
+        "button_text": "📋 Seleccionar frecuencia",
+        "sections": [
+          {
+            "title": "⏰ Frecuencias Comunes",
+            "rows": [
+              {
+                "id": "daily_reminder",
+                "title": "Todos los días",
+                "description": "Recordatorio diario a la misma hora"
+              },
+              {
+                "id": "weekly_reminder", 
+                "title": "Cada semana",
+                "description": "Mismo día y hora semanalmente"
+              },
+              {
+                "id": "monthly_reminder",
+                "title": "Mensual",
+                "description": "Mismo día cada mes"
+              }
+            ]
+          },
+          {
+            "title": "📅 Días Específicos",
+            "rows": [
+              {
+                "id": "weekdays_only",
+                "title": "Solo días laborales",
+                "description": "Lunes a viernes únicamente"
+              },
+              {
+                "id": "weekends_only",
+                "title": "Solo fines de semana", 
+                "description": "Sábados y domingos"
+              },
+              {
+                "id": "custom_days",
+                "title": "Días personalizados",
+                "description": "Elegir días específicos"
+              }
+            ]
+          }
+        ],
+        "variables": ["task"]
+      },
+
+      "reminder_modification_options": {
+        "template_id": "reminder_modification_list_001",
+        "use_case": "Opciones para modificar recordatorio existente",
+        "header": "✏️ Modificar Recordatorio",
+        "body": "¿Qué quieres cambiar de tu recordatorio: \"{reminder_task}\"?",
+        "button_text": "🔧 Opciones disponibles",
+        "sections": [
+          {
+            "title": "⏰ Tiempo y Fecha",
+            "rows": [
+              {
+                "id": "change_time",
+                "title": "Cambiar hora",
+                "description": "Modificar hora del recordatorio"
+              },
+              {
+                "id": "change_date",
+                "title": "Cambiar fecha",
+                "description": "Mover a otra fecha"
+              },
+              {
+                "id": "change_frequency",
+                "title": "Cambiar frecuencia",
+                "description": "Modificar qué tan seguido"
+              }
+            ]
+          },
+          {
+            "title": "📝 Contenido",
+            "rows": [
+              {
+                "id": "change_description",
+                "title": "Cambiar descripción",
+                "description": "Modificar el texto del recordatorio"
+              },
+              {
+                "id": "add_context",
+                "title": "Agregar detalles",
+                "description": "Incluir ubicación o notas"
+              },
+              {
+                "id": "change_priority",
+                "title": "Cambiar prioridad",
+                "description": "Ajustar nivel de importancia"
+              }
+            ]
+          }
+        ],
+        "variables": ["reminder_task"]
+      }
+    },
+
+    "scheduling_lists": {
+      "medical_appointment_types": {
+        "template_id": "medical_appointment_list_001",
+        "use_case": "Seleccionar tipo de cita médica",
+        "header": "🏥 Tipo de Cita Médica",
+        "body": "¿Qué tipo de cita médica necesitas agendar?",
+        "button_text": "🩺 Ver opciones",
+        "sections": [
+          {
+            "title": "👨‍⚕️ Medicina General",
+            "rows": [
+              {
+                "id": "general_checkup",
+                "title": "Chequeo general",
+                "description": "Consulta de rutina y revisión general"
+              },
+              {
+                "id": "specific_symptom",
+                "title": "Síntoma específico",
+                "description": "Consulta por problema particular"
+              },
+              {
+                "id": "follow_up",
+                "title": "Seguimiento",
+                "description": "Cita de control o seguimiento"
+              }
+            ]
+          },
+          {
+            "title": "🦷 Especialistas",
+            "rows": [
+              {
+                "id": "dentist_appointment",
+                "title": "Dentista",
+                "description": "Limpieza, revisión o tratamiento dental"
+              },
+              {
+                "id": "gynecologist_appointment",
+                "title": "Ginecólogo/a",
+                "description": "Consulta ginecológica o checkup femenino"
+              },
+              {
+                "id": "dermatologist_appointment",
+                "title": "Dermatólogo/a", 
+                "description": "Revisión de piel, lunares o tratamiento"
+              },
+              {
+                "id": "ophthalmologist_appointment",
+                "title": "Oftalmólogo/a",
+                "description": "Revisión de vista o problema ocular"
+              }
+            ]
+          }
+        ]
+      },
+
+      "personal_service_categories": {
+        "template_id": "personal_service_list_001",
+        "use_case": "Seleccionar categoría de servicio personal",
+        "header": "✂️ Servicios Personales",
+        "body": "¿Qué tipo de servicio personal quieres agendar?",
+        "button_text": "💅 Ver servicios",
+        "sections": [
+          {
+            "title": "💇‍♀️ Belleza y Cuidado",
+            "rows": [
+              {
+                "id": "hair_salon",
+                "title": "Peluquería/Salón",
+                "description": "Corte, tinte, peinado"
+              },
+              {
+                "id": "barbershop",
+                "title": "Barbería",
+                "description": "Corte y arreglo de barba"
+              },
+              {
+                "id": "nail_salon",
+                "title": "Manicure/Pedicure",
+                "description": "Cuidado de uñas"
+              },
+              {
+                "id": "spa_massage",
+                "title": "Spa/Masajes",
+                "description": "Relajación y bienestar"
+              }
+            ]
+          },
+          {
+            "title": "🏠 Servicios del Hogar",
+            "rows": [
+              {
+                "id": "cleaning_service",
+                "title": "Limpieza doméstica",
+                "description": "Limpieza de casa/apartamento"
+              },
+              {
+                "id": "maintenance_service",
+                "title": "Mantenimiento",
+                "description": "Plomería, electricidad, reparaciones"
+              },
+              {
+                "id": "delivery_service",
+                "title": "Servicios a domicilio",
+                "description": "Entregas y servicios en casa"
+              }
+            ]
+          }
+        ]
+      },
+
+      "available_time_slots": {
+        "template_id": "time_slots_list_001",
+        "use_case": "Mostrar horarios disponibles",
+        "header": "🕐 Horarios Disponibles",
+        "body": "Encontré estos horarios disponibles para {service_type} con {provider_name}:",
+        "button_text": "⏰ Seleccionar horario",
+        "sections": [
+          {
+            "title": "📅 {date_today}",
+            "rows": [
+              {
+                "id": "slot_morning_1",
+                "title": "{morning_slot_1}",
+                "description": "Disponible - Confirma inmediatamente"
+              },
+              {
+                "id": "slot_morning_2", 
+                "title": "{morning_slot_2}",
+                "description": "Disponible - Última hora de la mañana"
+              }
+            ]
+          },
+          {
+            "title": "📅 {date_tomorrow}",
+            "rows": [
+              {
+                "id": "slot_afternoon_1",
+                "title": "{afternoon_slot_1}",
+                "description": "Recomendado - Horario popular"
+              },
+              {
+                "id": "slot_afternoon_2",
+                "title": "{afternoon_slot_2}",
+                "description": "Disponible - Buena opción"
+              },
+              {
+                "id": "slot_evening_1",
+                "title": "{evening_slot_1}",
+                "description": "Último horario disponible"
+              }
+            ]
+          }
+        ],
+        "variables": ["service_type", "provider_name", "date_today", "date_tomorrow", "morning_slot_1", "morning_slot_2", "afternoon_slot_1", "afternoon_slot_2", "evening_slot_1"]
+      }
+    },
+
+    "multimedia_processing_lists": {
+      "image_analysis_actions": {
+        "template_id": "image_analysis_list_001",
+        "use_case": "Acciones después de analizar imagen",
+        "header": "📸 ¿Qué hago con esta información?",
+        "body": "Analicé tu imagen y encontré: {analysis_summary}\n\n¿Qué acción quieres tomar?",
+        "button_text": "🔧 Ver acciones",
+        "sections": [
+          {
+            "title": "⏰ Gestión de Tiempo",
+            "rows": [
+              {
+                "id": "create_reminder_from_image",
+                "title": "Crear recordatorio",
+                "description": "Programar recordatorio basado en la info"
+              },
+              {
+                "id": "schedule_appointment_from_image",
+                "title": "Agendar cita",
+                "description": "Coordinar cita relacionada"
+              },
+              {
+                "id": "add_to_calendar_from_image",
+                "title": "Agregar a calendario",
+                "description": "Incluir fecha/evento en tu agenda"
+              }
+            ]
+          },
+          {
+            "title": "📋 Organización",
+            "rows": [
+              {
+                "id": "save_extracted_info",
+                "title": "Guardar información",
+                "description": "Almacenar datos extraídos"
+              },
+              {
+                "id": "create_task_list",
+                "title": "Crear lista de tareas",
+                "description": "Convertir en tareas accionables"
+              },
+              {
+                "id": "send_summary_message",
+                "title": "Enviar resumen",
+                "description": "Compartir análisis con alguien"
+              }
+            ]
+          }
+        ],
+        "variables": ["analysis_summary"]
+      },
+
+      "document_processing_options": {
+        "template_id": "document_processing_list_001",
+        "use_case": "Opciones para procesar documento",
+        "header": "📄 Procesamiento de Documento",
+        "body": "¿Qué necesitas hacer con este documento ({document_type})?",
+        "button_text": "📋 Ver opciones",
+        "sections": [
+          {
+            "title": "🔍 Análisis",
+            "rows": [
+              {
+                "id": "extract_key_dates",
+                "title": "Extraer fechas importantes",
+                "description": "Encontrar plazos y fechas críticas"
+              },
+              {
+                "id": "summarize_content",
+                "title": "Resumir contenido",
+                "description": "Crear resumen ejecutivo"
+              },
+              {
+                "id": "identify_action_items",
+                "title": "Identificar tareas",
+                "description": "Encontrar acciones requeridas"
+              }
+            ]
+          },
+          {
+            "title": "⚡ Acciones Rápidas",
+            "rows": [
+              {
+                "id": "create_payment_reminders",
+                "title": "Recordatorios de pago",
+                "description": "Si hay fechas de vencimiento"
+              },
+              {
+                "id": "schedule_follow_ups",
+                "title": "Programar seguimientos",
+                "description": "Agendar acciones futuras"
+              },
+              {
+                "id": "share_summary",
+                "title": "Compartir resumen",
+                "description": "Enviar análisis a otros"
+              }
+            ]
+          }
+        ],
+        "variables": ["document_type"]
+      }
+    },
+
+    "messaging_lists": {
+      "message_templates_selection": {
+        "template_id": "message_templates_list_001",
+        "use_case": "Seleccionar plantilla de mensaje",
+        "header": "💬 Plantillas de Mensajes",
+        "body": "¿Qué tipo de mensaje necesitas enviar?",
+        "button_text": "📝 Ver plantillas",
+        "sections": [
+          {
+            "title": "💼 Profesionales",
+            "rows": [
+              {
+                "id": "meeting_request_template",
+                "title": "Solicitud de reunión",
+                "description": "Formal, para coordinar juntas"
+              },
+              {
+                "id": "follow_up_template",
+                "title": "Seguimiento profesional",
+                "description": "Para dar seguimiento a temas pendientes"
+              },
+              {
+                "id": "appointment_confirmation_template",
+                "title": "Confirmación de cita",
+                "description": "Confirmar asistencia a eventos"
+              }
+            ]
+          },
+          {
+            "title": "👨‍👩‍👧‍👦 Personales",
+            "rows": [
+              {
+                "id": "birthday_template",
+                "title": "Felicitación cumpleaños",
+                "description": "Mensaje de cumpleaños personalizado"
+              },
+              {
+                "id": "invitation_template",
+                "title": "Invitación a evento",
+                "description": "Para invitar a reuniones sociales"
+              },
+              {
+                "id": "thank_you_template",
+                "title": "Agradecimiento",
+                "description": "Expresar gratitud apropiadamente"
+              }
+            ]
+          }
+        ]
+      },
+
+      "auto_response_scenarios": {
+        "template_id": "auto_response_list_001",
+        "use_case": "Seleccionar escenario de respuesta automática",
+        "header": "🤖 Respuesta Automática",
+        "body": "¿Para qué situación necesitas configurar respuesta automática?",
+        "button_text": "⚙️ Ver escenarios",
+        "sections": [
+          {
+            "title": "🏖️ Ausencias Temporales",
+            "rows": [
+              {
+                "id": "vacation_auto_response",
+                "title": "Vacaciones",
+                "description": "Mensaje de ausencia por vacaciones"
+              },
+              {
+                "id": "sick_leave_auto_response",
+                "title": "Incapacidad médica",
+                "description": "Ausencia por motivos de salud"
+              },
+              {
+                "id": "travel_auto_response",
+                "title": "Viaje de trabajo",
+                "description": "Disponibilidad limitada por viaje"
+              }
+            ]
+          },
+          {
+            "title": "💼 Horarios de Trabajo",
+            "rows": [
+              {
+                "id": "after_hours_auto_response",
+                "title": "Fuera de horario",
+                "description": "Respuesta fuera del horario laboral"
+              },
+              {
+                "id": "meeting_auto_response",
+                "title": "En reunión",
+                "description": "No disponible por estar en junta"
+              },
+              {
+                "id": "busy_period_auto_response",
+                "title": "Período ocupado",
+                "description": "Disponibilidad limitada temporalmente"
+              }
+            ]
+          }
+        ]
+      }
+    },
+
+    "settings_and_preferences": {
+      "notification_preferences": {
+        "template_id": "notification_preferences_list_001",
+        "use_case": "Configurar preferencias de notificaciones",
+        "header": "🔔 Preferencias de Notificaciones",
+        "body": "¿Cómo prefieres recibir tus recordatorios y notificaciones?",
+        "button_text": "⚙️ Configurar notificaciones",
+        "sections": [
+          {
+            "title": "⏰ Timing de Recordatorios",
+            "rows": [
+              {
+                "id": "advance_notifications",
+                "title": "Con anticipación",
+                "description": "15-30 min antes para prepararte"
+              },
+              {
+                "id": "just_in_time",
+                "title": "Justo a tiempo",
+                "description": "Exactamente cuando toca"
+              },
+              {
+                "id": "flexible_timing",
+                "title": "Timing flexible",
+                "description": "Adaptar según el tipo de tarea"
+              }
+            ]
+          },
+          {
+            "title": "📱 Frecuencia",
+            "rows": [
+              {
+                "id": "single_reminder",
+                "title": "Un solo recordatorio",
+                "description": "Solo una notificación"
+              },
+              {
+                "id": "persistent_reminders",
+                "title": "Recordatorios persistentes",
+                "description": "Repetir hasta confirmar"
+              },
+              {
+                "id": "smart_reminders",
+                "title": "Recordatorios inteligentes",
+                "description": "Adaptar según urgencia"
+              }
+            ]
+          }
+        ]
+      },
+
+      "language_and_region": {
+        "template_id": "language_region_list_001",
+        "use_case": "Configurar idioma y región",
+        "header": "🌎 Idioma y Región",
+        "body": "Personaliza RobertAI para tu región y preferencias:",
+        "button_text": "🗣️ Seleccionar configuración",
+        "sections": [
+          {
+            "title": "🇲🇽 Variantes del Español",
+            "rows": [
+              {
+                "id": "spanish_mexico",
+                "title": "Español México",
+                "description": "Ahorita, ¿qué onda?, híjole"
+              },
+              {
+                "id": "spanish_argentina",
+                "title": "Español Argentina",
+                "description": "Dale, che, bárbaro"
+              },
+              {
+                "id": "spanish_colombia",
+                "title": "Español Colombia",
+                "description": "Parcero, chimba, a la orden"
+              }
+            ]
+          },
+          {
+            "title": "⏰ Configuración Regional",
+            "rows": [
+              {
+                "id": "timezone_setup",
+                "title": "Zona horaria",
+                "description": "Ajustar horarios locales"
+              },
+              {
+                "id": "cultural_preferences",
+                "title": "Preferencias culturales",
+                "description": "Horarios de comida y costumbres"
+              },
+              {
+                "id": "holiday_calendar",
+                "title": "Calendario de feriados",
+                "description": "Días festivos de tu país"
+              }
+            ]
+          }
+        ]
+      }
+    },
+
+    "troubleshooting_lists": {
+      "common_issues": {
+        "template_id": "troubleshooting_list_001",
+        "use_case": "Resolver problemas comunes",
+        "header": "🔧 Resolver Problema",
+        "body": "¿Qué tipo de problema estás experimentando?",
+        "button_text": "🚨 Ver problemas comunes",
+        "sections": [
+          {
+            "title": "📱 Problemas de Funcionamiento",
+            "rows": [
+              {
+                "id": "not_responding",
+                "title": "No responde a mensajes",
+                "description": "RobertAI no contesta cuando escribo"
+              },
+              {
+                "id": "wrong_interpretation",
+                "title": "No entiende mis solicitudes",
+                "description": "Interpreta mal lo que digo"
+              },
+              {
+                "id": "reminders_not_working",
+                "title": "Recordatorios no llegan",
+                "description": "No recibo las notificaciones"
+              }
+            ]
+          },
+          {
+            "title": "📸 Problemas Multimodales",
+            "rows": [
+              {
+                "id": "image_not_processing",
+                "title": "No procesa imágenes",
+                "description": "Envío fotos pero no las analiza"
+              },
+              {
+                "id": "audio_transcription_issues",
+                "title": "Problemas con audios",
+                "description": "No transcribe bien mis mensajes de voz"
+              },
+              {
+                "id": "document_reading_failed",
+                "title": "No lee documentos",
+                "description": "No puede procesar PDFs o archivos"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+
+  "carousel_templates": {
+    "metadata": {
+      "note": "Los carouseles no están completamente soportados en WhatsApp Business API v17.0",
+      "alternative": "Se pueden simular con listas o múltiples mensajes con botones",
+      "future_implementation": "Preparado para futuras versiones de la API"
+    },
+
+    "service_provider_carousel": {
+      "template_id": "service_providers_001",
+      "use_case": "Mostrar opciones de proveedores de servicios",
+      "simulation_method": "multiple_button_messages",
+      "cards": [
+        {
+          "title": "Dr. García - Medicina General",
+          "subtitle": "⭐ 4.8/5 - Disponible mañana",
+          "image_url": "placeholder_doctor_image",
+          "buttons": [
+            {"title": "📅 Agendar", "payload": "book_dr_garcia"},
+            {"title": "ℹ️ Ver perfil", "payload": "profile_dr_garcia"}
+          ]
+        },
+        {
+          "title": "Dra. López - Medicina General", 
+          "subtitle": "⭐ 4.9/5 - Disponible pasado mañana",
+          "image_url": "placeholder_doctor_image",
+          "buttons": [
+            {"title": "📅 Agendar", "payload": "book_dra_lopez"},
+            {"title": "ℹ️ Ver perfil", "payload": "profile_dra_lopez"}
+          ]
+        }
+      ]
+    },
+
+    "restaurant_recommendations": {
+      "template_id": "restaurants_001",
+      "use_case": "Recomendaciones de restaurantes",
+      "simulation_method": "sequential_button_messages",
+      "cards": [
+        {
+          "title": "Il Becco - Italiano",
+          "subtitle": "💰 $380 promedio - ⭐ 4.7/5",
+          "image_url": "placeholder_restaurant_image",
+          "buttons": [
+            {"title": "🍽️ Reservar", "payload": "book_il_becco"},
+            {"title": "📋 Ver menú", "payload": "menu_il_becco"}
+          ]
+        },
+        {
+          "title": "Rosetta - Mediterráneo",
+          "subtitle": "💰 $420 promedio - ⭐ 4.8/5", 
+          "image_url": "placeholder_restaurant_image",
+          "buttons": [
+            {"title": "🍽️ Reservar", "payload": "book_rosetta"},
+            {"title": "📋 Ver menú", "payload": "menu_rosetta"}
+          ]
+        }
+      ]
+    }
+  }
+}

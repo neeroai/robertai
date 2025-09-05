@@ -1,0 +1,474 @@
+# 🔗 Configuración de Webhooks - WhatsApp Business API
+# Endpoints para procesamiento de eventos de WhatsApp via Bird.com
+# Versión: 1.0.0 | Fecha: 2025-09-04
+
+webhook_configuration:
+  api_version: "v17.0"
+  platform: "bird.com"
+  integration_type: "whatsapp_business_api"
+
+# ========================================
+# CONFIGURACIÓN PRINCIPAL DE WEBHOOKS
+# ========================================
+webhook_settings:
+  
+  # ENDPOINT PRINCIPAL
+  primary_webhook:
+    url: "https://api.bird.com/webhook/whatsapp/robertai"
+    method: "POST"
+    timeout: 10000  # 10 segundos
+    retry_policy:
+      max_attempts: 3
+      backoff_strategy: "exponential"
+      base_delay_ms: 1000
+    
+  # VERIFICACIÓN DE WEBHOOK
+  verification:
+    verify_token: "${WHATSAPP_VERIFY_TOKEN}"
+    challenge_response: "automatic"
+    
+  # SEGURIDAD
+  security:
+    signature_verification: true
+    secret_key: "${WHATSAPP_WEBHOOK_SECRET}"
+    ip_whitelist:
+      - "173.252.66.0/24"  # Meta/Facebook IPs
+      - "173.252.70.0/24"
+      - "31.13.64.0/18"
+
+# ========================================
+# EVENTOS SUSCRITOS
+# ========================================
+subscribed_events:
+  
+  # EVENTOS DE MENSAJES
+  message_events:
+    - event: "messages"
+      description: "Mensajes entrantes de usuarios"
+      priority: "high"
+      processing: "real_time"
+      
+    - event: "message_deliveries" 
+      description: "Confirmaciones de entrega"
+      priority: "medium"
+      processing: "batch_allowed"
+      
+    - event: "message_reads"
+      description: "Confirmaciones de lectura" 
+      priority: "low"
+      processing: "batch_preferred"
+
+  # EVENTOS DE ESTADO
+  status_events:
+    - event: "message_status"
+      description: "Estados de mensaje (enviado, entregado, leído, fallido)"
+      priority: "medium"
+      processing: "real_time"
+      
+  # EVENTOS DE ERRORES
+  error_events:
+    - event: "message_errors"
+      description: "Errores en envío de mensajes"
+      priority: "high"
+      processing: "immediate"
+
+# ========================================
+# PROCESADORES DE EVENTOS ESPECÍFICOS
+# ========================================
+event_processors:
+  
+  # PROCESADOR DE MENSAJES ENTRANTES
+  incoming_message_processor:
+    endpoint_path: "/webhook/message/received"
+    supported_message_types:
+      - "text"
+      - "image" 
+      - "audio"
+      - "video"
+      - "document"
+      - "location"
+      - "contacts"
+      - "interactive"
+      - "button_reply"
+      - "list_reply"
+      
+    processing_pipeline:
+      step_1_validation:
+        - validate_webhook_signature
+        - verify_message_format
+        - check_rate_limits
+        
+      step_2_content_analysis:
+        - extract_message_content
+        - identify_message_type
+        - detect_user_intent
+        - analyze_context
+        
+      step_3_routing:
+        - route_to_appropriate_handler
+        - initialize_conversation_context
+        - trigger_ai_processing
+        
+      step_4_response:
+        - generate_response
+        - format_for_whatsapp
+        - send_response_message
+        
+    example_payload_handling:
+      text_message:
+        payload_structure: |
+          {
+            "entry": [{
+              "id": "WHATSAPP_BUSINESS_ACCOUNT_ID",
+              "changes": [{
+                "value": {
+                  "messaging_product": "whatsapp",
+                  "metadata": {
+                    "display_phone_number": "PHONE_NUMBER",
+                    "phone_number_id": "PHONE_NUMBER_ID"
+                  },
+                  "contacts": [{
+                    "profile": {
+                      "name": "USER_NAME"
+                    },
+                    "wa_id": "WHATSAPP_ID"
+                  }],
+                  "messages": [{
+                    "from": "PHONE_NUMBER",
+                    "id": "MESSAGE_ID",
+                    "timestamp": "TIMESTAMP",
+                    "text": {
+                      "body": "MESSAGE_TEXT"
+                    },
+                    "type": "text"
+                  }]
+                }
+              }]
+            }]
+          }
+          
+        processing_logic: |
+          1. Extract user message text from payload.messages[0].text.body
+          2. Get user identifier from payload.messages[0].from
+          3. Process through NLP pipeline
+          4. Generate appropriate response
+          5. Send via WhatsApp Business API
+
+  # PROCESADOR DE MULTIMEDIA
+  multimedia_message_processor:
+    endpoint_path: "/webhook/media/received"
+    
+    image_processing:
+      supported_formats: ["jpeg", "jpg", "png", "webp"]
+      max_file_size: "5MB"
+      processing_steps:
+        - download_media_from_whatsapp
+        - validate_file_integrity
+        - extract_metadata
+        - perform_ocr_if_text_detected
+        - analyze_image_content
+        - generate_contextual_response
+        
+    audio_processing:
+      supported_formats: ["aac", "m4a", "amr", "mp3", "ogg"]
+      max_file_size: "16MB"
+      max_duration: "10_minutes"
+      processing_steps:
+        - download_audio_file
+        - validate_audio_format
+        - transcribe_using_whisper_api
+        - detect_language_and_sentiment
+        - process_transcribed_text
+        - generate_response
+        
+    document_processing:
+      supported_formats: ["pdf", "doc", "docx", "ppt", "pptx", "xls", "xlsx"]
+      max_file_size: "100MB"
+      processing_steps:
+        - download_document
+        - validate_file_type
+        - extract_text_content
+        - analyze_document_structure
+        - identify_key_information
+        - summarize_and_respond
+
+  # PROCESADOR DE MENSAJES INTERACTIVOS
+  interactive_message_processor:
+    endpoint_path: "/webhook/interactive/received"
+    
+    button_reply_handling:
+      payload_extraction: |
+        button_payload = message.interactive.button_reply.id
+        button_title = message.interactive.button_reply.title
+      processing: "route_to_action_handler_by_payload"
+      
+    list_reply_handling:
+      payload_extraction: |
+        list_id = message.interactive.list_reply.id
+        list_title = message.interactive.list_reply.title
+        list_description = message.interactive.list_reply.description
+      processing: "execute_selected_option_logic"
+      
+    quick_reply_handling:
+      payload_extraction: |
+        quick_reply_payload = message.interactive.quick_reply.payload
+      processing: "instant_action_execution"
+
+# ========================================
+# CONFIGURACIÓN DE RESPUESTA
+# ========================================
+response_configuration:
+  
+  # CONFIGURACIÓN DE ENVÍO
+  outbound_message_settings:
+    api_endpoint: "https://graph.facebook.com/v17.0/{phone-number-id}/messages"
+    authentication: "Bearer ${WHATSAPP_ACCESS_TOKEN}"
+    rate_limiting:
+      messages_per_second: 50
+      daily_limit: 100000
+      burst_limit: 200
+      
+  # TEMPLATES DE RESPUESTA
+  response_templates:
+    
+    # RESPUESTA ESTÁNDAR
+    standard_response:
+      format: |
+        {
+          "messaging_product": "whatsapp",
+          "to": "{recipient_phone}",
+          "type": "text",
+          "text": {
+            "body": "{response_message}"
+          }
+        }
+        
+    # RESPUESTA CON BOTONES
+    interactive_button_response:
+      format: |
+        {
+          "messaging_product": "whatsapp",
+          "to": "{recipient_phone}",
+          "type": "interactive",
+          "interactive": {
+            "type": "button",
+            "header": {
+              "type": "text",
+              "text": "{header_text}"
+            },
+            "body": {
+              "text": "{body_text}"
+            },
+            "action": {
+              "buttons": [
+                {
+                  "type": "reply",
+                  "reply": {
+                    "id": "{button_1_id}",
+                    "title": "{button_1_title}"
+                  }
+                },
+                {
+                  "type": "reply", 
+                  "reply": {
+                    "id": "{button_2_id}",
+                    "title": "{button_2_title}"
+                  }
+                }
+              ]
+            }
+          }
+        }
+        
+    # RESPUESTA CON LISTA
+    interactive_list_response:
+      format: |
+        {
+          "messaging_product": "whatsapp",
+          "to": "{recipient_phone}",
+          "type": "interactive",
+          "interactive": {
+            "type": "list",
+            "header": {
+              "type": "text",
+              "text": "{header_text}"
+            },
+            "body": {
+              "text": "{body_text}"
+            },
+            "action": {
+              "button": "{button_text}",
+              "sections": [
+                {
+                  "title": "{section_title}",
+                  "rows": [
+                    {
+                      "id": "{option_1_id}",
+                      "title": "{option_1_title}",
+                      "description": "{option_1_desc}"
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        }
+
+# ========================================
+# MANEJO DE ERRORES Y REINTENTOS
+# ========================================
+error_handling:
+  
+  # ESTRATEGIAS DE REINTENTO
+  retry_strategies:
+    
+    webhook_delivery_failure:
+      max_retries: 3
+      retry_intervals: [1000, 5000, 15000]  # ms
+      exponential_backoff: true
+      
+    message_send_failure:
+      max_retries: 5
+      retry_intervals: [2000, 4000, 8000, 16000, 32000]
+      circuit_breaker: true
+      
+    media_download_failure:
+      max_retries: 2
+      retry_intervals: [3000, 10000]
+      fallback_action: "request_resend_from_user"
+      
+  # MANEJO DE ERRORES ESPECÍFICOS
+  error_responses:
+    
+    rate_limit_exceeded:
+      response: |
+        {
+          "error": "rate_limit_exceeded",
+          "message": "Demasiados mensajes, reintenta en unos segundos",
+          "retry_after": 30
+        }
+      action: "queue_message_for_delayed_send"
+      
+    invalid_phone_number:
+      response: |
+        {
+          "error": "invalid_recipient",
+          "message": "Número de teléfono no válido"
+        }
+      action: "log_error_and_notify_admin"
+      
+    media_download_failed:
+      response: |
+        {
+          "error": "media_processing_failed",
+          "message": "No pude procesar el archivo, ¿puedes enviarlo de nuevo?"
+        }
+      action: "request_file_resend"
+      
+    webhook_verification_failed:
+      response: |
+        {
+          "error": "webhook_verification_failed",
+          "message": "Verificación de webhook fallida"
+        }
+      action: "reject_request_and_log"
+
+# ========================================
+# LOGGING Y MONITOREO
+# ========================================
+monitoring_configuration:
+  
+  # MÉTRICAS A RASTREAR
+  metrics:
+    - webhook_requests_per_minute
+    - message_processing_latency
+    - error_rate_by_type
+    - media_processing_success_rate
+    - response_generation_time
+    - user_satisfaction_indicators
+    
+  # LOGGING DETALLADO
+  logging:
+    level: "INFO"
+    format: "json_structured"
+    
+    log_events:
+      - incoming_webhook_requests
+      - message_processing_steps
+      - api_calls_to_whatsapp
+      - error_occurrences
+      - performance_metrics
+      
+    sensitive_data_handling:
+      - mask_phone_numbers: true
+      - mask_message_content: false  # Necesario para debug
+      - mask_user_names: true
+      - retention_period: "30_days"
+      
+  # ALERTAS AUTOMÁTICAS
+  alerting:
+    
+    critical_alerts:
+      - webhook_endpoint_down
+      - error_rate_above_5_percent
+      - processing_latency_above_10_seconds
+      - whatsapp_api_quota_exhausted
+      
+    warning_alerts:
+      - error_rate_above_2_percent
+      - processing_latency_above_5_seconds
+      - unusual_traffic_patterns
+      - media_processing_failures_spike
+
+# ========================================
+# CONFIGURACIÓN DE DESARROLLO Y TESTING
+# ========================================
+development_configuration:
+  
+  # AMBIENTE DE TESTING
+  test_environment:
+    webhook_url: "https://api-test.bird.com/webhook/whatsapp/robertai"
+    test_phone_numbers:
+      - "+1234567890"  # Número de prueba
+    mock_responses: true
+    detailed_logging: true
+    
+  # HERRAMIENTAS DE DEBUG
+  debugging_tools:
+    webhook_inspector: "https://webhook-inspector.bird.com/robertai"
+    message_simulator: "enabled"
+    payload_validator: "enabled"
+    
+  # CONFIGURACIÓN LOCAL
+  local_development:
+    ngrok_tunnel: "https://abc123.ngrok.io/webhook"
+    local_port: 8080
+    hot_reload: true
+
+# ========================================
+# CONFIGURACIÓN DE PRODUCCIÓN
+# ========================================
+production_configuration:
+  
+  # OPTIMIZACIONES DE PERFORMANCE
+  performance_optimizations:
+    connection_pooling: true
+    response_caching: true
+    parallel_processing: true
+    queue_management: true
+    
+  # ESCALABILIDAD
+  scalability_settings:
+    auto_scaling: true
+    load_balancing: true
+    horizontal_scaling: true
+    max_concurrent_requests: 1000
+    
+  # SEGURIDAD ADICIONAL
+  security_enhancements:
+    ddos_protection: true
+    request_rate_limiting: true
+    ip_geolocation_filtering: true
+    content_validation: true
+
+# Fin de configuración de webhooks

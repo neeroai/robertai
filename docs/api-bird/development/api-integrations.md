@@ -1,5 +1,7 @@
 # 09 - Integraciones API
 
+> 👨‍💻 **Para Desarrolladores**: Ver también [📚 API Reference](../api-reference.md) para documentación técnica completa con ejemplos de código y [⚡ Developer Quick Start](../developer-quickstart.md) para comenzar rápidamente.
+
 ## 🔌 Arquitectura de Integración
 
 ### Visión General

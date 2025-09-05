@@ -1,0 +1,592 @@
+# 💬 AI Actions para Mensajería - RobertAI
+# Definición de acciones inteligentes para gestión de mensajería y comunicación
+# Versión: 1.0.0 | Fecha: 2025-09-04
+
+ai_actions_category: "intelligent_messaging"
+priority: "core_functionality"  
+integration_level: "whatsapp_business_api"
+
+# ========================================
+# ACCIONES PRINCIPALES DE MENSAJERÍA
+# ========================================
+
+# ACCIÓN 1: PROGRAMAR MENSAJE
+schedule_message:
+  action_id: "schedule_message"
+  action_name: "Programar Mensaje"
+  description: "Programa el envío de un mensaje para una fecha y hora específica"
+  
+  trigger_patterns:
+    natural_language:
+      - "enviar mensaje a {recipient} {when}"
+      - "recordar mandar {message} a {person}"
+      - "programar mensaje para {datetime}"
+      - "enviar a {contact} el {date}: {message}"
+    
+  parameters:
+    required:
+      - recipient:
+          type: "contact_identifier"
+          description: "Destinatario del mensaje (nombre, número o contacto)"
+          validation: "must_be_valid_contact"
+      - message_content:
+          type: "string"
+          description: "Contenido del mensaje a enviar"
+          max_length: 4000
+      - scheduled_datetime:
+          type: "datetime"
+          description: "Cuándo enviar el mensaje"
+          validation: "must_be_future_time"
+          
+    optional:
+      - message_type:
+          type: "enum"
+          values: ["text", "image", "audio", "document", "template"]
+          default: "text"
+      - priority:
+          type: "enum" 
+          values: ["low", "medium", "high", "urgent"]
+          default: "medium"
+      - delivery_confirmation:
+          type: "boolean"
+          description: "Confirmar cuando se envíe"
+          default: true
+      - retry_attempts:
+          type: "integer"
+          description: "Intentos si falla el envío"
+          default: 3
+          min: 1
+          max: 5
+          
+  execution_flow:
+    step_1_validation:
+      validate_recipient: "Verify contact exists and is reachable"
+      validate_content: "Check message content and format"
+      validate_timing: "Ensure scheduled time is appropriate"
+      
+    step_2_scheduling:
+      create_message_job: "Store in message queue system"
+      set_delivery_trigger: "Configure automatic sending"
+      
+    step_3_confirmation:
+      success_message: |
+        ✅ **Mensaje programado:**
+        
+        👤 **Para:** {recipient_name}
+        📝 **Mensaje:** "{message_preview}"
+        🕐 **Se enviará:** {formatted_datetime}
+        
+        Te confirmo cuando se envíe ✉️
+        
+      scheduling_options:
+        - text: "📝 Ver mensaje completo"
+          action: "show_full_message"
+        - text: "✏️ Editar mensaje"  
+          action: "modify_scheduled_message"
+        - text: "⏰ Cambiar hora"
+          action: "reschedule_message_time"
+
+# ACCIÓN 2: RESPUESTA AUTOMÁTICA
+setup_auto_response:
+  action_id: "setup_auto_response"
+  action_name: "Configurar Respuesta Automática"
+  description: "Configura mensajes automáticos para cuando no estés disponible"
+  
+  trigger_patterns:
+    natural_language:
+      - "respuesta automática"
+      - "mensaje de ausencia"
+      - "auto responder"
+      - "cuando no esté disponible"
+    
+  parameters:
+    required:
+      - response_message:
+          type: "string"
+          description: "Mensaje automático a enviar"
+          max_length: 500
+      - activation_period:
+          type: "object"
+          properties:
+            start_datetime: {type: "datetime"}
+            end_datetime: {type: "datetime"}
+          description: "Período de activación"
+          
+    optional:
+      - trigger_conditions:
+          type: "object"
+          properties:
+            specific_contacts: {type: "array", items: "contact_identifier"}
+            exclude_contacts: {type: "array", items: "contact_identifier"} 
+            business_hours_only: {type: "boolean", default: false}
+            keyword_triggers: {type: "array", items: "string"}
+      - response_frequency:
+          type: "enum"
+          values: ["once_per_contact", "once_per_day", "every_message"]
+          default: "once_per_contact"
+      - escalation_contact:
+          type: "contact_identifier"
+          description: "Contacto para urgencias"
+          
+  execution_flow:
+    step_1_configuration:
+      validate_timeframe: "Ensure activation period is valid"
+      test_response_message: "Verify message format and content"
+      
+    step_2_activation:
+      enable_auto_responder: "Activate automatic response system"
+      configure_triggers: "Set up condition monitoring"
+      
+    step_3_confirmation:
+      setup_confirmation: |
+        🤖 **Respuesta automática configurada:**
+        
+        📝 **Mensaje:** "{response_preview}"
+        📅 **Activo desde:** {start_time}
+        📅 **Hasta:** {end_time}
+        
+        **⚙️ Configuración:**
+        • Frecuencia: {response_frequency}
+        {trigger_conditions_summary}
+        {escalation_info}
+        
+        ¡Sistema activado! 
+        
+    management_features:
+      pause_auto_response: "Pausar temporalmente"
+      modify_message: "Cambiar mensaje sin desactivar"
+      extend_period: "Extender período de activación"
+      deactivate_early: "Desactivar antes del tiempo programado"
+
+# ACCIÓN 3: DIFUSIÓN PERSONALIZADA
+personalized_broadcast:
+  action_id: "personalized_broadcast"
+  action_name: "Difusión Personalizada"
+  description: "Envía mensaje personalizado a múltiples contactos"
+  
+  trigger_patterns:
+    natural_language:
+      - "enviar a todos {message}"
+      - "difusión personalizada"
+      - "mensaje grupal personalizado"
+      - "notificar a {group} sobre {topic}"
+    
+  parameters:
+    required:
+      - recipient_list:
+          type: "array"
+          items: "contact_identifier"
+          description: "Lista de destinatarios"
+          min_items: 2
+      - base_message:
+          type: "string"
+          description: "Mensaje base a personalizar"
+          max_length: 3000
+          
+    optional:
+      - personalization_fields:
+          type: "object"
+          description: "Campos a personalizar por contacto"
+          example: {"name": "contact_name", "location": "contact_city"}
+      - send_timing:
+          type: "enum"
+          values: ["immediate", "scheduled", "staggered"]
+          default: "immediate"
+      - scheduled_datetime:
+          type: "datetime"
+          required_when: "send_timing == scheduled"
+      - stagger_interval:
+          type: "duration"
+          required_when: "send_timing == staggered"
+          default: "2 minutes"
+      - delivery_tracking:
+          type: "boolean"
+          description: "Rastrear entrega individual"
+          default: true
+          
+  execution_flow:
+    step_1_preparation:
+      validate_contacts: "Verify all recipients are valid"
+      generate_personalized_messages: "Create individual message versions"
+      
+      personalization_preview: |
+        📬 **Vista previa de difusión:**
+        
+        📊 **Destinatarios:** {recipient_count} contactos
+        
+        **📝 Ejemplos personalizados:**
+        {personalization_examples}
+        
+        ¿Todo correcto?
+        
+    step_2_delivery_strategy:
+      immediate_send:
+        batch_processing: "Send in optimal batches to avoid rate limits"
+        
+      scheduled_send:
+        queue_messages: "Schedule all for same datetime"
+        
+      staggered_send:
+        calculate_send_times: "Distribute across time interval"
+        
+    step_3_execution:
+      send_personalized_messages: "Execute delivery plan"
+      track_delivery_status: "Monitor success/failure for each message"
+      
+    step_4_reporting:
+      delivery_report: |
+        📊 **Reporte de difusión:**
+        
+        ✅ **Enviados:** {successful_count}/{total_count}
+        ⏰ **Tiempo total:** {delivery_duration}
+        
+        **📈 Estado detallado:**
+        {delivery_status_breakdown}
+        
+        {failed_deliveries_if_any}
+
+# ACCIÓN 4: MENSAJE DE CUMPLEAÑOS AUTOMÁTICO
+birthday_message_automation:
+  action_id: "birthday_message_automation"
+  action_name: "Mensajes de Cumpleaños Automáticos"
+  description: "Configura felicitaciones automáticas de cumpleaños"
+  
+  trigger_patterns:
+    natural_language:
+      - "cumpleaños de {person} es {date}"
+      - "recordar cumpleaños"
+      - "felicitación automática"
+      - "mensaje de cumpleaños para {contact}"
+    
+  parameters:
+    required:
+      - contact:
+          type: "contact_identifier"
+          description: "Persona que cumple años"
+      - birthday_date:
+          type: "date"
+          description: "Fecha de cumpleaños (sin año para recurrencia)"
+          format: "MM-DD"
+          
+    optional:
+      - custom_message:
+          type: "string"
+          description: "Mensaje personalizado"
+          max_length: 500
+      - send_time:
+          type: "time"
+          description: "Hora específica para enviar"
+          default: "09:00"
+      - advance_reminder:
+          type: "boolean"
+          description: "Recordarte comprar regalo día anterior"
+          default: true
+      - relationship_type:
+          type: "enum"
+          values: ["family", "friend", "colleague", "acquaintance"]
+          description: "Tipo de relación para personalizar mensaje"
+          
+  execution_flow:
+    step_1_setup:
+      calculate_next_birthday: "Determine next occurrence"
+      generate_message_template: "Create appropriate birthday message"
+      
+      template_options:
+        family: "¡Feliz cumpleaños, {name}! 🎂 Que tengas un día maravilloso lleno de alegría. Te quiero mucho ❤️"
+        friend: "¡Feliz cumpleaños, {name}! 🎉 Espero que la pases increíble hoy. ¡A celebrar! 🥳"  
+        colleague: "¡Feliz cumpleaños, {name}! 🎈 Que tengas un excelente día y un año lleno de éxitos."
+        acquaintance: "¡Feliz cumpleaños! 🎂 Te deseo un día muy especial."
+        
+    step_2_scheduling:
+      create_recurring_job: "Set up annual recurrence"
+      schedule_advance_reminder: "Set gift reminder if requested"
+      
+    step_3_confirmation:
+      setup_message: |
+        🎂 **Felicitación de cumpleaños configurada:**
+        
+        👤 **Para:** {contact_name}
+        📅 **Fecha:** {birthday_date} (cada año)
+        🕐 **Hora de envío:** {send_time}
+        
+        📝 **Mensaje:** "{birthday_message}"
+        
+        {gift_reminder_info}
+        
+        ¡Nunca más olvidarás un cumpleaños! 🎉
+
+# ACCIÓN 5: SEGUIMIENTO DE MENSAJES IMPORTANTES
+message_follow_up:
+  action_id: "message_follow_up"
+  action_name: "Seguimiento de Mensajes"
+  description: "Hace seguimiento a mensajes importantes que no han sido respondidos"
+  
+  trigger_patterns:
+    natural_language:
+      - "seguimiento a mensaje"
+      - "recordar si responde"
+      - "hacer follow-up"
+      - "insistir con {contact} sobre {topic}"
+    
+  parameters:
+    required:
+      - original_message:
+          type: "string"
+          description: "Mensaje original enviado"
+      - recipient:
+          type: "contact_identifier"
+          description: "Destinatario original"
+      - follow_up_timeframe:
+          type: "duration"
+          description: "Cuándo hacer seguimiento si no responde"
+          default: "24 hours"
+          
+    optional:
+      - follow_up_message:
+          type: "string"
+          description: "Mensaje de seguimiento personalizado"
+      - max_follow_ups:
+          type: "integer"
+          description: "Máximo número de seguimientos"
+          default: 2
+          min: 1
+          max: 5
+      - escalation_contact:
+          type: "contact_identifier"
+          description: "Contacto alternativo si no hay respuesta"
+      - urgency_level:
+          type: "enum"
+          values: ["low", "medium", "high", "critical"]
+          default: "medium"
+          
+  execution_flow:
+    step_1_tracking_setup:
+      monitor_response: "Set up response detection"
+      schedule_follow_up: "Schedule follow-up reminder"
+      
+    step_2_response_monitoring:
+      detect_response: "Monitor for incoming messages from recipient"
+      
+      response_received:
+        cancel_follow_up: "Cancel scheduled follow-up"
+        success_notification: "Notify user that response was received"
+        
+      no_response_timeout:
+        send_follow_up: "Send follow-up message"
+        update_tracking: "Schedule next follow-up if within limits"
+        
+    step_3_follow_up_execution:
+      follow_up_message_template: |
+        Hola {contact_name}, 
+        
+        Te escribí hace {time_elapsed} sobre {original_topic}.
+        
+        {custom_follow_up_message}
+        
+        ¿Podrías confirmarme cuando tengas un momento?
+        
+        Gracias!
+        
+    step_4_escalation:
+      max_attempts_reached: |
+        📞 **Seguimiento completado:**
+        
+        👤 **{contact_name}** no ha respondido después de {attempts} intentos.
+        
+        {escalation_options}
+        
+        ¿Qué quieres hacer?
+
+# ACCIÓN 6: PLANTILLAS DE MENSAJES INTELIGENTES
+smart_message_templates:
+  action_id: "smart_message_templates"
+  action_name: "Plantillas Inteligentes"
+  description: "Crea y usa plantillas de mensajes contextuales"
+  
+  trigger_patterns:
+    natural_language:
+      - "usar plantilla {template_name}"
+      - "mensaje tipo {category}"
+      - "formato estándar para {purpose}"
+    
+  template_categories:
+    professional:
+      meeting_request:
+        template: |
+          Hola {name},
+          
+          Espero que estés bien. Me gustaría coordinar una reunión contigo para {purpose}.
+          
+          ¿Tendrías disponibilidad {timeframe}? La reunión sería de aproximadamente {duration}.
+          
+          Avísame qué horarios te funcionan mejor.
+          
+          Saludos!
+        variables: ["name", "purpose", "timeframe", "duration"]
+        
+      follow_up:
+        template: |
+          Hola {name},
+          
+          Siguiendo nuestra conversación sobre {topic}, quería {follow_up_action}.
+          
+          {additional_context}
+          
+          ¿Podrías confirmarme tu perspectiva sobre esto?
+          
+          Gracias!
+        variables: ["name", "topic", "follow_up_action", "additional_context"]
+        
+    personal:
+      invitation:
+        template: |
+          ¡Hola {name}!
+          
+          Te invito a {event} el {date} a las {time} en {location}.
+          
+          {event_details}
+          
+          ¿Puedes confirmarme si vienes? ¡Espero verte ahí! 🎉
+        variables: ["name", "event", "date", "time", "location", "event_details"]
+        
+      apology:
+        template: |
+          Hola {name},
+          
+          Te pido disculpas por {reason}. No fue mi intención {impact}.
+          
+          {corrective_action}
+          
+          Espero podamos resolverlo pronto.
+        variables: ["name", "reason", "impact", "corrective_action"]
+        
+  execution_flow:
+    step_1_template_selection:
+      show_available_templates: "Display templates by category"
+      
+    step_2_customization:
+      variable_collection: "Gather values for template variables"
+      
+      customization_interface: |
+        📝 **Personalizando plantilla "{template_name}":**
+        
+        {variable_input_prompts}
+        
+    step_3_preview_and_send:
+      show_preview: "Display final message with variables filled"
+      confirm_send: "Get approval before sending"
+
+# ========================================
+# GESTIÓN AVANZADA DE MENSAJES
+# ========================================
+advanced_messaging_features:
+  
+  # ANÁLISIS DE SENTIMIENTOS
+  sentiment_analysis:
+    incoming_message_analysis:
+      detect_emotions: "Identify sender's emotional state"
+      urgency_assessment: "Determine response priority"
+      
+    response_optimization:
+      tone_matching: "Match appropriate response tone"
+      empathy_enhancement: "Add empathetic elements when needed"
+      
+  # PRIORIZACIÓN INTELIGENTE
+  message_prioritization:
+    priority_factors:
+      - sender_relationship_importance
+      - message_urgency_keywords
+      - time_sensitivity_indicators
+      - business_vs_personal_context
+      
+    priority_actions:
+      high_priority: "Immediate notification to user"
+      medium_priority: "Standard notification"
+      low_priority: "Batch with other messages"
+      
+  # RESPUESTA SUGERIDA
+  response_suggestions:
+    quick_replies:
+      acknowledgment: ["Ok", "Entendido", "Perfecto", "Gracias"]
+      affirmation: ["Sí", "Dale", "Confirmo", "Exacto"]
+      negation: ["No puedo", "No es posible", "Mejor no"]
+      time_related: ["En 10 minutos", "Mañana", "La próxima semana"]
+      
+    contextual_suggestions:
+      based_on_content: "Generate relevant response options"
+      based_on_relationship: "Adjust formality and tone"
+      based_on_history: "Consider previous conversation patterns"
+
+# ========================================
+# INTEGRACIÓN CON WHATSAPP BUSINESS API
+# ========================================
+whatsapp_integration:
+  
+  # CARACTERÍSTICAS NATIVAS
+  native_features:
+    interactive_messages:
+      buttons: "Up to 3 action buttons per message"
+      lists: "Up to 10 options in selection list"
+      quick_replies: "Predefined response options"
+      
+    media_messages:
+      image_support: "JPG, PNG, WebP up to 5MB"
+      video_support: "MP4, 3GPP up to 16MB"
+      audio_support: "AAC, M4A, MP3 up to 16MB"
+      document_support: "PDF, DOCX, PPTX up to 100MB"
+      
+    message_templates:
+      pre_approved_templates: "For promotional/transactional messages"
+      dynamic_content: "Variable insertion in templates"
+      
+  # CONFIGURACIÓN DE WEBHOOK
+  webhook_configuration:
+    message_events:
+      - "message.received"
+      - "message.delivered"
+      - "message.read"
+      - "message.failed"
+      
+    status_events:
+      - "user.blocked"
+      - "user.unblocked"
+      - "contact.updated"
+      
+  # LÍMITES Y RESTRICCIONES
+  api_limits:
+    rate_limits:
+      messages_per_second: 50
+      messages_per_day: 100000
+      
+    content_restrictions:
+      no_promotional_content_without_template: true
+      24_hour_message_window: "After user-initiated contact"
+      template_required_after_24h: true
+
+# ========================================
+# MÉTRICAS Y ANÁLISIS
+# ========================================
+messaging_analytics:
+  
+  # MÉTRICAS DE ENGAGEMENT
+  engagement_metrics:
+    message_delivery_rate: "Percentage of successfully delivered messages"
+    response_rate: "Percentage of messages that receive responses"
+    response_time: "Average time between message and response"
+    conversation_completion_rate: "Percentage of completed conversations"
+    
+  # ANÁLISIS DE EFECTIVIDAD
+  effectiveness_analysis:
+    template_performance: "Which templates get better responses"
+    optimal_send_times: "Best times for message delivery"
+    personalization_impact: "Effect of personalized messages"
+    follow_up_success_rates: "Effectiveness of follow-up messages"
+    
+  # OPTIMIZACIÓN CONTINUA
+  continuous_optimization:
+    a_b_testing: "Test different message variations"
+    sentiment_tracking: "Monitor conversation sentiment trends"
+    user_satisfaction: "Track user satisfaction with messaging features"
+    feature_adoption: "Monitor usage of advanced messaging features"
+
+# Fin de las AI Actions para mensajería
